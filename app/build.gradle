@@ -6,7 +6,7 @@ android {
     compileSdkVersion 30
 
     defaultConfig {
-        applicationId "io.github.hidroh.materialistic"
+        applicationId "io.github.hidroh.materialistic.elioth"
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 79
@@ -48,9 +48,6 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    aaptOptions {
-        cruncherEnabled = false
-    }
 }
 
 ext {
