@@ -17,23 +17,24 @@
 package io.github.hidroh.materialistic.widget;
 
 import android.content.Context;
-import androidx.cardview.widget.CardView;
 import android.util.AttributeSet;
 
-public class FlatCardView extends CardView {
+import androidx.cardview.widget.CardView;
 
+public class FlatCardView extends CardView {
+    
     public FlatCardView(Context context) {
         super(context);
     }
-
+    
     public FlatCardView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
-
+    
     public FlatCardView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
-
+    
     public void flatten() {
         setRadius(0);
         setUseCompatPadding(false);

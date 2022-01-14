@@ -18,35 +18,40 @@ package io.github.hidroh.materialistic;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.core.content.ContextCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.preference.PreferenceManager;
+
 import javax.inject.Inject;
 
 import io.github.hidroh.materialistic.annotation.Synthetic;
 
 public abstract class DrawerActivity extends InjectableActivity {
-
-    @Inject AlertDialogBuilder mAlertDialogBuilder;
+    
+    @Inject
+    AlertDialogBuilder mAlertDialogBuilder;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
-    @Synthetic View mDrawer;
-    @Synthetic Class<? extends Activity> mPendingNavigation;
-    @Synthetic Bundle mPendingNavigationExtras;
+    @Synthetic
+    View mDrawer;
+    @Synthetic
+    Class<? extends Activity> mPendingNavigation;
+    @Synthetic
+    Bundle mPendingNavigationExtras;
     private TextView mDrawerAccount;
     private View mDrawerLogout;
     private View mDrawerUser;
@@ -56,7 +61,7 @@ public abstract class DrawerActivity extends InjectableActivity {
             setUsername();
         }
     };
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,24 +95,24 @@ public abstract class DrawerActivity extends InjectableActivity {
         setUpDrawer();
         setUsername();
     }
-
+    
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         mDrawerToggle.syncState();
     }
-
+    
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
-
+    
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        return mDrawerToggle.onOptionsItemSelected(item)|| super.onOptionsItemSelected(item);
+        return mDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
     }
-
+    
     @Override
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(mDrawer)) {
@@ -118,7 +123,7 @@ public abstract class DrawerActivity extends InjectableActivity {
             super.onBackPressed();
         }
     }
-
+    
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -126,16 +131,14 @@ public abstract class DrawerActivity extends InjectableActivity {
         PreferenceManager.getDefaultSharedPreferences(this)
                 .unregisterOnSharedPreferenceChangeListener(mLoginListener);
     }
-
+    
     @Override
     public void setContentView(int layoutResID) {
         ViewGroup drawerLayout = (ViewGroup) findViewById(R.id.drawer_layout);
         View view = getLayoutInflater().inflate(layoutResID, drawerLayout, false);
-        //noinspection ConstantConditions
         drawerLayout.addView(view, 0);
     }
-
-    @SuppressWarnings("ConstantConditions")
+    
     private void setUpDrawer() {
         mDrawerAccount.setOnClickListener(v -> showLogin());
         mDrawerLogout.setOnClickListener(v -> confirmLogout());
@@ -176,10 +179,9 @@ public abstract class DrawerActivity extends InjectableActivity {
             navigate(UserActivity.class, extras);
         });
         findViewById(R.id.drawer_feedback).setOnClickListener(v -> navigate(FeedbackActivity.class));
-
+        
     }
-
-    @SuppressLint("MissingPermission")
+    
     private void showLogin() {
         Account[] accounts = AccountManager.get(this)
                 .getAccountsByType(BuildConfig.APPLICATION_ID);
@@ -189,7 +191,7 @@ public abstract class DrawerActivity extends InjectableActivity {
             AppUtils.showAccountChooser(this, mAlertDialogBuilder, accounts);
         }
     }
-
+    
     private void confirmLogout() {
         mAlertDialogBuilder.init(this)
                 .setMessage(R.string.logout_confirm)
@@ -198,17 +200,17 @@ public abstract class DrawerActivity extends InjectableActivity {
                         Preferences.setUsername(this, null))
                 .show();
     }
-
+    
     private void navigate(Class<? extends Activity> activityClass) {
         navigate(activityClass, null);
     }
-
+    
     private void navigate(Class<? extends Activity> activityClass, @Nullable Bundle extras) {
         mPendingNavigation = !getClass().equals(activityClass) ? activityClass : null;
         mPendingNavigationExtras = extras;
         closeDrawers();
     }
-
+    
     private void setUsername() {
         String username = Preferences.getUsername(this);
         if (!TextUtils.isEmpty(username)) {
@@ -221,7 +223,7 @@ public abstract class DrawerActivity extends InjectableActivity {
             mDrawerUser.setVisibility(View.GONE);
         }
     }
-
+    
     private void closeDrawers() {
         mDrawerLayout.closeDrawers();
     }

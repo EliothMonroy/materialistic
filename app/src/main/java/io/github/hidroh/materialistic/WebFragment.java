@@ -120,7 +120,7 @@ public class WebFragment extends LazyLoadFragment
     private PdfAndroidJavascriptBridge mPdfAndroidJavascriptBridge;
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         mPreferenceObservable.subscribe(context, this::onPreferenceChanged,
                 R.string.pref_readability_font,
@@ -148,7 +148,7 @@ public class WebFragment extends LazyLoadFragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (isNewInstance()) {
             mFragmentView = inflater.inflate(R.layout.fragment_web, container, false);
             mFullscreenView = (ViewGroup) mFragmentView.findViewById(R.id.fullscreen);
@@ -224,7 +224,7 @@ public class WebFragment extends LazyLoadFragment
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(STATE_FULLSCREEN, mFullscreen);
         outState.putString(STATE_CONTENT, mContent);
@@ -655,10 +655,11 @@ public class WebFragment extends LazyLoadFragment
     }
 
     static class PdfAndroidJavascriptBridge {
-        private File mFile;
+        private final File mFile;
         private @Nullable RandomAccessFile mRandomAccessFile;
-        private @Nullable Callbacks mCallback;
-        private Handler mHandler;
+        private @Nullable
+        final Callbacks mCallback;
+        private final Handler mHandler;
 
         PdfAndroidJavascriptBridge(String filePath, @Nullable Callbacks callback) {
             mFile = new File(filePath);
@@ -672,15 +673,11 @@ public class WebFragment extends LazyLoadFragment
                 if (mRandomAccessFile == null) {
                     mRandomAccessFile = new RandomAccessFile(mFile, "r");
                 }
-                if (mRandomAccessFile != null) {
-                    final int bufferSize = (int)(end - begin);
-                    byte[] data = new byte[bufferSize];
-                    mRandomAccessFile.seek(begin);
-                    mRandomAccessFile.read(data);
-                    return Base64.encodeToString(data, Base64.DEFAULT);
-                } else {
-                    return "";
-                }
+                final int bufferSize = (int)(end - begin);
+                byte[] data = new byte[bufferSize];
+                mRandomAccessFile.seek(begin);
+                mRandomAccessFile.read(data);
+                return Base64.encodeToString(data, Base64.DEFAULT);
             } catch (IOException e) {
                 Log.e("Exception", e.toString());
                 return "";
@@ -695,14 +692,14 @@ public class WebFragment extends LazyLoadFragment
         @JavascriptInterface
         public void onLoad() {
             if (mCallback != null) {
-                mHandler.post(() -> mCallback.onLoad());
+                mHandler.post(mCallback::onLoad);
             }
         }
 
         @JavascriptInterface
         public void onFailure() {
             if (mCallback != null) {
-                mHandler.post(() -> mCallback.onFailure());
+                mHandler.post(mCallback::onFailure);
             }
         }
 

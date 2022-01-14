@@ -19,11 +19,6 @@ package io.github.hidroh.materialistic;
 import android.app.SearchManager;
 import android.content.Context;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.view.ActionMode;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.SearchView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -31,6 +26,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.ActionMode;
+import androidx.appcompat.widget.SearchView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import javax.inject.Inject;
 
@@ -47,12 +49,15 @@ public class FavoriteFragment extends BaseListFragment
     private ActionMode mActionMode;
     private String mFilter;
     private boolean mSearchViewExpanded;
-    @Inject FavoriteManager mFavoriteManager;
-    @Inject ActionViewResolver mActionViewResolver;
-    @Inject AlertDialogBuilder mAlertDialogBuilder;
+    @Inject
+    FavoriteManager mFavoriteManager;
+    @Inject
+    ActionViewResolver mActionViewResolver;
+    @Inject
+    AlertDialogBuilder mAlertDialogBuilder;
     private View mEmptySearchView;
     private View mEmptyView;
-
+    
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +68,7 @@ public class FavoriteFragment extends BaseListFragment
             mFilter = getArguments().getString(EXTRA_FILTER);
         }
     }
-
+    
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -75,24 +80,24 @@ public class FavoriteFragment extends BaseListFragment
                 .setOnLongClickListener(v -> {
                     View bookmark = mEmptyView.findViewById(R.id.bookmarked);
                     bookmark.setVisibility(bookmark.getVisibility() == View.VISIBLE ?
-                                    View.INVISIBLE : View.VISIBLE);
+                            View.INVISIBLE : View.VISIBLE);
                     return true;
                 });
         mEmptyView.setVisibility(View.INVISIBLE);
         return view;
     }
-
+    
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
     }
-
+    
     @Override
     public void onStart() {
         super.onStart();
         mFavoriteManager.attach(this, mFilter);
     }
-
+    
     @Override
     protected void createOptionsMenu(final Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_search, menu);
@@ -102,7 +107,7 @@ public class FavoriteFragment extends BaseListFragment
             super.createOptionsMenu(menu, inflater);
         }
     }
-
+    
     @Override
     protected void prepareOptionsMenu(Menu menu) {
         // allow clearing filter if empty, or filter if non-empty
@@ -112,7 +117,7 @@ public class FavoriteFragment extends BaseListFragment
             super.prepareOptionsMenu(menu);
         }
     }
-
+    
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_clear) {
@@ -125,20 +130,20 @@ public class FavoriteFragment extends BaseListFragment
         }
         return super.onOptionsItemSelected(item);
     }
-
+    
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(STATE_FILTER, mFilter);
         outState.putBoolean(STATE_SEARCH_VIEW_EXPANDED, mSearchViewExpanded);
     }
-
+    
     @Override
     public void onStop() {
         super.onStop();
         mFavoriteManager.detach();
     }
-
+    
     @Override
     public void onDetach() {
         super.onDetach();
@@ -146,9 +151,10 @@ public class FavoriteFragment extends BaseListFragment
             mActionMode.finish();
         }
     }
-
+    
     /**
      * Filters list data by given query
+     *
      * @param query query used to filter data
      */
     public void filter(String query) {
@@ -156,7 +162,7 @@ public class FavoriteFragment extends BaseListFragment
         mFilter = query;
         mFavoriteManager.attach(this, mFilter);
     }
-
+    
     @Override
     protected FavoriteRecyclerViewAdapter getAdapter() {
         if (mAdapter == null) {
@@ -164,7 +170,7 @@ public class FavoriteFragment extends BaseListFragment
         }
         return mAdapter;
     }
-
+    
     @Override
     public boolean startActionMode(ActionMode.Callback callback) {
         if (mSearchViewExpanded) {
@@ -175,17 +181,17 @@ public class FavoriteFragment extends BaseListFragment
         }
         return true;
     }
-
+    
     @Override
     public boolean isInActionMode() {
         return mActionMode != null && !mSearchViewExpanded;
     }
-
+    
     @Override
     public void stopActionMode() {
         mActionMode = null;
     }
-
+    
     @Override
     public void onChanged() {
         getAdapter().notifyChanged();
@@ -194,7 +200,7 @@ public class FavoriteFragment extends BaseListFragment
             getActivity().invalidateOptionsMenu();
         }
     }
-
+    
     private void toggleEmptyView(boolean isEmpty, String filter) {
         if (isEmpty) {
             if (TextUtils.isEmpty(filter)) {
@@ -211,7 +217,7 @@ public class FavoriteFragment extends BaseListFragment
             mEmptySearchView.setVisibility(View.INVISIBLE);
         }
     }
-
+    
     private void createSearchView(MenuItem menuSearch) {
         final SearchView searchView = (SearchView) mActionViewResolver.getActionView(menuSearch);
         searchView.setQueryHint(getString(R.string.hint_search_saved_stories));
@@ -230,7 +236,7 @@ public class FavoriteFragment extends BaseListFragment
             return false;
         });
     }
-
+    
     private void clear() {
         mAlertDialogBuilder
                 .init(getActivity())

@@ -19,10 +19,11 @@ package io.github.hidroh.materialistic.data;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Parcel;
-import androidx.annotation.NonNull;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
 
 import io.github.hidroh.materialistic.AppUtils;
 import io.github.hidroh.materialistic.R;
@@ -32,26 +33,26 @@ import io.github.hidroh.materialistic.annotation.Synthetic;
  * Represents a favorite item
  */
 public class Favorite implements WebItem {
-    private String itemId;
-    private String url;
-    private String title;
-    private long time;
+    private final String itemId;
+    private final String url;
+    private final String title;
+    private final long time;
     private boolean favorite;
     private Spannable displayedTime;
     private final Spannable displayedAuthor = new SpannableString("");
-
+    
     public static final Creator<Favorite> CREATOR = new Creator<Favorite>() {
         @Override
         public Favorite createFromParcel(Parcel source) {
             return new Favorite(source);
         }
-
+        
         @Override
         public Favorite[] newArray(int size) {
             return new Favorite[size];
         }
     };
-
+    
     Favorite(String itemId, String url, String title, long time) {
         this.itemId = itemId;
         this.url = url;
@@ -59,7 +60,7 @@ public class Favorite implements WebItem {
         this.time = time;
         this.favorite = true;
     }
-
+    
     @Synthetic
     Favorite(Parcel source) {
         itemId = source.readString();
@@ -68,37 +69,37 @@ public class Favorite implements WebItem {
         favorite = source.readInt() != 0;
         time = source.readLong();
     }
-
+    
     @Override
     public String getUrl() {
         return url;
     }
-
+    
     @Override
     public boolean isStoryType() {
         return true;
     }
-
+    
     @Override
     public String getId() {
         return itemId;
     }
-
+    
     @Override
     public long getLongId() {
-        return Long.valueOf(itemId);
+        return Long.parseLong(itemId);
     }
-
+    
     @Override
     public String getDisplayedTitle() {
         return title;
     }
-
+    
     @Override
     public Spannable getDisplayedAuthor(Context context, boolean linkify, int color) {
         return displayedAuthor;
     }
-
+    
     @Override
     public Spannable getDisplayedTime(Context context) {
         if (displayedTime == null) {
@@ -107,39 +108,40 @@ public class Favorite implements WebItem {
         }
         return displayedTime;
     }
-
+    
     @Override
     public String getSource() {
         return TextUtils.isEmpty(url) ? null : Uri.parse(url).getHost();
     }
-
+    
     @NonNull
     @Override
     public String getType() {
         // TODO treating all saved items as stories for now
         return STORY_TYPE;
     }
-
+    
     @Override
     public boolean isFavorite() {
         return favorite;
     }
-
+    
     @Override
     public void setFavorite(boolean favorite) {
         this.favorite = favorite;
     }
-
+    
+    @NonNull
     @Override
     public String toString() {
         return String.format("%s (%s) - %s", title, url, String.format(HackerNewsClient.WEB_ITEM_PATH, itemId));
     }
-
+    
     @Override
     public int describeContents() {
         return 0;
     }
-
+    
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(itemId);
@@ -148,7 +150,7 @@ public class Favorite implements WebItem {
         dest.writeInt(favorite ? 1 : 0);
         dest.writeLong(time);
     }
-
+    
     long getTime() {
         return time;
     }

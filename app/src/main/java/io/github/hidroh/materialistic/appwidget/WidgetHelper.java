@@ -16,9 +16,10 @@
 
 package io.github.hidroh.materialistic.appwidget;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.SearchManager;
 import android.app.job.JobInfo;
@@ -33,43 +34,39 @@ import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.widget.RemoteViews;
 
-import java.util.Locale;
-
 import androidx.annotation.LayoutRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
+
+import java.util.Locale;
+
 import io.github.hidroh.materialistic.BestActivity;
 import io.github.hidroh.materialistic.ListActivity;
 import io.github.hidroh.materialistic.NewActivity;
 import io.github.hidroh.materialistic.R;
 import io.github.hidroh.materialistic.SearchActivity;
 
-import static android.content.Context.ALARM_SERVICE;
-import static android.content.Context.MODE_PRIVATE;
-
 class WidgetHelper {
     private static final String SP_NAME = "WidgetConfiguration_%1$d";
     private static final int DEFAULT_FREQUENCY_HOUR = 6;
     private final Context mContext;
     private final AppWidgetManager mAppWidgetManager;
-    private final AlarmManager mAlarmManager;
-
+    
     WidgetHelper(Context context) {
         mContext = context;
         mAppWidgetManager = AppWidgetManager.getInstance(context);
-        mAlarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
     }
-
+    
     static String getConfigName(int appWidgetId) {
         return String.format(Locale.US, SP_NAME, appWidgetId);
     }
-
+    
     void configure(int appWidgetId) {
         scheduleUpdate(appWidgetId);
         update(appWidgetId);
     }
-
+    
     void update(int appWidgetId) {
         WidgetConfig config = WidgetConfig.createWidgetConfig(mContext,
                 getConfig(appWidgetId, R.string.pref_widget_theme),
@@ -80,62 +77,62 @@ class WidgetHelper {
         updateCollection(appWidgetId, remoteViews, config);
         mAppWidgetManager.updateAppWidget(appWidgetId, remoteViews);
     }
-
+    
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     void refresh(int appWidgetId) {
         mAppWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, android.R.id.list);
         update(appWidgetId);
     }
-
+    
     void remove(int appWidgetId) {
         cancelScheduledUpdate(appWidgetId);
         clearConfig(appWidgetId);
     }
-
+    
     private void scheduleUpdate(int appWidgetId) {
         String frequency = getConfig(appWidgetId, R.string.pref_widget_frequency);
         long frequencyHourMillis = DateUtils.HOUR_IN_MILLIS * (TextUtils.isEmpty(frequency) ?
-                DEFAULT_FREQUENCY_HOUR : Integer.valueOf(frequency));
+                DEFAULT_FREQUENCY_HOUR : Integer.parseInt(frequency));
         getJobScheduler().schedule(new JobInfo.Builder(appWidgetId,
                 new ComponentName(mContext.getPackageName(), WidgetRefreshJobService.class.getName()))
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                 .setPeriodic(frequencyHourMillis)
                 .build());
     }
-
+    
     private void cancelScheduledUpdate(int appWidgetId) {
         getJobScheduler().cancel(appWidgetId);
     }
-
+    
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     private JobScheduler getJobScheduler() {
         return (JobScheduler) mContext.getSystemService(Context.JOB_SCHEDULER_SERVICE);
     }
-
+    
     private String getConfig(int appWidgetId, @StringRes int key) {
         return mContext.getSharedPreferences(getConfigName(appWidgetId), MODE_PRIVATE)
                 .getString(mContext.getString(key), null);
     }
-
+    
     private void clearConfig(int appWidgetId) {
         mContext.getSharedPreferences(getConfigName(appWidgetId), MODE_PRIVATE)
                 .edit()
                 .clear()
                 .apply();
     }
-
+    
     private void updateTitle(RemoteViews remoteViews, WidgetConfig config) {
         remoteViews.setTextViewText(R.id.title, config.title);
         remoteViews.setOnClickPendingIntent(R.id.title,
                 PendingIntent.getActivity(mContext, 0, config.customQuery ?
-                        new Intent(mContext, config.destination)
-                                .putExtra(SearchManager.QUERY, config.title) :
-                        new Intent(mContext, config.destination),
+                                new Intent(mContext, config.destination)
+                                        .putExtra(SearchManager.QUERY, config.title) :
+                                new Intent(mContext, config.destination),
                         Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
                                 PendingIntent.FLAG_IMMUTABLE :
                                 0));
     }
-
+    
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     private void updateCollection(int appWidgetId, RemoteViews remoteViews, WidgetConfig config) {
         remoteViews.setTextViewText(R.id.subtitle,
@@ -157,7 +154,7 @@ class WidgetHelper {
                                 PendingIntent.FLAG_IMMUTABLE :
                                 0));
     }
-
+    
     private PendingIntent createRefreshPendingIntent(int appWidgetId) {
         return PendingIntent.getBroadcast(mContext, appWidgetId,
                 new Intent(WidgetProvider.ACTION_REFRESH_WIDGET)
@@ -167,15 +164,16 @@ class WidgetHelper {
                         PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE :
                         PendingIntent.FLAG_UPDATE_CURRENT);
     }
-
+    
     static class WidgetConfig {
         final boolean customQuery;
         final Class<? extends Activity> destination;
         final String title;
         final boolean isLightTheme;
-        final @LayoutRes int widgetLayout;
+        final @LayoutRes
+        int widgetLayout;
         final String section;
-
+        
         @NonNull
         static WidgetConfig createWidgetConfig(Context context, String theme, String section, String query) {
             int widgetLayout;
@@ -207,7 +205,7 @@ class WidgetHelper {
             }
             return new WidgetConfig(destination, title, section, isLightTheme, widgetLayout);
         }
-
+        
         private WidgetConfig(Class<? extends Activity> destination, String title, String section,
                              boolean isLightTheme, int widgetLayout) {
             this.destination = destination;

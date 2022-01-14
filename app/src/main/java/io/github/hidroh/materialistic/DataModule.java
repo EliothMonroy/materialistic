@@ -16,8 +16,13 @@
 
 package io.github.hidroh.materialistic;
 
-import androidx.sqlite.db.SupportSQLiteOpenHelper;
+import static io.github.hidroh.materialistic.ActivityModule.ALGOLIA;
+import static io.github.hidroh.materialistic.ActivityModule.HN;
+import static io.github.hidroh.materialistic.ActivityModule.POPULAR;
+
 import android.content.Context;
+
+import androidx.sqlite.db.SupportSQLiteOpenHelper;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
@@ -42,91 +47,104 @@ import rx.Scheduler;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static io.github.hidroh.materialistic.ActivityModule.ALGOLIA;
-import static io.github.hidroh.materialistic.ActivityModule.HN;
-import static io.github.hidroh.materialistic.ActivityModule.POPULAR;
-
 @Module(library = true, complete = false, includes = NetworkModule.class)
 public class DataModule {
     public static final String MAIN_THREAD = "main";
     public static final String IO_THREAD = "io";
-
-    @Provides @Singleton @Named(HN)
+    
+    @Provides
+    @Singleton
+    @Named(HN)
     public ItemManager provideHackerNewsClient(HackerNewsClient client) {
         return client;
     }
-
-    @Provides @Singleton @Named(ALGOLIA)
+    
+    @Provides
+    @Singleton
+    @Named(ALGOLIA)
     public ItemManager provideAlgoliaClient(AlgoliaClient client) {
         return client;
     }
-
-    @Provides @Singleton @Named(POPULAR)
+    
+    @Provides
+    @Singleton
+    @Named(POPULAR)
     public ItemManager provideAlgoliaPopularClient(AlgoliaPopularClient client) {
         return client;
     }
-
-    @Provides @Singleton
+    
+    @Provides
+    @Singleton
     public UserManager provideUserManager(HackerNewsClient client) {
         return client;
     }
-
-    @Provides @Singleton
+    
+    @Provides
+    @Singleton
     public FeedbackClient provideFeedbackClient(FeedbackClient.Impl client) {
         return client;
     }
-
-    @Provides @Singleton
+    
+    @Provides
+    @Singleton
     public ReadabilityClient provideReadabilityClient(ReadabilityClient.Impl client) {
         return client;
     }
-
-    @Provides @Singleton
+    
+    @Provides
+    @Singleton
     public UserServices provideUserServices(Call.Factory callFactory,
                                             @Named(IO_THREAD) Scheduler ioScheduler) {
         return new UserServicesClient(callFactory, ioScheduler);
     }
-
-    @Provides @Singleton @Named(IO_THREAD)
+    
+    @Provides
+    @Singleton
+    @Named(IO_THREAD)
     public Scheduler provideIoScheduler() {
         return Schedulers.io();
     }
-
-    @Provides @Singleton @Named(MAIN_THREAD)
+    
+    @Provides
+    @Singleton
+    @Named(MAIN_THREAD)
     public Scheduler provideMainThreadScheduler() {
         return AndroidSchedulers.mainThread();
     }
-
-    @Provides @Singleton
+    
+    @Provides
+    @Singleton
     public SyncScheduler provideSyncScheduler() {
         return new SyncScheduler();
     }
-
-    @Provides @Singleton
+    
+    @Provides
+    @Singleton
     public LocalCache provideLocalCache(Cache cache) {
         return cache;
     }
-
-    @Provides @Singleton
+    
+    @Provides
+    @Singleton
     public MaterialisticDatabase provideDatabase(Context context) {
         return MaterialisticDatabase.getInstance(context);
     }
-
+    
     @Provides
     public MaterialisticDatabase.SavedStoriesDao provideSavedStoriesDao(MaterialisticDatabase database) {
         return database.getSavedStoriesDao();
     }
-
+    
     @Provides
     public MaterialisticDatabase.ReadStoriesDao provideReadStoriesDao(MaterialisticDatabase database) {
         return database.getReadStoriesDao();
     }
-
+    
     @Provides
     public MaterialisticDatabase.ReadableDao provideReadableDao(MaterialisticDatabase database) {
         return database.getReadableDao();
     }
-
+    
     @Provides
     public SupportSQLiteOpenHelper provideOpenHelper(MaterialisticDatabase database) {
         return database.getOpenHelper();

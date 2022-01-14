@@ -17,12 +17,13 @@
 package io.github.hidroh.materialistic;
 
 import android.os.Bundle;
-import com.google.android.material.textfield.TextInputLayout;
 import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.lang.ref.WeakReference;
 
@@ -32,9 +33,9 @@ import io.github.hidroh.materialistic.annotation.Synthetic;
 import io.github.hidroh.materialistic.data.FeedbackClient;
 
 public class FeedbackActivity extends InjectableActivity {
-    @Inject FeedbackClient mFeedbackClient;
-
-    @SuppressWarnings("ConstantConditions")
+    @Inject
+    FeedbackClient mFeedbackClient;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,12 +71,12 @@ public class FeedbackActivity extends InjectableActivity {
                     new FeedbackCallback(this));
         });
     }
-
+    
     @Override
     protected boolean isDialogTheme() {
         return true;
     }
-
+    
     @Synthetic
     void onFeedbackSent(boolean success) {
         Toast.makeText(this,
@@ -85,19 +86,18 @@ public class FeedbackActivity extends InjectableActivity {
         if (success) {
             finish();
         } else {
-            //noinspection ConstantConditions
             findViewById(R.id.feedback_button).setEnabled(true);
         }
     }
-
+    
     static class FeedbackCallback implements FeedbackClient.Callback {
         private final WeakReference<FeedbackActivity> mFeedbackActivity;
-
+        
         @Synthetic
         FeedbackCallback(FeedbackActivity drawerActivity) {
             mFeedbackActivity = new WeakReference<>(drawerActivity);
         }
-
+        
         @Override
         public void onSent(boolean success) {
             if (mFeedbackActivity.get() != null && !mFeedbackActivity.get().isActivityDestroyed()) {

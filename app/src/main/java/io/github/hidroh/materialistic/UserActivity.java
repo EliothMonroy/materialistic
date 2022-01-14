@@ -26,6 +26,10 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
@@ -37,9 +41,6 @@ import java.util.Locale;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
 import io.github.hidroh.materialistic.annotation.Synthetic;
 import io.github.hidroh.materialistic.data.ItemManager;
 import io.github.hidroh.materialistic.data.ResponseListener;
@@ -53,21 +54,25 @@ public class UserActivity extends InjectableActivity implements Scrollable {
     private static final String STATE_USER = "state:user";
     private static final String PARAM_ID = "id";
     private static final String KARMA = " (%1$s)";
-    @Inject UserManager mUserManager;
-    @Inject @Named(ActivityModule.HN) ItemManager mItemManger;
-    @Inject KeyDelegate mKeyDelegate;
+    @Inject
+    UserManager mUserManager;
+    @Inject
+    @Named(ActivityModule.HN)
+    ItemManager mItemManger;
+    @Inject
+    KeyDelegate mKeyDelegate;
     private KeyDelegate.RecyclerViewHelper mScrollableHelper;
     private String mUsername;
     private UserManager.User mUser;
     private TextView mTitle;
     private TextView mInfo;
     private TextView mAbout;
-    @Synthetic RecyclerView mRecyclerView;
+    @Synthetic
+    RecyclerView mRecyclerView;
     private TabLayout mTabLayout;
     private View mEmpty;
     private BottomSheetBehavior<View> mBottomSheetBehavior;
-
-    @SuppressWarnings("ConstantConditions")
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,7 +109,7 @@ public class UserActivity extends InjectableActivity implements Scrollable {
                         break;
                 }
             }
-
+            
             @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
                 // no op
@@ -121,12 +126,12 @@ public class UserActivity extends InjectableActivity implements Scrollable {
             public void onTabSelected(TabLayout.Tab tab) {
                 // no op
             }
-
+            
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
                 // no op
             }
-
+            
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
                 scrollToTop();
@@ -151,68 +156,68 @@ public class UserActivity extends InjectableActivity implements Scrollable {
                     .show();
         }
     }
-
+    
     @Override
     protected void onStart() {
         super.onStart();
         mKeyDelegate.attach(this);
     }
-
+    
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(STATE_USER, mUser);
     }
-
+    
     @Override
     protected void onStop() {
         super.onStop();
         mKeyDelegate.detach(this);
     }
-
+    
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         mKeyDelegate.setScrollable(this, null);
         return mKeyDelegate.onKeyDown(keyCode, event) ||
                 super.onKeyDown(keyCode, event);
     }
-
+    
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         return mKeyDelegate.onKeyUp(keyCode, event) ||
                 super.onKeyUp(keyCode, event);
     }
-
+    
     @Override
     public boolean onKeyLongPress(int keyCode, KeyEvent event) {
         return mKeyDelegate.onKeyLongPress(keyCode, event) ||
                 super.onKeyLongPress(keyCode, event);
     }
-
+    
     @Override
     public void scrollToTop() {
         mScrollableHelper.scrollToTop();
     }
-
+    
     @Override
     public boolean scrollToNext() {
         return mScrollableHelper.scrollToNext();
     }
-
+    
     @Override
     public boolean scrollToPrevious() {
         return mScrollableHelper.scrollToPrevious();
     }
-
+    
     @Override
     protected boolean isTranslucent() {
         return true;
     }
-
+    
     private void load() {
         mUserManager.getUser(mUsername, new UserResponseListener(this));
     }
-
+    
     @Synthetic
     void onUserLoaded(UserManager.User response) {
         if (response != null) {
@@ -222,7 +227,7 @@ public class UserActivity extends InjectableActivity implements Scrollable {
             showEmpty();
         }
     }
-
+    
     private void showEmpty() {
         mInfo.setVisibility(View.GONE);
         mAbout.setVisibility(View.GONE);
@@ -230,7 +235,7 @@ public class UserActivity extends InjectableActivity implements Scrollable {
         mTabLayout.addTab(mTabLayout.newTab()
                 .setText(getResources().getQuantityString(R.plurals.submissions_count, 0, "").trim()));
     }
-
+    
     private void bind() {
         SpannableString karma = new SpannableString(String.format(Locale.US, KARMA,
                 NumberFormat.getInstance(Locale.getDefault()).format(mUser.getKarma())));
@@ -249,22 +254,22 @@ public class UserActivity extends InjectableActivity implements Scrollable {
         mRecyclerView.setLayoutFrozen(mBottomSheetBehavior.getState() !=
                 BottomSheetBehavior.STATE_EXPANDED);
     }
-
+    
     static class UserResponseListener implements ResponseListener<UserManager.User> {
         private final WeakReference<UserActivity> mUserActivity;
-
+        
         @Synthetic
         UserResponseListener(UserActivity userActivity) {
             mUserActivity = new WeakReference<>(userActivity);
         }
-
+        
         @Override
         public void onResponse(@Nullable UserManager.User response) {
             if (mUserActivity.get() != null && !mUserActivity.get().isActivityDestroyed()) {
                 mUserActivity.get().onUserLoaded(response);
             }
         }
-
+        
         @Override
         public void onError(String errorMessage) {
             if (mUserActivity.get() != null && !mUserActivity.get().isActivityDestroyed()) {

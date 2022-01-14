@@ -20,10 +20,11 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.util.AttributeSet;
+
+import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.appcompat.widget.AppCompatImageButton;
-import android.util.AttributeSet;
 
 import io.github.hidroh.materialistic.AppUtils;
 import io.github.hidroh.materialistic.R;
@@ -33,17 +34,17 @@ public class IconButton extends AppCompatImageButton {
             new int[]{android.R.attr.state_enabled},
             new int[]{-android.R.attr.state_enabled}
     };
-    private ColorStateList mColorStateList;
+    private final ColorStateList mColorStateList;
     private final boolean mTinted;
-
+    
     public IconButton(Context context) {
         this(context, null);
     }
-
+    
     public IconButton(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
-
+    
     public IconButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setBackgroundResource(AppUtils.getThemedResId(context, R.attr.selectableItemBackgroundBorderless));
@@ -62,17 +63,17 @@ public class IconButton extends AppCompatImageButton {
         setImageDrawable(getDrawable());
         ta.recycle();
     }
-
+    
     @Override
     public void setImageResource(int resId) {
         setImageDrawable(ContextCompat.getDrawable(getContext(), resId));
     }
-
+    
     @Override
     public void setImageDrawable(Drawable drawable) {
         super.setImageDrawable(tint(drawable));
     }
-
+    
     private Drawable tint(Drawable drawable) {
         if (drawable == null) {
             return null;

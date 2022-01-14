@@ -74,29 +74,33 @@ class UiModule {
     public PopupMenu providePopupMenu() {
         return new PopupMenu.Impl();
     }
-
-    @Provides @Singleton
+    
+    @Provides
+    @Singleton
     public CustomTabsDelegate provideCustomTabsDelegate() {
         return new CustomTabsDelegate();
     }
-
-    @Provides @Singleton
+    
+    @Provides
+    @Singleton
     public KeyDelegate provideKeyDelegate() {
         return new KeyDelegate();
     }
-
-    @Provides @Singleton
+    
+    @Provides
+    @Singleton
     public ActionViewResolver provideActionViewResolver() {
         return new ActionViewResolver();
     }
-
+    
     @Provides
     public AlertDialogBuilder provideAlertDialogBuilder() {
         return new AlertDialogBuilder.Impl();
     }
-
+    
     @SuppressLint("Recycle")
-    @Provides @Singleton
+    @Provides
+    @Singleton
     public ResourcesProvider provideResourcesProvider(Context context) {
         return resId -> context.getResources().obtainTypedArray(resId);
     }

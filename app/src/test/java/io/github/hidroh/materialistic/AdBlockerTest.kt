@@ -33,25 +33,25 @@ import java.io.IOException
 @RunWith(RobolectricTestRunner::class)
 @Config(application = InjectableApplication::class)
 class AdBlockerTest {
-  @Test
-  fun testBlockAd() {
-    val assetManager = mock(AssetManager::class.java)
-    `when`(assetManager.open(anyString()))
-        .thenReturn(FileInputStream(javaClass.classLoader.getResource("pgl.yoyo.org.txt").file))
-    val context = mock(Context::class.java)
-    `when`(context.assets).thenReturn(assetManager)
-    AdBlocker.init(context, Schedulers.immediate())
-    assertThat(AdBlocker.isAd("")).isFalse()
-    assertThat(AdBlocker.isAd("http://localhost")).isFalse()
-    assertThat(AdBlocker.isAd("http://google.com")).isFalse()
-    assertThat(AdBlocker.isAd("http://pagead2.g.doubleclick.net")).isTrue()
-  }
+    @Test
+    fun testBlockAd() {
+        val assetManager = mock(AssetManager::class.java)
+        `when`(assetManager.open(anyString()))
+            .thenReturn(FileInputStream(javaClass.classLoader.getResource("pgl.yoyo.org.txt").file))
+        val context = mock(Context::class.java)
+        `when`(context.assets).thenReturn(assetManager)
+        AdBlocker.init(context, Schedulers.immediate())
+        assertThat(AdBlocker.isAd("")).isFalse()
+        assertThat(AdBlocker.isAd("http://localhost")).isFalse()
+        assertThat(AdBlocker.isAd("http://google.com")).isFalse()
+        assertThat(AdBlocker.isAd("http://pagead2.g.doubleclick.net")).isTrue()
+    }
 
-  @SuppressLint("NewApi")
-  @Test
-  @Throws(IOException::class)
-  fun testCreateEmptyResource() {
-    val resource = AdBlocker.createEmptyResource()
-    assertThat(Okio.buffer(Okio.source(resource.data)).readUtf8()).isEmpty()
-  }
+    @SuppressLint("NewApi")
+    @Test
+    @Throws(IOException::class)
+    fun testCreateEmptyResource() {
+        val resource = AdBlocker.createEmptyResource()
+        assertThat(Okio.buffer(Okio.source(resource.data)).readUtf8()).isEmpty()
+    }
 }

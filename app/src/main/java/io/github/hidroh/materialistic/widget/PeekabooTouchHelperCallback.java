@@ -21,10 +21,12 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.Locale;
 
@@ -35,7 +37,7 @@ abstract class PeekabooTouchHelperCallback extends ItemTouchHelper.SimpleCallbac
     private final Paint mPaint = new Paint();
     private final int mPadding;
     private final int mDefaultTextColor;
-
+    
     PeekabooTouchHelperCallback(Context context) {
         super(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT);
         mDefaultTextColor = ContextCompat.getColor(context,
@@ -44,20 +46,20 @@ abstract class PeekabooTouchHelperCallback extends ItemTouchHelper.SimpleCallbac
         mPaint.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
         mPadding = context.getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin);
     }
-
+    
     @Override
-    public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
-                          RecyclerView.ViewHolder target) {
+    public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder,
+                          @NonNull RecyclerView.ViewHolder target) {
         return false;
     }
-
+    
     @Override
-    public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder,
+    public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder,
                             float dX, float dY, int actionState, boolean isCurrentlyActive) {
         drawPeekingText(c, viewHolder, dX);
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
     }
-
+    
     private void drawPeekingText(Canvas canvas, RecyclerView.ViewHolder viewHolder, float dX) {
         View itemView = viewHolder.itemView;
         boolean swipeRight = dX > 0;
@@ -76,25 +78,25 @@ abstract class PeekabooTouchHelperCallback extends ItemTouchHelper.SimpleCallbac
                 itemView.getBottom() - paddingY,
                 mPaint);
     }
-
+    
     @Override
-    public float getSwipeThreshold(RecyclerView.ViewHolder viewHolder) {
-        return 1f/3;
+    public float getSwipeThreshold(@NonNull RecyclerView.ViewHolder viewHolder) {
+        return 1f / 3;
     }
-
+    
     @Override
     public float getSwipeEscapeVelocity(float defaultValue) {
         return Float.MAX_VALUE;
     }
-
+    
     protected abstract String getLeftText();
-
+    
     protected abstract String getRightText();
-
+    
     protected int getLeftTextColor() {
         return mDefaultTextColor;
     }
-
+    
     protected int getRightTextColor() {
         return mDefaultTextColor;
     }

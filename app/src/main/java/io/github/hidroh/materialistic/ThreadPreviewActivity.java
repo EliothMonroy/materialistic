@@ -17,12 +17,13 @@
 package io.github.hidroh.materialistic;
 
 import android.os.Bundle;
-import androidx.appcompat.app.ActionBar;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.Window;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.RecyclerView;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -35,10 +36,13 @@ import io.github.hidroh.materialistic.widget.ThreadPreviewRecyclerViewAdapter;
 
 public class ThreadPreviewActivity extends InjectableActivity {
     public static final String EXTRA_ITEM = ThreadPreviewActivity.class.getName() + ".EXTRA_ITEM";
-
-    @Inject @Named(ActivityModule.HN) ItemManager mItemManager;
-    @Inject KeyDelegate mKeyDelegate;
-
+    
+    @Inject
+    @Named(ActivityModule.HN)
+    ItemManager mItemManager;
+    @Inject
+    KeyDelegate mKeyDelegate;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,13 +65,13 @@ public class ThreadPreviewActivity extends InjectableActivity {
                 new KeyDelegate.RecyclerViewHelper(recyclerView,
                         KeyDelegate.RecyclerViewHelper.SCROLL_ITEM), null);
     }
-
+    
     @Override
     protected void onStart() {
         super.onStart();
         mKeyDelegate.attach(this);
     }
-
+    
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -76,31 +80,31 @@ public class ThreadPreviewActivity extends InjectableActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
+    
     @Override
     protected void onStop() {
         super.onStop();
         mKeyDelegate.detach(this);
     }
-
+    
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         return mKeyDelegate.onKeyDown(keyCode, event) ||
                 super.onKeyDown(keyCode, event);
     }
-
+    
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         return mKeyDelegate.onKeyUp(keyCode, event) ||
                 super.onKeyUp(keyCode, event);
     }
-
+    
     @Override
     public boolean onKeyLongPress(int keyCode, KeyEvent event) {
         return mKeyDelegate.onKeyLongPress(keyCode, event) ||
                 super.onKeyLongPress(keyCode, event);
     }
-
+    
     @Override
     protected boolean isDialogTheme() {
         return true;

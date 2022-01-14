@@ -17,6 +17,8 @@
 package io.github.hidroh.materialistic;
 
 import android.app.SearchManager;
+
+import androidx.annotation.NonNull;
 import androidx.lifecycle.Observer;
 import android.content.Intent;
 import android.net.Uri;
@@ -79,7 +81,7 @@ public class FavoriteActivity extends BaseListActivity {
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(STATE_FILTER, mFilter);
     }

@@ -21,12 +21,13 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.os.Parcel;
 import android.os.Parcelable;
-import androidx.annotation.NonNull;
-import androidx.collection.LongSparseArray;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.collection.LongSparseArray;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,22 +52,24 @@ public class SinglePageItemRecyclerViewAdapter
     private final Object TOGGLE = new Object();
     private final RecyclerView.OnScrollListener mScrollListener = new RecyclerView.OnScrollListener() {
         @Override
-        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+        public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
             if (newState == RecyclerView.SCROLL_STATE_IDLE) {
                 unlockBinding();
             }
         }
     };
-    @Inject ResourcesProvider mResourcesProvider;
+    @Inject
+    ResourcesProvider mResourcesProvider;
     private int mLevelIndicatorWidth = 0;
     private final boolean mAutoExpand;
     private boolean mColorCoded = true;
     private TypedArray mColors;
-    private final @NonNull SavedState mState;
+    private final @NonNull
+    SavedState mState;
     private ItemTouchHelper mItemTouchHelper;
     private int[] mLock;
     private int mColorOpacity = 100;
-
+    
     public SinglePageItemRecyclerViewAdapter(ItemManager itemManager,
                                              @NonNull SavedState state,
                                              boolean autoExpand) {
@@ -74,7 +77,7 @@ public class SinglePageItemRecyclerViewAdapter
         this.mState = state;
         mAutoExpand = autoExpand;
     }
-
+    
     @Override
     public void attach(Context context, RecyclerView recyclerView) {
         super.attach(context, recyclerView);
@@ -83,21 +86,21 @@ public class SinglePageItemRecyclerViewAdapter
         mItemTouchHelper = new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(
                 0, ItemTouchHelper.RIGHT) {
             @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
                 return false;
             }
-
+            
             @Override
-            public int getSwipeDirs(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+            public int getSwipeDirs(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
                 Item item = getItem(viewHolder.getAdapterPosition());
                 if (item == null || item.getKidCount() == 0) {
                     return 0;
                 }
                 return super.getSwipeDirs(recyclerView, viewHolder);
             }
-
+            
             @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = viewHolder.getAdapterPosition();
                 Item item = getItem(position);
                 if (item != null) {
@@ -105,24 +108,24 @@ public class SinglePageItemRecyclerViewAdapter
                     toggleKids(item);
                 }
             }
-
+            
             @Override
-            public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+            public void onChildDraw(Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
                 float swipeWidth = viewHolder.itemView.getWidth() * getSwipeThreshold(viewHolder);
                 dX = Math.max(dX, -swipeWidth);
                 dX = Math.min(dX, swipeWidth);
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
             }
-
+            
             @Override
-            public float getSwipeThreshold(RecyclerView.ViewHolder viewHolder) {
+            public float getSwipeThreshold(@NonNull RecyclerView.ViewHolder viewHolder) {
                 return 0.1f;
             }
         });
         mItemTouchHelper.attachToRecyclerView(recyclerView);
         recyclerView.addOnScrollListener(mScrollListener);
     }
-
+    
     @Override
     public void detach(Context context, RecyclerView recyclerView) {
         super.detach(context, recyclerView);
@@ -130,9 +133,10 @@ public class SinglePageItemRecyclerViewAdapter
         mColors.recycle();
         mItemTouchHelper.attachToRecyclerView(null);
     }
-
+    
+    @NonNull
     @Override
-    public ToggleItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ToggleItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == VIEW_TYPE_FOOTER) {
             return new ToggleItemViewHolder(mLayoutInflater.inflate(R.layout.item_footer, parent, false), null);
         }
@@ -144,9 +148,9 @@ public class SinglePageItemRecyclerViewAdapter
         holder.itemView.setLayoutParams(params);
         return holder;
     }
-
+    
     @Override
-    public void onBindViewHolder(ToggleItemViewHolder holder, int position, List<Object> payloads) {
+    public void onBindViewHolder(@NonNull ToggleItemViewHolder holder, int position, List<Object> payloads) {
         if (payloads.contains(TOGGLE)) {
             Item item = getItem(position);
             if (item != null) {
@@ -156,7 +160,7 @@ public class SinglePageItemRecyclerViewAdapter
             super.onBindViewHolder(holder, position, payloads);
         }
     }
-
+    
     @Override
     public void onBindViewHolder(ToggleItemViewHolder holder, int position) {
         if (holder.isFooter()) {
@@ -175,7 +179,7 @@ public class SinglePageItemRecyclerViewAdapter
         }
         super.onBindViewHolder(holder, position);
     }
-
+    
     @Override
     public int getItemViewType(int position) {
         Item item = getItem(position);
@@ -184,19 +188,19 @@ public class SinglePageItemRecyclerViewAdapter
         }
         return item.getLevel() - 1;
     }
-
+    
     @Override
     public int getItemCount() {
         return mState.size();
     }
-
+    
     @Override
     public void initDisplayOptions(Context context) {
         mColorCoded = Preferences.colorCodeEnabled(context);
         mColorOpacity = Preferences.colorCodeOpacity(context);
         super.initDisplayOptions(context);
     }
-
+    
     @Override
     public void getNextPosition(int position, int direction, PositionCallback callback) {
         if (position < 0) {
@@ -238,7 +242,7 @@ public class SinglePageItemRecyclerViewAdapter
                 break;
         }
     }
-
+    
     @Override
     protected Item getItem(int position) {
         if (position < 0 || position >= mState.size()) {
@@ -246,7 +250,7 @@ public class SinglePageItemRecyclerViewAdapter
         }
         return mState.get(position);
     }
-
+    
     @Override
     protected void onItemLoaded(int position, Item item) {
         // item position may already be shifted due to expansion, need to get new position
@@ -255,13 +259,13 @@ public class SinglePageItemRecyclerViewAdapter
             notifyItemChanged(index);
         }
     }
-
+    
     @Override
     protected void clear(ToggleItemViewHolder holder) {
         super.clear(holder);
         holder.mToggleButton.setVisibility(View.GONE);
     }
-
+    
     @Override
     protected void bind(ToggleItemViewHolder holder, Item item) {
         super.bind(holder, item);
@@ -273,12 +277,12 @@ public class SinglePageItemRecyclerViewAdapter
                 getThreadColor(getItemViewType(holder.getAdapterPosition()))));
         bindKids(holder, item);
     }
-
+    
     @Override
     public void lockBinding(int[] lock) {
         mLock = lock;
     }
-
+    
     @Synthetic
     void unlockBinding() {
         if (mLock != null) {
@@ -286,11 +290,11 @@ public class SinglePageItemRecyclerViewAdapter
             mLock = null;
         }
     }
-
+    
     private int getThreadColor(int itemViewType) {
         return mColorCoded ? mColors.getColor(itemViewType % mColors.length(), 0) : 0;
     }
-
+    
     private void bindKids(final ToggleItemViewHolder holder, final Item item) {
         holder.mToggleButton.setVisibility(View.GONE);
         if (item.getKidCount() == 0) {
@@ -301,7 +305,7 @@ public class SinglePageItemRecyclerViewAdapter
         }
         bindToggle(holder, item, mState.isExpanded(item));
     }
-
+    
     @Synthetic
     void toggleKids(Item item) {
         boolean expanded = mState.isExpanded(item);
@@ -312,7 +316,7 @@ public class SinglePageItemRecyclerViewAdapter
             expand(item);
         }
     }
-
+    
     private void bindToggle(ToggleItemViewHolder holder, Item item, boolean expanded) {
         changeToggleState(holder, item, expanded);
         holder.mToggleButton.setVisibility(View.VISIBLE);
@@ -321,18 +325,18 @@ public class SinglePageItemRecyclerViewAdapter
             toggleKids(item);
         });
     }
-
+    
     private void changeToggleState(ToggleItemViewHolder holder, Item item, boolean expanded) {
         holder.mToggle.setText(mContext.getResources()
                 .getQuantityString(R.plurals.comments_count, item.getKidCount(), item.getKidCount()));
         holder.mToggle.setCompoundDrawablesWithIntrinsicBounds(0, 0, expanded ?
                 R.drawable.ic_expand_less_white_24dp : R.drawable.ic_expand_more_white_24dp, 0);
     }
-
+    
     private void expand(Item item) {
         expand(item, null);
     }
-
+    
     private void expand(final Item item, PositionCallback callback) {
         if (mState.isExpanded(item)) {
             return;
@@ -347,40 +351,40 @@ public class SinglePageItemRecyclerViewAdapter
             mRecyclerView.getItemAnimator().isRunning(() -> setSelectedPosition(index, callback));
         });
     }
-
+    
     private void collapse(Item item) {
         int[] collapsedState = mState.collapse(item);
         notifyItemRangeRemoved(collapsedState[0], collapsedState[1]);
     }
-
+    
     private void setSelectedPosition(int position, PositionCallback callback) {
         if (callback != null) {
             callback.onPosition(position);
         }
     }
-
+    
     public static class SavedState implements Parcelable {
         public static final Creator<SavedState> CREATOR = new Creator<SavedState>() {
             @Override
             public SavedState createFromParcel(Parcel source) {
                 return new SavedState(source);
             }
-
+            
             @Override
             public SavedState[] newArray(int size) {
                 return new SavedState[size];
             }
         };
-
+        
         private final ArrayList<Item> list = new ArrayList<>();
         private final LongSparseArray<Item> map = new LongSparseArray<>();
         private final Set<String> expanded = new HashSet<>();
-
+        
         public SavedState(ArrayList<Item> list) {
             list.add(null); // footer
             addAll(0, list);
         }
-
+        
         @SuppressWarnings("unchecked")
         @Synthetic
         SavedState(Parcel source) {
@@ -388,48 +392,48 @@ public class SinglePageItemRecyclerViewAdapter
             addAll(0, savedList);
             expanded.addAll(source.createStringArrayList());
         }
-
+        
         @Override
         public int describeContents() {
             return 0;
         }
-
+        
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeList(list);
             dest.writeStringList(new ArrayList<>(expanded));
         }
-
+        
         @Synthetic
         int size() {
             return list.size();
         }
-
+        
         @Synthetic
         Item get(int position) {
             return list.get(position);
         }
-
+        
         @Synthetic
         int indexOf(long itemId) {
             return indexOf(map.get(itemId));
         }
-
+        
         @Synthetic
         int indexOf(Item item) {
             return list.indexOf(item);
         }
-
+        
         @Synthetic
         boolean isExpanded(Item item) {
             return isExpanded(item.getId());
         }
-
+        
         @Synthetic
         boolean isExpanded(String itemId) {
             return expanded.contains(itemId);
         }
-
+        
         @Synthetic
         int expand(Item item) {
             expanded.add(item.getId());
@@ -437,14 +441,14 @@ public class SinglePageItemRecyclerViewAdapter
             addAll(index, Arrays.asList(item.getKidItems())); // recursive
             return index;
         }
-
+        
         @Synthetic
         int[] collapse(Item item) {
             int index = indexOf(item) + 1;
             int count = recursiveRemove(item);
             return new int[]{index, count};
         }
-
+        
         private void addAll(int index, List<Item> items) {
             list.addAll(index, items);
             for (Item item : items) {
@@ -453,7 +457,7 @@ public class SinglePageItemRecyclerViewAdapter
                 }
             }
         }
-
+        
         private int recursiveRemove(Item item) {
             if (!isExpanded(item.getId())) {
                 return 0;
@@ -467,7 +471,7 @@ public class SinglePageItemRecyclerViewAdapter
             }
             return count;
         }
-
+        
         private void remove(Item item) {
             list.remove(item);
             map.remove(item.getLongId());

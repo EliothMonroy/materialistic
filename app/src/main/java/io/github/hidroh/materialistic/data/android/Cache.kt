@@ -29,23 +29,24 @@ class Cache @Inject constructor(
     private val savedStoriesDao: MaterialisticDatabase.SavedStoriesDao,
     private val readStoriesDao: MaterialisticDatabase.ReadStoriesDao,
     private val readableDao: MaterialisticDatabase.ReadableDao,
-    @Named(DataModule.MAIN_THREAD) private val mainScheduler: Scheduler) : LocalCache {
+    @Named(DataModule.MAIN_THREAD) private val mainScheduler: Scheduler
+) : LocalCache {
 
-  override fun getReadability(itemId: String?) = readableDao.selectByItemId(itemId)?.content
+    override fun getReadability(itemId: String?) = readableDao.selectByItemId(itemId)?.content
 
-  override fun putReadability(itemId: String?, content: String?) {
-    readableDao.insert(MaterialisticDatabase.Readable(itemId, content))
-  }
+    override fun putReadability(itemId: String?, content: String?) {
+        readableDao.insert(MaterialisticDatabase.Readable(itemId, content))
+    }
 
-  override fun isViewed(itemId: String?) = readStoriesDao.selectByItemId(itemId) != null
+    override fun isViewed(itemId: String?) = readStoriesDao.selectByItemId(itemId) != null
 
-  override fun setViewed(itemId: String?) {
-    readStoriesDao.insert(MaterialisticDatabase.ReadStory(itemId))
-    Observable.just(itemId)
-        .map { database.createReadUri(it) }
-        .observeOn(mainScheduler)
-        .subscribe { database.setLiveValue(it) }
-  }
+    override fun setViewed(itemId: String?) {
+        readStoriesDao.insert(MaterialisticDatabase.ReadStory(itemId))
+        Observable.just(itemId)
+            .map { database.createReadUri(it) }
+            .observeOn(mainScheduler)
+            .subscribe { database.setLiveValue(it) }
+    }
 
-  override fun isFavorite(itemId: String?) = savedStoriesDao.selectByItemId(itemId) != null
+    override fun isFavorite(itemId: String?) = savedStoriesDao.selectByItemId(itemId) != null
 }

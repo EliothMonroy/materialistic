@@ -18,22 +18,23 @@ package io.github.hidroh.materialistic.data;
 
 import android.text.format.DateUtils;
 
+import androidx.annotation.StringDef;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 import javax.inject.Inject;
 
-import androidx.annotation.StringDef;
 import retrofit2.Call;
 import rx.Observable;
 
 public class AlgoliaPopularClient extends AlgoliaClient {
-
+    
     @Inject
     public AlgoliaPopularClient(RestServiceFactory factory) {
         super(factory);
     }
-
+    
     @Retention(RetentionPolicy.SOURCE)
     @StringDef({
             LAST_24H,
@@ -41,22 +42,24 @@ public class AlgoliaPopularClient extends AlgoliaClient {
             PAST_MONTH,
             PAST_YEAR
     })
-    public @interface Range {}
+    public @interface Range {
+    }
+    
     public static final String LAST_24H = "last_24h";
     public static final String PAST_WEEK = "past_week";
     public static final String PAST_MONTH = "past_month";
     public static final String PAST_YEAR = "past_year";
-
+    
     @Override
     protected Observable<AlgoliaHits> searchRx(@Range String filter) {
         return mRestService.searchByMinTimestampRx(MIN_CREATED_AT + toTimestamp(filter) / 1000);
     }
-
+    
     @Override
     protected Call<AlgoliaHits> search(@Range String filter) {
         return mRestService.searchByMinTimestamp(MIN_CREATED_AT + toTimestamp(filter) / 1000);
     }
-
+    
     private long toTimestamp(@Range String filter) {
         long timestamp = System.currentTimeMillis();
         switch (filter) {

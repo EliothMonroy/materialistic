@@ -21,6 +21,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
 import com.google.android.material.snackbar.Snackbar;
+
+import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.collection.ArrayMap;
 import androidx.appcompat.view.ActionMode;
@@ -129,8 +131,8 @@ public class FavoriteRecyclerViewAdapter extends ListRecyclerViewAdapter
         mMenuTintDelegate.onActivityCreated(mContext);
         mItemTouchHelper = new ItemTouchHelper(new ItemTouchHelperCallback(mContext) {
             @Override
-            public int getSwipeDirs(RecyclerView recyclerView,
-                                    RecyclerView.ViewHolder viewHolder) {
+            public int getSwipeDirs(@NonNull RecyclerView recyclerView,
+                                    @NonNull RecyclerView.ViewHolder viewHolder) {
                 if (mActionModeDelegate != null && mActionModeDelegate.isInActionMode()) {
                     return 0;
                 }
@@ -138,7 +140,7 @@ public class FavoriteRecyclerViewAdapter extends ListRecyclerViewAdapter
             }
 
             @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 if (direction == ItemTouchHelper.LEFT) {
                     dismiss(viewHolder.itemView, viewHolder.getAdapterPosition());
                 } else {
@@ -153,13 +155,13 @@ public class FavoriteRecyclerViewAdapter extends ListRecyclerViewAdapter
     }
 
     @Override
-    public void onAttachedToRecyclerView(final RecyclerView recyclerView) {
+    public void onAttachedToRecyclerView(@NonNull final RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
         mItemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
     @Override
-    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onDetachedFromRecyclerView(recyclerView);
         mItemTouchHelper.attachToRecyclerView(null);
     }
@@ -349,7 +351,7 @@ public class FavoriteRecyclerViewAdapter extends ListRecyclerViewAdapter
         }
 
         @Override
-        public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+        public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
             float alpha = 1 - Math.abs(dX) / viewHolder.itemView.getWidth();
             viewHolder.itemView.setAlpha(alpha);
             super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);

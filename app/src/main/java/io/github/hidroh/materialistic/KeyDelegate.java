@@ -18,15 +18,17 @@ package io.github.hidroh.materialistic;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.text.TextUtils;
+import android.view.KeyEvent;
+import android.view.View;
+
 import androidx.annotation.IntDef;
-import com.google.android.material.appbar.AppBarLayout;
 import androidx.core.widget.NestedScrollView;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import android.text.TextUtils;
-import android.view.KeyEvent;
-import android.view.View;
+
+import com.google.android.material.appbar.AppBarLayout;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -35,18 +37,20 @@ import java.lang.annotation.RetentionPolicy;
  * Helper that intercepts key events and interprets them into navigation actions
  */
 public class KeyDelegate {
-
+    
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({
             DIRECTION_NONE,
             DIRECTION_UP,
             DIRECTION_DOWN
     })
-    @interface Direction {}
+    @interface Direction {
+    }
+    
     private static final int DIRECTION_NONE = 0;
     private static final int DIRECTION_UP = 1;
     private static final int DIRECTION_DOWN = 2;
-
+    
     private final SharedPreferences.OnSharedPreferenceChangeListener mPreferenceListener;
     private String mPreferenceKey;
     private boolean mEnabled;
@@ -54,7 +58,7 @@ public class KeyDelegate {
     private AppBarLayout mAppBarLayout;
     private boolean mAppBarEnabled = true;
     private BackInterceptor mBackInterceptor;
-
+    
     public KeyDelegate() {
         mPreferenceListener = (sharedPreferences, key) -> {
             if (TextUtils.equals(key, mPreferenceKey)) {
@@ -62,11 +66,12 @@ public class KeyDelegate {
             }
         };
     }
-
+    
     /**
      * Attaches this delegate to given activity lifecycle
      * Should call {@link #detach(Activity)} accordingly
-     * @param activity    active activity to receive key events
+     *
+     * @param activity active activity to receive key events
      * @see #detach(Activity)
      */
     public void attach(Activity activity) {
@@ -76,11 +81,12 @@ public class KeyDelegate {
         PreferenceManager.getDefaultSharedPreferences(activity)
                 .registerOnSharedPreferenceChangeListener(mPreferenceListener);
     }
-
+    
     /**
      * Detaches this delegate from given activity lifecycle
      * Should already call {@link #attach(Activity)}
-     * @param activity    active activity that has been receiving key events
+     *
+     * @param activity active activity that has been receiving key events
      * @see #attach(Activity)
      */
     public void detach(Activity activity) {
@@ -89,38 +95,42 @@ public class KeyDelegate {
         mScrollable = null;
         mAppBarLayout = null;
     }
-
+    
     /**
      * Binds navigation objects that would be scrolled by key events
-     * @param scrollable      vertically scrollable instance
-     * @param appBarLayout    optional AppBarLayout that expands/collapses while scrolling
+     *
+     * @param scrollable   vertically scrollable instance
+     * @param appBarLayout optional AppBarLayout that expands/collapses while scrolling
      */
     public void setScrollable(Scrollable scrollable, AppBarLayout appBarLayout) {
         mScrollable = scrollable;
         mAppBarLayout = appBarLayout;
     }
-
+    
     /**
      * Toggle {@link AppBarLayout} expand/collapse
+     *
      * @param enabled true to enable, false otherwise
      */
     void setAppBarEnabled(boolean enabled) {
         mAppBarEnabled = enabled;
     }
-
+    
     /**
      * Intercepts back pressed
+     *
      * @param backInterceptor listener to back pressed event
      */
     void setBackInterceptor(BackInterceptor backInterceptor) {
         mBackInterceptor = backInterceptor;
     }
-
+    
     /**
      * Calls from {@link Activity#onKeyDown(int, KeyEvent)} to delegate
-     * @param keyCode    event key code
-     * @param event      key event
-     * @return  true if is intercepted as navigation, false otherwise
+     *
+     * @param keyCode event key code
+     * @param event   key event
+     * @return true if is intercepted as navigation, false otherwise
      */
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
@@ -136,12 +146,13 @@ public class KeyDelegate {
         }
         return false;
     }
-
+    
     /**
      * Calls from {@link Activity#onKeyUp(int, KeyEvent)} to delegate
-     * @param keyCode    event key code
-     * @param event      key event
-     * @return  true if is intercepted as navigation, false otherwise
+     *
+     * @param keyCode event key code
+     * @param event   key event
+     * @return true if is intercepted as navigation, false otherwise
      */
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         if (!mEnabled) {
@@ -157,12 +168,13 @@ public class KeyDelegate {
         }
         return false;
     }
-
+    
     /**
      * Calls from {@link Activity#onKeyLongPress(int, KeyEvent)} to delegate
-     * @param keyCode    event key code
-     * @param event      key event
-     * @return  true if is intercepted as navigation, false otherwise
+     *
+     * @param keyCode event key code
+     * @param event   key event
+     * @return true if is intercepted as navigation, false otherwise
      */
     @SuppressWarnings("UnusedParameters")
     public boolean onKeyLongPress(int keyCode, KeyEvent event) {
@@ -178,7 +190,7 @@ public class KeyDelegate {
         }
         return false;
     }
-
+    
     private void shortPress(@Direction int direction) {
         if (mScrollable == null) {
             return;
@@ -202,7 +214,7 @@ public class KeyDelegate {
                 break;
         }
     }
-
+    
     private void longPress(@Direction int direction) {
         switch (direction) {
             case DIRECTION_DOWN:
@@ -219,25 +231,28 @@ public class KeyDelegate {
                 break;
         }
     }
-
+    
     /**
      * Helper class to navigate vertical RecyclerView
      */
     static class RecyclerViewHelper implements Scrollable {
-
+        
         @Retention(RetentionPolicy.SOURCE)
         @IntDef({
                 SCROLL_ITEM,
                 SCROLL_PAGE
         })
-        @interface ScrollMode {}
+        @interface ScrollMode {
+        }
+        
         static final int SCROLL_ITEM = 0;
         static final int SCROLL_PAGE = 1;
-
+        
         private final RecyclerView mRecyclerView;
-        private final @ScrollMode int mScrollMode;
+        private final @ScrollMode
+        int mScrollMode;
         private boolean mSmoothScroll = true;
-
+        
         RecyclerViewHelper(RecyclerView recyclerView, @ScrollMode int scrollMode) {
             mRecyclerView = recyclerView;
             if (!(mRecyclerView.getLayoutManager() instanceof LinearLayoutManager)) {
@@ -245,12 +260,12 @@ public class KeyDelegate {
             }
             mScrollMode = scrollMode;
         }
-
+        
         @Override
         public void scrollToTop() {
             mRecyclerView.scrollToPosition(0);
         }
-
+        
         @Override
         public boolean scrollToNext() {
             int pos = mScrollMode == SCROLL_ITEM ?
@@ -266,7 +281,7 @@ public class KeyDelegate {
                 return false;
             }
         }
-
+        
         @Override
         public boolean scrollToPrevious() {
             switch (mScrollMode) {
@@ -290,16 +305,16 @@ public class KeyDelegate {
                     }
             }
         }
-
+        
         void smoothScrollEnabled(boolean enabled) {
             mSmoothScroll = enabled;
         }
-
+        
         int getCurrentPosition() {
             // TODO handle last page item
             return getLinearLayoutManager().findFirstVisibleItemPosition();
         }
-
+        
         int[] scrollToPosition(int position) {
             if (position >= 0 && position < mRecyclerView.getAdapter().getItemCount()) {
                 if (!mSmoothScroll) {
@@ -321,46 +336,47 @@ public class KeyDelegate {
                 return null;
             }
         }
-
+        
         private LinearLayoutManager getLinearLayoutManager() {
             return (LinearLayoutManager) mRecyclerView.getLayoutManager();
         }
     }
-
+    
     /**
      * Helper class to navigate vertical NestedScrollView
      */
     static class NestedScrollViewHelper implements Scrollable {
-
+        
         private final NestedScrollView mScrollView;
-
+        
         NestedScrollViewHelper(NestedScrollView nestedScrollView) {
             mScrollView = nestedScrollView;
         }
-
+        
         @Override
         public void scrollToTop() {
             mScrollView.smoothScrollTo(0, 0);
         }
-
+        
         @Override
         public boolean scrollToNext() {
             return mScrollView.pageScroll(View.FOCUS_DOWN);
         }
-
+        
         @Override
         public boolean scrollToPrevious() {
             return mScrollView.pageScroll(View.FOCUS_UP);
         }
     }
-
+    
     /**
      * Callback interface for back pressed events
      */
     interface BackInterceptor {
         /**
          * Fired upon back pressed
-         * @return  true if handled, false otherwise
+         *
+         * @return true if handled, false otherwise
          */
         boolean onBackPressed();
     }

@@ -17,6 +17,7 @@
 package io.github.hidroh.materialistic.data;
 
 import android.os.Build;
+
 import androidx.annotation.Keep;
 
 import javax.inject.Inject;
@@ -35,13 +36,13 @@ public interface FeedbackClient {
     interface Callback {
         void onSent(boolean success);
     }
-
+    
     void send(String title, String body, Callback callback);
-
+    
     class Impl implements FeedbackClient {
         private final FeedbackService mFeedbackService;
         private final Scheduler mMainThreadScheduler;
-
+        
         @Inject
         public Impl(RestServiceFactory factory,
                     @Named(DataModule.MAIN_THREAD) Scheduler mainThreadScheduler) {
@@ -49,7 +50,7 @@ public interface FeedbackClient {
                     .create(FeedbackService.GITHUB_API_URL, FeedbackService.class);
             mMainThreadScheduler = mainThreadScheduler;
         }
-
+        
         @Override
         public void send(String title, String body, final Callback callback) {
             body = String.format("%s\nDevice: %s %s, SDK: %s, app version: %s",
@@ -64,25 +65,28 @@ public interface FeedbackClient {
                     .observeOn(mMainThreadScheduler)
                     .subscribe(callback::onSent);
         }
-
+        
         interface FeedbackService {
             String GITHUB_API_URL = "https://api.github.com/";
-
+            
             @POST("repos/hidroh/materialistic/issues")
             @Headers("Authorization: token " + BuildConfig.GITHUB_TOKEN)
             Observable<Object> createGithubIssue(@Body Issue issue);
         }
-
+        
         static class Issue {
             private static final String LABEL_FEEDBACK = "feedback";
-
-            @Keep @Synthetic
+            
+            @Keep
+            @Synthetic
             final String title;
-            @Keep @Synthetic
+            @Keep
+            @Synthetic
             final String body;
-            @Keep @Synthetic
+            @Keep
+            @Synthetic
             final String[] labels;
-
+            
             @Synthetic
             Issue(String title, String body) {
                 this.title = title;

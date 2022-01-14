@@ -18,6 +18,7 @@ package io.github.hidroh.materialistic.data;
 
 import android.os.Handler;
 import android.os.Looper;
+
 import androidx.annotation.NonNull;
 
 import java.util.concurrent.Executor;
@@ -35,33 +36,33 @@ public interface RestServiceFactory {
     String CACHE_CONTROL_FORCE_NETWORK = "Cache-Control: no-cache";
     String CACHE_CONTROL_MAX_AGE_30M = "Cache-Control: max-age=" + (30 * 60);
     String CACHE_CONTROL_MAX_AGE_24H = "Cache-Control: max-age=" + (24 * 60 * 60);
-
+    
     RestServiceFactory rxEnabled(boolean enabled);
-
+    
     <T> T create(String baseUrl, Class<T> clazz);
-
+    
     <T> T create(String baseUrl, Class<T> clazz, Executor callbackExecutor);
-
+    
     class Impl implements RestServiceFactory {
         private final Call.Factory mCallFactory;
         private boolean mRxEnabled;
-
+        
         @Inject
         public Impl(Call.Factory callFactory) {
             this.mCallFactory = callFactory;
         }
-
+        
         @Override
         public RestServiceFactory rxEnabled(boolean enabled) {
             mRxEnabled = enabled;
             return this;
         }
-
+        
         @Override
         public <T> T create(String baseUrl, Class<T> clazz) {
             return create(baseUrl, clazz, null);
         }
-
+        
         @Override
         public <T> T create(String baseUrl, Class<T> clazz, Executor callbackExecutor) {
             Retrofit.Builder builder = new Retrofit.Builder();
@@ -78,11 +79,12 @@ public interface RestServiceFactory {
                     .create(clazz);
         }
     }
-
+    
     class MainThreadExecutor implements Executor {
         private final Handler handler = new Handler(Looper.getMainLooper());
-
-        @Override public void execute(@NonNull Runnable r) {
+        
+        @Override
+        public void execute(@NonNull Runnable r) {
             handler.post(r);
         }
     }

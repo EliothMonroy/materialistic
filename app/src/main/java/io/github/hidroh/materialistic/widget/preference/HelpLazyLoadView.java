@@ -17,10 +17,11 @@
 package io.github.hidroh.materialistic.widget.preference;
 
 import android.content.Context;
-import com.google.android.material.tabs.TabLayout;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.ScrollView;
+
+import com.google.android.material.tabs.TabLayout;
 
 import io.github.hidroh.materialistic.Preferences;
 import io.github.hidroh.materialistic.R;
@@ -30,7 +31,7 @@ public class HelpLazyLoadView extends ScrollView {
         super(context, attrs);
         addView(LayoutInflater.from(context).inflate(R.layout.include_help_lazy_load, this, false));
     }
-
+    
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();

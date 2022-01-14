@@ -17,16 +17,17 @@
 package io.github.hidroh.materialistic;
 
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-import androidx.appcompat.app.ActionBar;
-import androidx.preference.PreferenceFragmentCompat;
-import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceFragmentCompat;
 
 public class PreferencesActivity extends ThemedActivity {
     public static final String EXTRA_TITLE = PreferencesActivity.class.getName() + ".EXTRA_TITLE";
     public static final String EXTRA_PREFERENCES = PreferencesActivity.class.getName() + ".EXTRA_PREFERENCES";
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +48,7 @@ public class PreferencesActivity extends ThemedActivity {
                     .commit();
         }
     }
-
+    
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -56,15 +57,15 @@ public class PreferencesActivity extends ThemedActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
+    
     public static class SettingsFragment extends PreferenceFragmentCompat {
-
+        
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             Preferences.sync(getPreferenceManager());
         }
-
+        
         @Override
         public void onCreatePreferences(Bundle bundle, String s) {
             addPreferencesFromResource(getArguments().getInt(EXTRA_PREFERENCES));

@@ -19,14 +19,16 @@ package io.github.hidroh.materialistic;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import javax.inject.Inject;
 
@@ -35,28 +37,29 @@ import io.github.hidroh.materialistic.widget.SnappyLinearLayoutManager;
 
 abstract class BaseListFragment extends BaseFragment implements Scrollable {
     private static final String STATE_ADAPTER = "state:adapter";
-    @Inject CustomTabsDelegate mCustomTabsDelegate;
+    @Inject
+    CustomTabsDelegate mCustomTabsDelegate;
     private KeyDelegate.RecyclerViewHelper mScrollableHelper;
     protected RecyclerView mRecyclerView;
     private final Preferences.Observable mPreferenceObservable = new Preferences.Observable();
-
+    
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         mPreferenceObservable.subscribe(context, this::onPreferenceChanged,
                 R.string.pref_font,
                 R.string.pref_text_size,
                 R.string.pref_list_item_view);
     }
-
+    
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
     }
-
+    
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mRecyclerView.setLayoutManager(new SnappyLinearLayoutManager(getActivity(), false));
         final int verticalMargin = getResources()
@@ -66,8 +69,8 @@ abstract class BaseListFragment extends BaseFragment implements Scrollable {
         final int divider = getResources().getDimensionPixelSize(R.dimen.divider);
         mRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
-            public void getItemOffsets(Rect outRect, View view, RecyclerView parent,
-                                       RecyclerView.State state) {
+            public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent,
+                                       @NonNull RecyclerView.State state) {
                 if (getAdapter().isCardViewEnabled()) {
                     outRect.set(horizontalMargin, verticalMargin, horizontalMargin, 0);
                 } else {
@@ -76,7 +79,7 @@ abstract class BaseListFragment extends BaseFragment implements Scrollable {
             }
         });
     }
-
+    
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -89,12 +92,12 @@ abstract class BaseListFragment extends BaseFragment implements Scrollable {
         mScrollableHelper = new KeyDelegate.RecyclerViewHelper(mRecyclerView,
                 KeyDelegate.RecyclerViewHelper.SCROLL_PAGE);
     }
-
+    
     @Override
     protected void createOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_list, menu);
     }
-
+    
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_list) {
@@ -103,7 +106,7 @@ abstract class BaseListFragment extends BaseFragment implements Scrollable {
         }
         return super.onOptionsItemSelected(item);
     }
-
+    
     private void showPreferences() {
         Bundle args = new Bundle();
         args.putInt(PopupSettingsFragment.EXTRA_TITLE, R.string.list_display_options);
@@ -115,35 +118,35 @@ abstract class BaseListFragment extends BaseFragment implements Scrollable {
                 PopupSettingsFragment.class.getName(), args))
                 .show(getFragmentManager(), PopupSettingsFragment.class.getName());
     }
-
+    
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBundle(STATE_ADAPTER, getAdapter().saveState());
     }
-
+    
     @Override
     public void onDetach() {
         super.onDetach();
         mPreferenceObservable.unsubscribe(getActivity());
         mRecyclerView.setAdapter(null); // force adapter detach
     }
-
+    
     @Override
     public void scrollToTop() {
         mScrollableHelper.scrollToTop();
     }
-
+    
     @Override
     public boolean scrollToNext() {
         return mScrollableHelper.scrollToNext();
     }
-
+    
     @Override
     public boolean scrollToPrevious() {
         return mScrollableHelper.scrollToPrevious();
     }
-
+    
     private void onPreferenceChanged(int key, boolean contextChanged) {
         if (contextChanged) {
             mRecyclerView.setAdapter(getAdapter());
@@ -151,6 +154,6 @@ abstract class BaseListFragment extends BaseFragment implements Scrollable {
             getAdapter().setCardViewEnabled(Preferences.isListItemCardView(getActivity()));
         }
     }
-
+    
     protected abstract ListRecyclerViewAdapter getAdapter();
 }

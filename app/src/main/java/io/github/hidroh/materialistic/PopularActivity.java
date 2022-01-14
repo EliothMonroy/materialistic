@@ -17,6 +17,8 @@
 package io.github.hidroh.materialistic;
 
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -61,7 +63,7 @@ public class PopularActivity extends BaseListActivity {
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(STATE_RANGE, mRange);
     }

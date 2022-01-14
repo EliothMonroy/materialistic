@@ -16,7 +16,6 @@
 
 package io.github.hidroh.materialistic;
 
-import androidx.lifecycle.Observer;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -24,18 +23,6 @@ import android.content.IntentFilter;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.google.android.material.appbar.AppBarLayout;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.tabs.TabLayout;
-import androidx.fragment.app.Fragment;
-import androidx.core.content.ContextCompat;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
-import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.appcompat.app.ActionBar;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.util.TypedValue;
@@ -47,6 +34,21 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.tabs.TabLayout;
 
 import java.lang.ref.WeakReference;
 
@@ -68,7 +70,7 @@ import io.github.hidroh.materialistic.widget.PopupMenu;
 import io.github.hidroh.materialistic.widget.ViewPager;
 
 public class ItemActivity extends InjectableActivity implements ItemFragment.ItemChangedListener {
-
+    
     public static final String EXTRA_ITEM = ItemActivity.class.getName() + ".EXTRA_ITEM";
     public static final String EXTRA_CACHE_MODE = ItemActivity.class.getName() + ".EXTRA_CACHE_MODE";
     public static final String EXTRA_OPEN_COMMENTS = ItemActivity.class.getName() + ".EXTRA_OPEN_COMMENTS";
@@ -76,28 +78,43 @@ public class ItemActivity extends InjectableActivity implements ItemFragment.Ite
     private static final String STATE_ITEM = "state:item";
     private static final String STATE_ITEM_ID = "state:itemId";
     private static final String STATE_FULLSCREEN = "state:fullscreen";
-    @Synthetic WebItem mItem;
-    @Synthetic String mItemId = null;
-    @Synthetic ImageView mBookmark;
+    @Synthetic
+    WebItem mItem;
+    @Synthetic
+    String mItemId = null;
+    @Synthetic
+    ImageView mBookmark;
     private boolean mExternalBrowser;
     private Preferences.StoryViewMode mStoryViewMode;
-    @Inject @Named(ActivityModule.HN) ItemManager mItemManager;
-    @Inject FavoriteManager mFavoriteManager;
-    @Inject AlertDialogBuilder mAlertDialogBuilder;
-    @Inject PopupMenu mPopupMenu;
-    @Inject UserServices mUserServices;
-    @Inject SessionManager mSessionManager;
-    @Inject CustomTabsDelegate mCustomTabsDelegate;
-    @Inject KeyDelegate mKeyDelegate;
+    @Inject
+    @Named(ActivityModule.HN)
+    ItemManager mItemManager;
+    @Inject
+    FavoriteManager mFavoriteManager;
+    @Inject
+    AlertDialogBuilder mAlertDialogBuilder;
+    @Inject
+    PopupMenu mPopupMenu;
+    @Inject
+    UserServices mUserServices;
+    @Inject
+    SessionManager mSessionManager;
+    @Inject
+    CustomTabsDelegate mCustomTabsDelegate;
+    @Inject
+    KeyDelegate mKeyDelegate;
     private TabLayout mTabLayout;
-    @Synthetic AppBarLayout mAppBar;
-    @Synthetic CoordinatorLayout mCoordinatorLayout;
+    @Synthetic
+    AppBarLayout mAppBar;
+    @Synthetic
+    CoordinatorLayout mCoordinatorLayout;
     private ImageButton mVoteButton;
     private FloatingActionButton mReplyButton;
     private NavFloatingActionButton mNavButton;
     private ItemPagerAdapter mAdapter;
     private ViewPager mViewPager;
-    @Synthetic boolean mFullscreen;
+    @Synthetic
+    boolean mFullscreen;
     private final Observer<Uri> mObserver = uri -> {
         if (mItem == null) {
             return;
@@ -127,7 +144,7 @@ public class ItemActivity extends InjectableActivity implements ItemFragment.Ite
     };
     private final Preferences.Observable mPreferenceObservable = new Preferences.Observable();
     private AppUtils.SystemUiHelper mSystemUiHelper;
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -174,7 +191,7 @@ public class ItemActivity extends InjectableActivity implements ItemFragment.Ite
                 mItemId = mItem.getId();
             }
         }
-
+        
         if (mItem != null) {
             bindData(mItem);
         } else if (!TextUtils.isEmpty(mItemId)) {
@@ -186,26 +203,26 @@ public class ItemActivity extends InjectableActivity implements ItemFragment.Ite
             Snackbar.make(mCoordinatorLayout, R.string.offline_notice, Snackbar.LENGTH_LONG).show();
         }
     }
-
+    
     @Override
     protected void onStart() {
         super.onStart();
         mCustomTabsDelegate.bindCustomTabsService(this);
         mKeyDelegate.attach(this);
     }
-
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_item, menu);
         return super.onCreateOptionsMenu(menu);
     }
-
+    
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.menu_share).setVisible(mItem != null);
         return mItem != null;
     }
-
+    
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -215,7 +232,7 @@ public class ItemActivity extends InjectableActivity implements ItemFragment.Ite
         if (item.getItemId() == R.id.menu_external) {
             View anchor = findViewById(R.id.menu_external);
             AppUtils.openExternal(this, mPopupMenu, anchor == null ?
-                    findViewById(R.id.toolbar) : anchor, mItem,
+                            findViewById(R.id.toolbar) : anchor, mItem,
                     mCustomTabsDelegate.getSession());
             return true;
         }
@@ -227,29 +244,29 @@ public class ItemActivity extends InjectableActivity implements ItemFragment.Ite
         }
         return super.onOptionsItemSelected(item);
     }
-
+    
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(STATE_ITEM, mItem);
         outState.putString(STATE_ITEM_ID, mItemId);
         outState.putBoolean(STATE_FULLSCREEN, mFullscreen);
     }
-
+    
     @Override
     protected void onStop() {
         super.onStop();
         mCustomTabsDelegate.unbindCustomTabsService(this);
         mKeyDelegate.detach(this);
     }
-
+    
     @Override
     protected void onDestroy() {
         super.onDestroy();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(mReceiver);
         mPreferenceObservable.unsubscribe(this);
     }
-
+    
     @Override
     public void onBackPressed() {
         if (!mFullscreen) {
@@ -259,7 +276,7 @@ public class ItemActivity extends InjectableActivity implements ItemFragment.Ite
                     WebFragment.ACTION_FULLSCREEN).putExtra(WebFragment.EXTRA_FULLSCREEN, false));
         }
     }
-
+    
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         mKeyDelegate.setScrollable(getCurrent(Scrollable.class), mAppBar);
@@ -267,25 +284,25 @@ public class ItemActivity extends InjectableActivity implements ItemFragment.Ite
         return mKeyDelegate.onKeyDown(keyCode, event) ||
                 super.onKeyDown(keyCode, event);
     }
-
+    
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         return mKeyDelegate.onKeyUp(keyCode, event) ||
                 super.onKeyUp(keyCode, event);
     }
-
+    
     @Override
     public boolean onKeyLongPress(int keyCode, KeyEvent event) {
         return mKeyDelegate.onKeyLongPress(keyCode, event) ||
                 super.onKeyLongPress(keyCode, event);
     }
-
+    
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         mSystemUiHelper.setFullscreen(hasFocus && mFullscreen);
     }
-
+    
     @Override
     public void onItemChanged(@NonNull Item item) {
         mItem = item;
@@ -295,7 +312,7 @@ public class ItemActivity extends InjectableActivity implements ItemFragment.Ite
                     .getQuantityString(R.plurals.comments_count, item.getKidCount(), item.getKidCount()));
         }
     }
-
+    
     @Synthetic
     void setFullscreen() {
         mSystemUiHelper.setFullscreen(mFullscreen);
@@ -304,14 +321,14 @@ public class ItemActivity extends InjectableActivity implements ItemFragment.Ite
         mViewPager.setSwipeEnabled(!mFullscreen);
         AppUtils.toggleFab(mReplyButton, !mFullscreen);
     }
-
+    
     @Synthetic
     void onItemLoaded(@Nullable Item response) {
         mItem = response;
         supportInvalidateOptionsMenu();
         bindData(mItem);
     }
-
+    
     @Synthetic
     void bindFavorite() {
         if (mItem == null) {
@@ -324,7 +341,7 @@ public class ItemActivity extends InjectableActivity implements ItemFragment.Ite
         decorateFavorite(mItem.isFavorite());
         mBookmark.setOnClickListener(new View.OnClickListener() {
             private boolean mUndo;
-
+            
             @Override
             public void onClick(View v) {
                 final int toastMessageResId;
@@ -347,8 +364,7 @@ public class ItemActivity extends InjectableActivity implements ItemFragment.Ite
             }
         });
     }
-
-    @SuppressWarnings("ConstantConditions")
+    
     private void bindData(@Nullable final WebItem story) {
         if (story == null) {
             return;
@@ -375,7 +391,7 @@ public class ItemActivity extends InjectableActivity implements ItemFragment.Ite
             titleTextView.setText(title);
             setTaskTitle(title);
         }
-
+        
         final TextView postedTextView = findViewById(R.id.posted);
         postedTextView.setText(story.getDisplayedTime(this));
         postedTextView.append(story.getDisplayedAuthor(this, true, 0));
@@ -416,12 +432,12 @@ public class ItemActivity extends InjectableActivity implements ItemFragment.Ite
             setFullscreen();
         }
     }
-
+    
     private void decorateFavorite(boolean isFavorite) {
         mBookmark.setImageResource(isFavorite ?
                 R.drawable.ic_bookmark_white_24dp : R.drawable.ic_bookmark_border_white_24dp);
     }
-
+    
     private <T> T getCurrent(Class<T> clazz) {
         if (mAdapter == null) {
             return null;
@@ -434,11 +450,11 @@ public class ItemActivity extends InjectableActivity implements ItemFragment.Ite
             return null;
         }
     }
-
+    
     private void vote(final WebItem story) {
         mUserServices.voteUp(ItemActivity.this, story.getId(), new VoteCallback(this));
     }
-
+    
     @Synthetic
     void onVoted(Boolean successful) {
         if (successful == null) {
@@ -451,54 +467,54 @@ public class ItemActivity extends InjectableActivity implements ItemFragment.Ite
             AppUtils.showLogin(this, mAlertDialogBuilder);
         }
     }
-
+    
     private void onPreferenceChanged(int key, boolean contextChanged) {
         if (!Preferences.navigationEnabled(this)) {
             NavFloatingActionButton.resetPosition(this);
         }
         AppUtils.toggleFab(mNavButton, navigationVisible());
     }
-
+    
     private boolean navigationVisible() {
         return mViewPager.getCurrentItem() == 0 && Preferences.navigationEnabled(this);
     }
-
+    
     static class ItemResponseListener implements ResponseListener<Item> {
         private final WeakReference<ItemActivity> mItemActivity;
-
+        
         @Synthetic
         ItemResponseListener(ItemActivity itemActivity) {
             mItemActivity = new WeakReference<>(itemActivity);
         }
-
+        
         @Override
         public void onResponse(@Nullable Item response) {
             if (mItemActivity.get() != null && !mItemActivity.get().isActivityDestroyed()) {
                 mItemActivity.get().onItemLoaded(response);
             }
         }
-
+        
         @Override
         public void onError(String errorMessage) {
             // do nothing
         }
     }
-
+    
     static class VoteCallback extends UserServices.Callback {
         private final WeakReference<ItemActivity> mItemActivity;
-
+        
         @Synthetic
         VoteCallback(ItemActivity itemActivity) {
             mItemActivity = new WeakReference<>(itemActivity);
         }
-
+        
         @Override
         public void onDone(boolean successful) {
             if (mItemActivity.get() != null && !mItemActivity.get().isActivityDestroyed()) {
                 mItemActivity.get().onVoted(successful);
             }
         }
-
+        
         @Override
         public void onError(Throwable throwable) {
             if (mItemActivity.get() != null && !mItemActivity.get().isActivityDestroyed()) {

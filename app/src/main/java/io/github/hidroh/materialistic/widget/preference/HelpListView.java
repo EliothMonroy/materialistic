@@ -17,7 +17,6 @@
 package io.github.hidroh.materialistic.widget.preference;
 
 import android.content.Context;
-import androidx.core.content.ContextCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
@@ -30,6 +29,8 @@ import android.view.LayoutInflater;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import androidx.core.content.ContextCompat;
+
 import io.github.hidroh.materialistic.R;
 import io.github.hidroh.materialistic.widget.AsteriskSpan;
 
@@ -38,7 +39,7 @@ public class HelpListView extends ScrollView {
         super(context, attrs);
         addView(LayoutInflater.from(context).inflate(R.layout.include_help_list_view, this, false));
     }
-
+    
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
@@ -50,7 +51,7 @@ public class HelpListView extends ScrollView {
         spannable.setSpan(new RelativeSizeSpan(0.6f), 0, spannable.length(),
                 Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         spannable.setSpan(new ForegroundColorSpan(
-                ContextCompat.getColor(getContext(), R.color.greenA700)), 0, spannable.length(),
+                        ContextCompat.getColor(getContext(), R.color.greenA700)), 0, spannable.length(),
                 Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         ((TextView) findViewById(R.id.item_promoted).findViewById(R.id.rank)).append(spannable);
         TextView comments = (TextView) findViewById(R.id.item_new_comments).findViewById(R.id.comment);
@@ -58,7 +59,7 @@ public class HelpListView extends ScrollView {
         sb.append(makeAsteriskSpan());
         comments.setText(sb);
     }
-
+    
     private Spannable makeAsteriskSpan() {
         SpannableString sb = new SpannableString("*");
         sb.setSpan(new AsteriskSpan(getContext()), sb.length() - 1, sb.length(),

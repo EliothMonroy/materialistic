@@ -31,25 +31,27 @@ import javax.inject.Singleton
 class SessionManager @Inject constructor(
     @Named(DataModule.IO_THREAD)
     private val ioScheduler: Scheduler,
-    private val cache: LocalCache) {
+    private val cache: LocalCache
+) {
 
-  @WorkerThread
-  fun isViewed(itemId: String?): Observable<Boolean> = Observable.just(
-      if (itemId.isNullOrEmpty()) {
-        false
-      } else {
-        cache.isViewed(itemId)
-      })
+    @WorkerThread
+    fun isViewed(itemId: String?): Observable<Boolean> = Observable.just(
+        if (itemId.isNullOrEmpty()) {
+            false
+        } else {
+            cache.isViewed(itemId)
+        }
+    )
 
-  /**
-   * Marks an item as already being viewed
-   * @param itemId    item ID that has been viewed
-   */
-  fun view(itemId: String?) {
-    if (itemId.isNullOrEmpty()) return
-    Observable.defer { Observable.just(itemId) }
-        .subscribeOn(ioScheduler)
-        .observeOn(ioScheduler)
-        .subscribe { cache.setViewed(it) }
-  }
+    /**
+     * Marks an item as already being viewed
+     * @param itemId    item ID that has been viewed
+     */
+    fun view(itemId: String?) {
+        if (itemId.isNullOrEmpty()) return
+        Observable.defer { Observable.just(itemId) }
+            .subscribeOn(ioScheduler)
+            .observeOn(ioScheduler)
+            .subscribe { cache.setViewed(it) }
+    }
 }

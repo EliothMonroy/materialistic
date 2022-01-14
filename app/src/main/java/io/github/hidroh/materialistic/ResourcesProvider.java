@@ -17,6 +17,7 @@
 package io.github.hidroh.materialistic;
 
 import android.content.res.TypedArray;
+
 import androidx.annotation.ArrayRes;
 
 public interface ResourcesProvider {

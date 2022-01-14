@@ -17,8 +17,9 @@
 package io.github.hidroh.materialistic.widget;
 
 import android.content.Context;
-import androidx.appcompat.widget.AppCompatTextView;
 import android.util.AttributeSet;
+
+import androidx.appcompat.widget.AppCompatTextView;
 
 import io.github.hidroh.materialistic.Application;
 
@@ -26,7 +27,7 @@ public class TextView extends AppCompatTextView {
     public TextView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
-
+    
     public TextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         if (!isInEditMode()) {

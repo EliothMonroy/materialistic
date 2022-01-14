@@ -29,7 +29,7 @@ public class WidgetRefreshJobService extends JobService {
         jobFinished(jobParameters, false); // if we're able to start job means we have network conn
         return true;
     }
-
+    
     @Override
     public boolean onStopJob(JobParameters jobParameters) {
         return true;

@@ -26,12 +26,14 @@ import io.github.hidroh.materialistic.ActivityModule;
 import io.github.hidroh.materialistic.Injectable;
 
 public class ItemSyncService extends Service {
-
+    
     private static ItemSyncAdapter sItemSyncAdapter = null;
     private static final Object sItemSyncAdapterLock = new Object();
-    @Inject RestServiceFactory mFactory;
-    @Inject ReadabilityClient mReadabilityClient;
-
+    @Inject
+    RestServiceFactory mFactory;
+    @Inject
+    ReadabilityClient mReadabilityClient;
+    
     @Override
     public void onCreate() {
         super.onCreate();
@@ -46,7 +48,7 @@ public class ItemSyncService extends Service {
             }
         }
     }
-
+    
     @Override
     public IBinder onBind(Intent intent) {
         return sItemSyncAdapter.getSyncAdapterBinder();

@@ -18,23 +18,25 @@ package io.github.hidroh.materialistic;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import androidx.collection.ArrayMap;
 import android.text.TextUtils;
 
-public class FontCache {
+import androidx.collection.ArrayMap;
 
+public class FontCache {
+    
     private static FontCache sInstance;
     private final ArrayMap<String, Typeface> mTypefaceMap = new ArrayMap<>();
-
+    
     public static FontCache getInstance() {
         if (sInstance == null) {
             sInstance = new FontCache();
         }
         return sInstance;
     }
-
-    private FontCache() { }
-
+    
+    private FontCache() {
+    }
+    
     public Typeface get(Context context, String typefaceName) {
         if (TextUtils.isEmpty(typefaceName)) {
             return null;

@@ -21,14 +21,14 @@ import androidx.annotation.WorkerThread
 
 @WorkerThread
 interface LocalCache {
-  @Nullable
-  fun getReadability(itemId: String?): String?
+    @Nullable
+    fun getReadability(itemId: String?): String?
 
-  fun putReadability(itemId: String?, content: String?)
+    fun putReadability(itemId: String?, content: String?)
 
-  fun isViewed(itemId: String?): Boolean
+    fun isViewed(itemId: String?): Boolean
 
-  fun setViewed(itemId: String?)
+    fun setViewed(itemId: String?)
 
-  fun isFavorite(itemId: String?): Boolean
+    fun isFavorite(itemId: String?): Boolean
 }

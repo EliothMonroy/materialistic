@@ -26,31 +26,38 @@ import android.webkit.WebViewClient
 
 class ReleaseNotesActivity : InjectableActivity() {
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
-    setContentView(R.layout.activity_release)
-    findViewById<View>(R.id.button_ok).setOnClickListener { _ -> finish() }
-    findViewById<View>(R.id.button_rate).setOnClickListener { _ ->
-      AppUtils.openPlayStore(this)
-      finish()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
+        setContentView(R.layout.activity_release)
+        findViewById<View>(R.id.button_ok).setOnClickListener { finish() }
+        findViewById<View>(R.id.button_rate).setOnClickListener {
+          AppUtils.openPlayStore(this)
+            finish()
+        }
+        with(findViewById<WebView>(R.id.web_view)) {
+            webViewClient = WebViewClient()
+            webChromeClient = WebChromeClient()
+            setBackgroundColor(Color.TRANSPARENT)
+            loadDataWithBaseURL(
+                null, getString(
+                    R.string.release_notes,
+                    AppUtils.toHtmlColor(
+                        this@ReleaseNotesActivity,
+                        android.R.attr.textColorPrimary
+                    ),
+                    AppUtils.toHtmlColor(this@ReleaseNotesActivity, android.R.attr.textColorLink)
+                ),
+                "text/html", "UTF-8", null
+            )
+        }
+        Preferences.setReleaseNotesSeen(this)
     }
-    with(findViewById<WebView>(R.id.web_view)) {
-      webViewClient = WebViewClient()
-      webChromeClient = WebChromeClient()
-      setBackgroundColor(Color.TRANSPARENT)
-      loadDataWithBaseURL(null, getString(R.string.release_notes,
-          AppUtils.toHtmlColor(this@ReleaseNotesActivity, android.R.attr.textColorPrimary),
-          AppUtils.toHtmlColor(this@ReleaseNotesActivity, android.R.attr.textColorLink)),
-          "text/html", "UTF-8", null)
+
+    override fun finish() {
+        super.finish()
+        overridePendingTransition(0, R.anim.slide_out_down)
     }
-    Preferences.setReleaseNotesSeen(this)
-  }
 
-  override fun finish() {
-    super.finish()
-    overridePendingTransition(0, R.anim.slide_out_down)
-  }
-
-  override fun isDialogTheme() = true
+    override fun isDialogTheme() = true
 }

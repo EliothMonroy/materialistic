@@ -18,9 +18,10 @@ package io.github.hidroh.materialistic.data;
 
 import android.content.Context;
 import android.os.Parcel;
+import android.text.format.DateUtils;
+
 import androidx.annotation.Keep;
 import androidx.annotation.NonNull;
-import android.text.format.DateUtils;
 
 import io.github.hidroh.materialistic.annotation.Synthetic;
 
@@ -30,22 +31,28 @@ class UserItem implements UserManager.User {
         public UserItem createFromParcel(Parcel source) {
             return new UserItem(source);
         }
-
+        
         @Override
         public UserItem[] newArray(int size) {
             return new UserItem[size];
         }
     };
-    @Keep private String id;
-    @Keep private long delay;
-    @Keep private long created;
-    @Keep private long karma;
-    @Keep private String about;
-    @Keep private int[] submitted;
-
+    @Keep
+    private final String id;
+    @Keep
+    private final long delay;
+    @Keep
+    private final long created;
+    @Keep
+    private final long karma;
+    @Keep
+    private final String about;
+    @Keep
+    private final int[] submitted;
+    
     // view state
-    private HackerNewsItem[] submittedItems = new HackerNewsItem[0];
-
+    private HackerNewsItem[] submittedItems;
+    
     @Synthetic
     UserItem(Parcel source) {
         id = source.readString();
@@ -56,38 +63,38 @@ class UserItem implements UserManager.User {
         submitted = source.createIntArray();
         submittedItems = source.createTypedArray(HackerNewsItem.CREATOR);
     }
-
+    
     @Override
     public String getId() {
         return id;
     }
-
+    
     @Override
     public String getAbout() {
         return about;
     }
-
+    
     @Override
     public long getKarma() {
         return karma;
     }
-
+    
     @Override
     public String getCreated(Context context) {
         return DateUtils.formatDateTime(context, created * 1000, DateUtils.FORMAT_SHOW_DATE);
     }
-
+    
     @NonNull
     @Override
     public Item[] getItems() {
         return submittedItems;
     }
-
+    
     @Override
     public int describeContents() {
         return 0;
     }
-
+    
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id);
@@ -98,11 +105,11 @@ class UserItem implements UserManager.User {
         dest.writeIntArray(submitted);
         dest.writeTypedArray(submittedItems, flags);
     }
-
+    
     void setSubmittedItems(HackerNewsItem[] submittedItems) {
         this.submittedItems = submittedItems != null ? submittedItems : new HackerNewsItem[0];
     }
-
+    
     int[] getSubmitted() {
         return submitted;
     }

@@ -22,6 +22,7 @@ import android.content.ContentProviderClient;
 import android.content.Context;
 import android.content.SyncResult;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 
@@ -32,20 +33,20 @@ import androidx.annotation.VisibleForTesting;
 class ItemSyncAdapter extends AbstractThreadedSyncAdapter {
     private final RestServiceFactory mFactory;
     private final ReadabilityClient mReadabilityClient;
-
+    
     ItemSyncAdapter(Context context, RestServiceFactory factory,
-                           ReadabilityClient readabilityClient) {
+                    ReadabilityClient readabilityClient) {
         super(context, true);
         mFactory = factory;
         mReadabilityClient = readabilityClient;
     }
-
+    
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority,
                               ContentProviderClient provider, SyncResult syncResult) {
         createSyncDelegate().performSync(new SyncDelegate.Job(extras));
     }
-
+    
     @VisibleForTesting
     @NonNull
     SyncDelegate createSyncDelegate() {

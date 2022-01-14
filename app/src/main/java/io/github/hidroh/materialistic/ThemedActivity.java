@@ -18,7 +18,6 @@ package io.github.hidroh.materialistic;
 
 import android.app.ActivityManager;
 import android.graphics.BitmapFactory;
-import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.CallSuper;
 import androidx.annotation.Nullable;
@@ -61,7 +60,7 @@ public abstract class ThemedActivity extends AppCompatActivity {
         super.onResume();
         mResumed = true;
         if (mPendingThemeChanged) {
-            AppUtils.restart(this, false);
+            AppUtils.restart(this);
         }
     }
 
@@ -96,7 +95,7 @@ public abstract class ThemedActivity extends AppCompatActivity {
             AppCompatDelegate.setDefaultNightMode(Preferences.Theme.getAutoDayNightMode(this));
         }
         if (mResumed) {
-            AppUtils.restart(this, true);
+            AppUtils.restart(this);
         } else {
             mPendingThemeChanged = true;
         }

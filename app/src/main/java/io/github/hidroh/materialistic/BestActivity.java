@@ -26,7 +26,7 @@ public class BestActivity extends BaseStoriesActivity {
     protected String getFetchMode() {
         return ItemManager.BEST_FETCH_MODE;
     }
-
+    
     @Override
     protected String getDefaultTitle() {
         return getString(R.string.title_activity_best);

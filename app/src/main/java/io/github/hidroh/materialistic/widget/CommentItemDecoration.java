@@ -22,8 +22,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import io.github.hidroh.materialistic.AppUtils;
 import io.github.hidroh.materialistic.Preferences;
@@ -36,7 +38,7 @@ public class CommentItemDecoration extends RecyclerView.ItemDecoration {
     private final int mLevelIndicatorWidth;
     private boolean mColorCodeEnabled;
     private boolean mThreadIndicatorEnabled;
-
+    
     public CommentItemDecoration(Context context) {
         mPaint = new Paint();
         mPaint.setStrokeWidth(context.getResources().getDimensionPixelSize(R.dimen.divider));
@@ -47,14 +49,14 @@ public class CommentItemDecoration extends RecyclerView.ItemDecoration {
         mColorCodeEnabled = Preferences.colorCodeEnabled(context);
         mThreadIndicatorEnabled = Preferences.threadIndicatorEnabled(context);
     }
-
+    
     @Override
-    public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+    public void getItemOffsets(Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
         outRect.set(mHorizontalMargin, 0, mHorizontalMargin, 0);
     }
-
+    
     @Override
-    public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
+    public void onDrawOver(@NonNull Canvas c, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
         if (!mThreadIndicatorEnabled) {
             return;
         }
@@ -74,11 +76,11 @@ public class CommentItemDecoration extends RecyclerView.ItemDecoration {
             }
         }
     }
-
+    
     public void setColorCodeEnabled(boolean colorCodeEnabled) {
         mColorCodeEnabled = colorCodeEnabled;
     }
-
+    
     public void setThreadIndicatorEnabled(boolean threadIndicatorEnabled) {
         mThreadIndicatorEnabled = threadIndicatorEnabled;
     }

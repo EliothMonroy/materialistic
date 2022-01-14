@@ -27,12 +27,12 @@ import io.github.hidroh.materialistic.LoginActivity;
 
 public class AccountAuthenticator extends EmptyAccountAuthenticator {
     private final Context mContext;
-
+    
     public AccountAuthenticator(Context context) {
         super(context);
         mContext = context;
     }
-
+    
     @Override
     public Bundle addAccount(AccountAuthenticatorResponse response, String accountType, String authTokenType, String[] requiredFeatures, Bundle options) throws NetworkErrorException {
         Intent intent = new Intent(mContext, LoginActivity.class);

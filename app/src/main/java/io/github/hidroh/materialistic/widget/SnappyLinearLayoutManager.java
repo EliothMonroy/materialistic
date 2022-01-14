@@ -18,6 +18,7 @@ package io.github.hidroh.materialistic.widget;
 
 import android.content.Context;
 import android.graphics.PointF;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSmoothScroller;
 import androidx.recyclerview.widget.RecyclerView;
@@ -29,14 +30,14 @@ import io.github.hidroh.materialistic.AppUtils;
  * always snap to start
  */
 public class SnappyLinearLayoutManager extends LinearLayoutManager {
-
+    
     private final int mExtraSpace;
-
+    
     public SnappyLinearLayoutManager(Context context, boolean preload) {
         super(context);
         mExtraSpace = preload ? AppUtils.getDisplayHeight(context) : 0;
     }
-
+    
     @Override
     public void smoothScrollToPosition(RecyclerView recyclerView,
                                        RecyclerView.State state,
@@ -48,7 +49,7 @@ public class SnappyLinearLayoutManager extends LinearLayoutManager {
                         return SnappyLinearLayoutManager.this
                                 .computeScrollVectorForPosition(targetPosition);
                     }
-
+                    
                     @Override
                     protected int getVerticalSnapPreference() {
                         return SNAP_TO_START; // override base class behavior
@@ -57,7 +58,7 @@ public class SnappyLinearLayoutManager extends LinearLayoutManager {
         smoothScroller.setTargetPosition(position);
         startSmoothScroll(smoothScroller);
     }
-
+    
     @Override
     protected int getExtraLayoutSpace(RecyclerView.State state) {
         return mExtraSpace == 0 ? super.getExtraLayoutSpace(state) : mExtraSpace;

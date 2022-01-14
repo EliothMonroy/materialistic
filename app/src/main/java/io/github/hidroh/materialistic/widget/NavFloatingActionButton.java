@@ -16,7 +16,6 @@
 
 package io.github.hidroh.materialistic.widget;
 
-import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
@@ -32,13 +31,14 @@ import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.view.GestureDetectorCompat;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.Locale;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
-import androidx.core.view.GestureDetectorCompat;
 import io.github.hidroh.materialistic.AppUtils;
 import io.github.hidroh.materialistic.Navigable;
 import io.github.hidroh.materialistic.Preferences;
@@ -62,27 +62,31 @@ public class NavFloatingActionButton extends FloatingActionButton implements Vie
             Navigable.DIRECTION_RIGHT,
             DOUBLE_TAP
     };
-    @Synthetic final Vibrator mVibrator;
+    @Synthetic
+    final Vibrator mVibrator;
     private final Preferences.Observable mPreferenceObservable = new Preferences.Observable();
-    @Synthetic Navigable mNavigable;
-    @Synthetic boolean mMoved;
+    @Synthetic
+    Navigable mNavigable;
+    @Synthetic
+    boolean mMoved;
     private int mNextKonamiCode = 0;
     private SharedPreferences mPreferences;
     private String mPreferenceX, mPreferenceY;
-    @Synthetic boolean mVibrationEnabled;
-
+    @Synthetic
+    boolean mVibrationEnabled;
+    
     public static void resetPosition(Context context) {
         getSharedPreferences(context).edit().clear().apply();
     }
-
+    
     public NavFloatingActionButton(Context context) {
         this(context, null);
     }
-
+    
     public NavFloatingActionButton(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
-
+    
     public NavFloatingActionButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         bindNavigationPad();
@@ -93,32 +97,32 @@ public class NavFloatingActionButton extends FloatingActionButton implements Vie
             mVibrator = null;
         }
     }
-
+    
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         getViewTreeObserver().addOnGlobalLayoutListener(this);
         mPreferenceObservable.subscribe(getContext(), (key, contextChanged) ->
-                mVibrationEnabled = Preferences.navigationVibrationEnabled(getContext()),
+                        mVibrationEnabled = Preferences.navigationVibrationEnabled(getContext()),
                 R.string.pref_navigation_vibrate);
     }
-
+    
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         stopObservingViewTree();
         mPreferenceObservable.unsubscribe(getContext());
     }
-
+    
     @Override
     public void setOnTouchListener(OnTouchListener l) {
         throw new UnsupportedOperationException();
     }
-
+    
     public void setNavigable(Navigable navigable) {
         mNavigable = navigable;
     }
-
+    
     @Synthetic
     void bindNavigationPad() {
         GestureDetectorCompat detectorCompat = new GestureDetectorCompat(getContext(),
@@ -127,20 +131,20 @@ public class NavFloatingActionButton extends FloatingActionButton implements Vie
                     public boolean onDown(MotionEvent e) {
                         return mNavigable != null;
                     }
-
+                    
                     @Override
                     public boolean onSingleTapConfirmed(MotionEvent e) {
                         Toast.makeText(getContext(), R.string.hint_nav_short,
                                 Toast.LENGTH_LONG).show();
                         return true;
                     }
-
+                    
                     @Override
                     public boolean onDoubleTap(MotionEvent e) {
                         trackKonami(DOUBLE_TAP);
                         return super.onDoubleTap(e);
                     }
-
+                    
                     @Override
                     public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1,
                                            float velocityX, float velocityY) {
@@ -159,7 +163,7 @@ public class NavFloatingActionButton extends FloatingActionButton implements Vie
                         trackKonami(direction);
                         return false;
                     }
-
+                    
                     @Override
                     public void onLongPress(MotionEvent e) {
                         if (mNavigable == null) {
@@ -170,14 +174,13 @@ public class NavFloatingActionButton extends FloatingActionButton implements Vie
                 });
         //noinspection Convert2Lambda
         super.setOnTouchListener(new OnTouchListener() {
-            @SuppressLint("ClickableViewAccessibility")
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 return detectorCompat.onTouchEvent(motionEvent);
             }
         });
     }
-
+    
     @Synthetic
     void startDrag(float startX, float startY) {
         if (mVibrationEnabled) {
@@ -209,12 +212,11 @@ public class NavFloatingActionButton extends FloatingActionButton implements Vie
             }
         });
     }
-
+    
     @Synthetic
-    boolean trackKonami(int direction) {
+    void trackKonami(int direction) {
         if (KONAMI_CODE[mNextKonamiCode] != direction) {
             mNextKonamiCode = direction == KONAMI_CODE[0] ? 1 : 0;
-            return false;
         } else if (mNextKonamiCode == KONAMI_CODE.length - 1) {
             mNextKonamiCode = 0;
             if (mVibrationEnabled) {
@@ -227,46 +229,44 @@ public class NavFloatingActionButton extends FloatingActionButton implements Vie
                             AppUtils.openPlayStore(getContext()))
                     .create()
                     .show();
-            return true;
         } else {
             mNextKonamiCode++;
-            return true;
         }
     }
-
+    
     @Override
     public void onGlobalLayout() {
         restorePosition();
         stopObservingViewTree();
     }
-
+    
     private void stopObservingViewTree() {
         getViewTreeObserver().removeOnGlobalLayoutListener(this);
     }
-
-    @SuppressLint("CommitPrefEdits")
+    
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
-    @Synthetic void persistPosition() {
+    @Synthetic
+    void persistPosition() {
         getPreferences()
                 .edit()
                 .putFloat(mPreferenceX, getX())
                 .putFloat(mPreferenceY, getY())
                 .apply();
     }
-
+    
     @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
     private void restorePosition() {
         setX(getPreferences().getFloat(mPreferenceX, getX()));
         setY(getPreferences().getFloat(mPreferenceY, getY()));
     }
-
+    
     private DisplayMetrics getDisplayMetrics() {
         DisplayMetrics metrics = new DisplayMetrics();
         ((WindowManager) getContext().getSystemService(Activity.WINDOW_SERVICE))
                 .getDefaultDisplay().getMetrics(metrics);
         return metrics;
     }
-
+    
     private SharedPreferences getPreferences() {
         if (mPreferences == null) {
             mPreferences = getSharedPreferences(getContext());
@@ -278,7 +278,7 @@ public class NavFloatingActionButton extends FloatingActionButton implements Vie
         }
         return mPreferences;
     }
-
+    
     private static SharedPreferences getSharedPreferences(Context context) {
         return context.getSharedPreferences(context.getPackageName() + PREFERENCES_FAB,
                 Context.MODE_PRIVATE);

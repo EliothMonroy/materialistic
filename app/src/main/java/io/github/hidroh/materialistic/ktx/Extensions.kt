@@ -27,7 +27,8 @@ import io.github.hidroh.materialistic.AppUtils
 import java.io.Closeable
 import java.io.File
 
-fun Closeable.closeQuietly() = Unit //TODO Find a way to replicate this functions, okhttp internal is not good to use
+fun Closeable.closeQuietly() =
+    Unit //TODO Find a way to replicate this functions, okhttp internal is not good to use
 
 fun File.getUri(context: Context, authority: String) =
     FileProvider.getUriForFile(context, authority, this)!!
@@ -35,13 +36,21 @@ fun File.getUri(context: Context, authority: String) =
 fun Uri.toSendIntentChooser(context: Context) =
     AppUtils.makeSendIntentChooser(context, this)!!
 
-fun NotificationCompat.Builder.setChannel(context: Context,
+fun NotificationCompat.Builder.setChannel(
+    context: Context,
     channelId: String,
-    name: CharSequence): NotificationCompat.Builder {
-  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-    (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
-        .createNotificationChannel(NotificationChannel(channelId, name, NotificationManager.IMPORTANCE_LOW))
-    this.setChannelId(channelId)
-  }
-  return this
+    name: CharSequence
+): NotificationCompat.Builder {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        (context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
+            .createNotificationChannel(
+                NotificationChannel(
+                    channelId,
+                    name,
+                    NotificationManager.IMPORTANCE_LOW
+                )
+            )
+        this.setChannelId(channelId)
+    }
+    return this
 }

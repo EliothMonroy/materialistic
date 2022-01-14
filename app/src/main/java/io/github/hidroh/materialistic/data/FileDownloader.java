@@ -3,6 +3,8 @@ package io.github.hidroh.materialistic.data;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.WorkerThread;
 
 import java.io.File;
@@ -19,17 +21,18 @@ import okio.BufferedSink;
 import okio.Okio;
 
 public class FileDownloader {
-    private Call.Factory mCallFactory;
+    private final Call.Factory mCallFactory;
     private final String mCacheDir;
-    @Synthetic final Handler mMainHandler;
-
+    @Synthetic
+    final Handler mMainHandler;
+    
     @Inject
     public FileDownloader(Context context, Call.Factory callFactory) {
         mCacheDir = context.getCacheDir().getPath(); // don't need to keep a reference to context after this
         mCallFactory = callFactory;
         mMainHandler = new Handler(Looper.getMainLooper());
     }
-
+    
     @WorkerThread
     public void downloadFile(String url, String mimeType, FileDownloaderCallback callback) {
         File outputFile = new File(mCacheDir, new File(url).getName());
@@ -37,19 +40,19 @@ public class FileDownloader {
             mMainHandler.post(() -> callback.onSuccess(outputFile.getPath()));
             return;
         }
-
+        
         final Request request = new Request.Builder().url(url)
                 .addHeader("Content-Type", mimeType)
                 .build();
-
+        
         mCallFactory.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 mMainHandler.post(() -> callback.onFailure(call, e));
             }
-
+            
             @Override
-            public void onResponse(Call call, Response response) {
+            public void onResponse(@NonNull Call call, @NonNull Response response) {
                 try {
                     BufferedSink sink = Okio.buffer(Okio.sink(outputFile));
                     sink.writeAll(response.body().source());
@@ -61,9 +64,10 @@ public class FileDownloader {
             }
         });
     }
-
+    
     public interface FileDownloaderCallback {
         void onFailure(Call call, IOException e);
+        
         void onSuccess(String filePath);
     }
 }

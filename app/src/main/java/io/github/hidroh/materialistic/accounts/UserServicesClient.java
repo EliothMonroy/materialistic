@@ -18,9 +18,10 @@ package io.github.hidroh.materialistic.accounts;
 
 import android.content.Context;
 import android.net.Uri;
-import androidx.core.util.Pair;
 import android.text.TextUtils;
 import android.widget.Toast;
+
+import androidx.core.util.Pair;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -75,13 +76,13 @@ public class UserServicesClient implements UserServices {
     private static final String HEADER_SET_COOKIE = "set-cookie";
     private final Call.Factory mCallFactory;
     private final Scheduler mIoScheduler;
-
+    
     @Inject
     public UserServicesClient(Call.Factory callFactory, Scheduler ioScheduler) {
         mCallFactory = callFactory;
         mIoScheduler = ioScheduler;
     }
-
+    
     @Override
     public void login(String username, String password, boolean createAccount, Callback callback) {
         execute(postLogin(username, password, createAccount))
@@ -94,7 +95,7 @@ public class UserServicesClient implements UserServices {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(callback::onDone, callback::onError);
     }
-
+    
     @Override
     public boolean voteUp(Context context, String itemId, Callback callback) {
         Pair<String, String> credentials = AppUtils.getCredentials(context);
@@ -108,7 +109,7 @@ public class UserServicesClient implements UserServices {
                 .subscribe(callback::onDone, callback::onError);
         return true;
     }
-
+    
     @Override
     public void reply(Context context, String parentId, String text, Callback callback) {
         Pair<String, String> credentials = AppUtils.getCredentials(context);
@@ -121,7 +122,7 @@ public class UserServicesClient implements UserServices {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(callback::onDone, callback::onError);
     }
-
+    
     @Override
     public void submit(Context context, String title, String content, boolean isUrl, Callback callback) {
         Pair<String, String> credentials = AppUtils.getCredentials(context);
@@ -172,7 +173,7 @@ public class UserServicesClient implements UserServices {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(callback::onDone, callback::onError);
     }
-
+    
     private Request postLogin(String username, String password, boolean createAccount) {
         FormBody.Builder formBuilder = new FormBody.Builder()
                 .add(LOGIN_PARAM_ACCT, username)
@@ -189,7 +190,7 @@ public class UserServicesClient implements UserServices {
                 .post(formBuilder.build())
                 .build();
     }
-
+    
     private Request postVote(String username, String password, String itemId) {
         return new Request.Builder()
                 .url(HttpUrl.parse(BASE_WEB_URL)
@@ -204,7 +205,7 @@ public class UserServicesClient implements UserServices {
                         .build())
                 .build();
     }
-
+    
     private Request postReply(String parentId, String text, String username, String password) {
         return new Request.Builder()
                 .url(HttpUrl.parse(BASE_WEB_URL)
@@ -219,7 +220,7 @@ public class UserServicesClient implements UserServices {
                         .build())
                 .build();
     }
-
+    
     private Request postSubmitForm(String username, String password) {
         return new Request.Builder()
                 .url(HttpUrl.parse(BASE_WEB_URL)
@@ -232,7 +233,7 @@ public class UserServicesClient implements UserServices {
                         .build())
                 .build();
     }
-
+    
     private Request postSubmit(String title, String content, boolean isUrl, String cookie, String fnid) {
         Request.Builder builder = new Request.Builder()
                 .url(HttpUrl.parse(BASE_WEB_URL)
@@ -250,7 +251,7 @@ public class UserServicesClient implements UserServices {
         }
         return builder.build();
     }
-
+    
     private Observable<Response> execute(Request request) {
         return Observable.defer(() -> {
             try {
@@ -260,21 +261,19 @@ public class UserServicesClient implements UserServices {
             }
         }).subscribeOn(mIoScheduler);
     }
-
+    
     private Throwable buildException(Uri uri) {
-        switch (uri.getPath()) {
-            case ITEM_PATH:
-                UserServices.Exception exception = new UserServices.Exception(R.string.item_exist);
-                String itemId = uri.getQueryParameter(ITEM_PARAM_ID);
-                if (!TextUtils.isEmpty(itemId)) {
-                    exception.data = AppUtils.createItemUri(itemId);
-                }
-                return exception;
-            default:
-                return new IOException();
+        if (ITEM_PATH.equals(uri.getPath())) {
+            Exception exception = new Exception(R.string.item_exist);
+            String itemId = uri.getQueryParameter(ITEM_PARAM_ID);
+            if (!TextUtils.isEmpty(itemId)) {
+                exception.data = AppUtils.createItemUri(itemId);
+            }
+            return exception;
         }
+        return new IOException();
     }
-
+    
     private String getInputValue(String html, String name) {
         // extract <input ... >
         Matcher matcherInput = Pattern.compile(REGEX_INPUT).matcher(html);
@@ -288,7 +287,7 @@ public class UserServicesClient implements UserServices {
         }
         return null;
     }
-
+    
     private String parseLoginError(Response response) {
         try {
             Matcher matcher = Pattern.compile(REGEX_CREATE_ERROR_BODY).matcher(response.body().string());

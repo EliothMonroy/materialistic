@@ -16,6 +16,7 @@
 
 package io.github.hidroh.materialistic.widget;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.Observer;
 
 import android.annotation.SuppressLint;
@@ -207,7 +208,7 @@ public class StoryRecyclerViewAdapter extends
 
     @SuppressLint("NotifyDataSetChanged")
     @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
         MaterialisticDatabase.getInstance(recyclerView.getContext()).getLiveData().observeForever(mObserver);
         mItemTouchHelper.attachToRecyclerView(recyclerView);
@@ -223,7 +224,7 @@ public class StoryRecyclerViewAdapter extends
     }
 
     @Override
-    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onDetachedFromRecyclerView(recyclerView);
         MaterialisticDatabase.getInstance(recyclerView.getContext()).getLiveData().removeObserver(mObserver);
         mItemTouchHelper.attachToRecyclerView(null);

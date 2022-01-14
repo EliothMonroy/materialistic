@@ -17,11 +17,12 @@
 package io.github.hidroh.materialistic.widget;
 
 import android.content.Intent;
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import io.github.hidroh.materialistic.ItemActivity;
 import io.github.hidroh.materialistic.R;
@@ -31,39 +32,40 @@ import io.github.hidroh.materialistic.data.ItemManager;
 
 public class SubmissionRecyclerViewAdapter extends ItemRecyclerViewAdapter<SubmissionViewHolder> {
     private final Item[] mItems;
-
+    
     public SubmissionRecyclerViewAdapter(ItemManager itemManager, @NonNull Item[] items) {
         super(itemManager);
         mItems = items;
     }
-
+    
     @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
         attach(recyclerView.getContext(), recyclerView);
     }
-
+    
     @Override
-    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
+    public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onDetachedFromRecyclerView(recyclerView);
         detach(recyclerView.getContext(), recyclerView);
     }
-
+    
+    @NonNull
     @Override
-    public SubmissionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public SubmissionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         return new SubmissionViewHolder(mLayoutInflater.inflate(R.layout.item_submission, parent, false));
     }
-
+    
     @Override
     public int getItemCount() {
         return mItems.length;
     }
-
+    
     @Override
     protected Item getItem(int position) {
         return mItems[position];
     }
-
+    
     @Override
     protected void bind(final SubmissionViewHolder holder, final Item item) {
         super.bind(holder, item);
@@ -96,12 +98,12 @@ public class SubmissionRecyclerViewAdapter extends ItemRecyclerViewAdapter<Submi
             }
         });
     }
-
+    
     private void openItem(Item item) {
         mContext.startActivity(new Intent(mContext, ItemActivity.class)
                 .putExtra(ItemActivity.EXTRA_ITEM, item));
     }
-
+    
     private void openPreview(Item item) {
         mContext.startActivity(new Intent(mContext, ThreadPreviewActivity.class)
                 .putExtra(ThreadPreviewActivity.EXTRA_ITEM, item));

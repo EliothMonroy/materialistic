@@ -16,20 +16,22 @@
 
 package io.github.hidroh.materialistic;
 
-import androidx.lifecycle.Observer;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.lifecycle.ViewModelProvider;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.google.android.material.snackbar.Snackbar;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -45,7 +47,7 @@ import io.github.hidroh.materialistic.widget.StoryRecyclerViewAdapter;
 import rx.Scheduler;
 
 public class ListFragment extends BaseListFragment {
-
+    
     public static final String EXTRA_ITEM_MANAGER = ListFragment.class.getName() + ".EXTRA_ITEM_MANAGER";
     public static final String EXTRA_FILTER = ListFragment.class.getName() + ".EXTRA_FILTER";
     private static final String STATE_FILTER = "state:filter";
@@ -70,23 +72,31 @@ public class ListFragment extends BaseListFragment {
     };
     private StoryRecyclerViewAdapter mAdapter;
     private SwipeRefreshLayout mSwipeRefreshLayout;
-    @Inject @Named(ActivityModule.HN) ItemManager mHnItemManager;
-    @Inject @Named(ActivityModule.ALGOLIA) ItemManager mAlgoliaItemManager;
-    @Inject @Named(ActivityModule.POPULAR) ItemManager mPopularItemManager;
-    @Inject @Named(DataModule.IO_THREAD) Scheduler mIoThreadScheduler;
+    @Inject
+    @Named(ActivityModule.HN)
+    ItemManager mHnItemManager;
+    @Inject
+    @Named(ActivityModule.ALGOLIA)
+    ItemManager mAlgoliaItemManager;
+    @Inject
+    @Named(ActivityModule.POPULAR)
+    ItemManager mPopularItemManager;
+    @Inject
+    @Named(DataModule.IO_THREAD)
+    Scheduler mIoThreadScheduler;
     private StoryListViewModel mStoryListViewModel;
     private View mErrorView;
     private View mEmptyView;
     private RefreshCallback mRefreshCallback;
     private String mFilter;
     private int mCacheMode = ItemManager.MODE_DEFAULT;
-
+    
     public interface RefreshCallback {
         void onRefreshed();
     }
-
+    
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         if (context instanceof RefreshCallback) {
             mRefreshCallback = (RefreshCallback) context;
@@ -96,6 +106,7 @@ public class ListFragment extends BaseListFragment {
                 R.string.pref_username,
                 R.string.pref_auto_viewed);
     }
+    
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -106,7 +117,7 @@ public class ListFragment extends BaseListFragment {
             mFilter = getArguments().getString(EXTRA_FILTER);
         }
     }
-
+    
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -128,7 +139,7 @@ public class ListFragment extends BaseListFragment {
         });
         return view;
     }
-
+    
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -172,7 +183,7 @@ public class ListFragment extends BaseListFragment {
                         Snackbar.LENGTH_INDEFINITE);
                 snackbar.setAction(R.string.show_all, actionClickListener).show();
             }
-
+            
         });
         mStoryListViewModel = new ViewModelProvider(this).get(StoryListViewModel.class);
         mStoryListViewModel.inject(itemManager, mIoThreadScheduler);
@@ -188,28 +199,28 @@ public class ListFragment extends BaseListFragment {
             }
         });
     }
-
+    
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(STATE_FILTER, mFilter);
         outState.putInt(STATE_CACHE_MODE, mCacheMode);
     }
-
+    
     @Override
     public void onDetach() {
         mPreferenceObservable.unsubscribe(getActivity());
         mRefreshCallback = null;
         super.onDetach();
     }
-
+    
     public void filter(String filter) {
         mFilter = filter;
         getAdapter().setHighlightUpdated(false);
         mSwipeRefreshLayout.setRefreshing(true);
         refresh();
     }
-
+    
     @Override
     protected StoryRecyclerViewAdapter getAdapter() {
         if (mAdapter == null) {
@@ -217,18 +228,18 @@ public class ListFragment extends BaseListFragment {
         }
         return mAdapter;
     }
-
+    
     private void onPreferenceChanged(int key, boolean contextChanged) {
         if (!contextChanged) {
             getAdapter().initDisplayOptions(mRecyclerView);
         }
     }
-
+    
     private void refresh() {
         getAdapter().setShowAll(true);
         mStoryListViewModel.refreshStories(mFilter, mCacheMode);
     }
-
+    
     @Synthetic
     void onItemsLoaded(Item[] items) {
         if (!isAttached()) {

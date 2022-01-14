@@ -18,21 +18,22 @@ package io.github.hidroh.materialistic.preference;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.text.TextUtils;
+import android.util.AttributeSet;
+import android.view.View;
+
 import androidx.annotation.StringRes;
 import androidx.annotation.StyleRes;
 import androidx.collection.ArrayMap;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceViewHolder;
-import android.text.TextUtils;
-import android.util.AttributeSet;
-import android.view.View;
 
 import io.github.hidroh.materialistic.Preferences;
 import io.github.hidroh.materialistic.R;
 import io.github.hidroh.materialistic.annotation.Synthetic;
 
 public class ThemePreference extends Preference {
-
+    
     private static final String LIGHT = "light";
     private static final String DARK = "dark";
     private static final String BLACK = "black";
@@ -42,6 +43,7 @@ public class ThemePreference extends Preference {
     private static final String SOLARIZED_DARK = "solarized_dark";
     private static final ArrayMap<Integer, String> BUTTONS = new ArrayMap<>();
     private static final ArrayMap<String, ThemeSpec> VALUES = new ArrayMap<>();
+    
     static {
         BUTTONS.put(R.id.theme_light, LIGHT);
         BUTTONS.put(R.id.theme_dark, DARK);
@@ -50,7 +52,7 @@ public class ThemePreference extends Preference {
         BUTTONS.put(R.id.theme_green, GREEN);
         BUTTONS.put(R.id.theme_solarized, SOLARIZED);
         BUTTONS.put(R.id.theme_solarized_dark, SOLARIZED_DARK);
-
+        
         VALUES.put(LIGHT, new DayNightSpec(R.string.theme_light));
         VALUES.put(DARK, new DarkSpec(R.string.theme_dark));
         VALUES.put(BLACK, new DarkSpec(R.string.theme_black, R.style.Black));
@@ -60,39 +62,39 @@ public class ThemePreference extends Preference {
         VALUES.put(SOLARIZED_DARK, new DarkSpec(R.string.theme_solarized_dark,
                 R.style.Solarized_Dark));
     }
-
+    
     private String mSelectedTheme;
-
+    
     public static ThemeSpec getTheme(String value, boolean isTranslucent) {
         ThemeSpec themeSpec = VALUES.get(VALUES.containsKey(value) ? value : LIGHT);
-        return isTranslucent ? themeSpec.getTranslucent() : themeSpec;
+        return isTranslucent ? themeSpec != null ? themeSpec.getTranslucent() : null : themeSpec;
     }
-
+    
     @SuppressWarnings("unused")
     public ThemePreference(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
-
+    
     public ThemePreference(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setLayoutResource(R.layout.preference_theme);
     }
-
+    
     @Override
     protected Object onGetDefaultValue(TypedArray a, int index) {
         return LIGHT;
     }
-
+    
     @Override
     protected void onSetInitialValue(boolean restorePersistedValue, Object defaultValue) {
         super.onSetInitialValue(restorePersistedValue, defaultValue);
-        mSelectedTheme = restorePersistedValue ? getPersistedString(null): (String) defaultValue;
+        mSelectedTheme = restorePersistedValue ? getPersistedString(null) : (String) defaultValue;
         if (TextUtils.isEmpty(mSelectedTheme)) {
             mSelectedTheme = LIGHT;
         }
         setSummary(VALUES.get(mSelectedTheme).summary);
     }
-
+    
     @Override
     public void onBindViewHolder(PreferenceViewHolder holder) {
         super.onBindViewHolder(holder);
@@ -112,41 +114,44 @@ public class ThemePreference extends Preference {
             });
         }
     }
-
+    
     @Override
     public boolean shouldDisableDependents() {
         // assume only auto day-night is dependent
         return !(VALUES.get(mSelectedTheme) instanceof DayNightSpec);
     }
-
+    
     public static class ThemeSpec {
-        final @StringRes int summary;
-        public final @StyleRes int theme;
-        public final @StyleRes int themeOverrides;
+        final @StringRes
+        int summary;
+        public final @StyleRes
+        int theme;
+        public final @StyleRes
+        int themeOverrides;
         ThemeSpec translucent;
-
+        
         @Synthetic
         ThemeSpec(@StringRes int summary, @StyleRes int theme, @StyleRes int themeOverrides) {
             this.summary = summary;
             this.theme = theme;
             this.themeOverrides = themeOverrides;
         }
-
+        
         ThemeSpec getTranslucent() {
             return this;
         }
     }
-
+    
     static class DarkSpec extends ThemeSpec {
-
+        
         DarkSpec(@StringRes int summary) {
             this(summary, -1);
         }
-
+        
         DarkSpec(@StringRes int summary, @StyleRes int themeOverrides) {
             super(summary, R.style.AppTheme_Dark, themeOverrides);
         }
-
+        
         @Override
         ThemeSpec getTranslucent() {
             if (translucent == null) {
@@ -155,17 +160,17 @@ public class ThemePreference extends Preference {
             return translucent;
         }
     }
-
+    
     public static class DayNightSpec extends ThemeSpec {
-
+        
         DayNightSpec(@StringRes int summary) {
             this(summary, -1);
         }
-
+        
         DayNightSpec(@StringRes int summary, @StyleRes int themeOverrides) {
             super(summary, R.style.AppTheme_DayNight, themeOverrides);
         }
-
+        
         @Override
         ThemeSpec getTranslucent() {
             if (translucent == null) {

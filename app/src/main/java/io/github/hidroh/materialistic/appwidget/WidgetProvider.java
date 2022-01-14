@@ -20,17 +20,14 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import io.github.hidroh.materialistic.BuildConfig;
-import io.github.hidroh.materialistic.R;
 
 public class WidgetProvider extends AppWidgetProvider {
-
+    
     static final String ACTION_REFRESH_WIDGET = BuildConfig.APPLICATION_ID + ".ACTION_REFRESH_WIDGET";
-
+    
     @Override
     public void onReceive(Context context, Intent intent) {
         if (TextUtils.equals(intent.getAction(), ACTION_REFRESH_WIDGET)) {
@@ -49,7 +46,7 @@ public class WidgetProvider extends AppWidgetProvider {
             super.onReceive(context, intent);
         }
     }
-
+    
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         WidgetHelper widgetHelper = new WidgetHelper(context);
@@ -57,7 +54,7 @@ public class WidgetProvider extends AppWidgetProvider {
             widgetHelper.update(appWidgetId);
         }
     }
-
+    
     @Override
     public void onDeleted(Context context, int[] appWidgetIds) {
         WidgetHelper widgetHelper = new WidgetHelper(context);

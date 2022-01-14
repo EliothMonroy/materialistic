@@ -19,11 +19,12 @@ package io.github.hidroh.materialistic;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.os.Bundle;
-import com.google.android.material.textfield.TextInputLayout;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.lang.ref.WeakReference;
 
@@ -33,8 +34,10 @@ import io.github.hidroh.materialistic.accounts.UserServices;
 
 public class LoginActivity extends AccountAuthenticatorActivity {
     public static final String EXTRA_ADD_ACCOUNT = LoginActivity.class.getName() + ".EXTRA_ADD_ACCOUNT";
-    @Inject UserServices mUserServices;
-    @Inject AccountManager mAccountManager;
+    @Inject
+    UserServices mUserServices;
+    @Inject
+    AccountManager mAccountManager;
     private View mLoginButton;
     private View mRegisterButton;
     private TextInputLayout mUsernameLayout;
@@ -43,7 +46,7 @@ public class LoginActivity extends AccountAuthenticatorActivity {
     private EditText mPasswordEditText;
     private String mUsername;
     private String mPassword;
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,12 +85,12 @@ public class LoginActivity extends AccountAuthenticatorActivity {
                     true);
         });
     }
-
+    
     @Override
     protected boolean isDialogTheme() {
         return true;
     }
-
+    
     private boolean validate() {
         mUsernameLayout.setErrorEnabled(false);
         mPasswordLayout.setErrorEnabled(false);
@@ -99,13 +102,13 @@ public class LoginActivity extends AccountAuthenticatorActivity {
         }
         return mUsernameEditText.length() > 0 && mPasswordEditText.length() > 0;
     }
-
+    
     private void login(String username, String password, boolean createAccount) {
         mUsername = username;
         mPassword = password;
         mUserServices.login(username, password, createAccount, new LoginCallback(this));
     }
-
+    
     void onLoggedIn(boolean successful, String errorMessage) {
         mLoginButton.setEnabled(true);
         mRegisterButton.setEnabled(true);
@@ -114,12 +117,12 @@ public class LoginActivity extends AccountAuthenticatorActivity {
             Toast.makeText(this, getString(R.string.welcome, mUsername), Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, TextUtils.isEmpty(errorMessage) ?
-                    getString(R.string.login_failed) :
-                    errorMessage,
+                            getString(R.string.login_failed) :
+                            errorMessage,
                     Toast.LENGTH_SHORT).show();
         }
     }
-
+    
     private void addAccount(String username, String password) {
         Account account = new Account(username, BuildConfig.APPLICATION_ID);
         mAccountManager.addAccountExplicitly(account, password, null);
@@ -131,21 +134,21 @@ public class LoginActivity extends AccountAuthenticatorActivity {
         Preferences.setUsername(this, username);
         finish();
     }
-
+    
     static class LoginCallback extends UserServices.Callback {
         private final WeakReference<LoginActivity> mLoginActivity;
-
+        
         LoginCallback(LoginActivity loginActivity) {
             mLoginActivity = new WeakReference<>(loginActivity);
         }
-
+        
         @Override
         public void onDone(boolean successful) {
             if (mLoginActivity.get() != null && !mLoginActivity.get().isActivityDestroyed()) {
                 mLoginActivity.get().onLoggedIn(successful, null);
             }
         }
-
+        
         @Override
         public void onError(Throwable throwable) {
             if (mLoginActivity.get() != null && !mLoginActivity.get().isActivityDestroyed()) {

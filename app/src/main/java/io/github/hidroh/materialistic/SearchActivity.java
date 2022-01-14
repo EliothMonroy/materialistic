@@ -19,20 +19,21 @@ package io.github.hidroh.materialistic;
 import android.app.SearchManager;
 import android.os.Bundle;
 import android.provider.SearchRecentSuggestions;
-import androidx.fragment.app.Fragment;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import androidx.fragment.app.Fragment;
 
 import io.github.hidroh.materialistic.data.AlgoliaClient;
 import io.github.hidroh.materialistic.data.HackerNewsClient;
 import io.github.hidroh.materialistic.data.SearchRecentSuggestionsProvider;
 
 public class SearchActivity extends BaseListActivity {
-
+    
     private static final int MAX_RECENT_SUGGESTIONS = 10;
     private String mQuery;
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (getIntent().hasExtra(SearchManager.QUERY)) {
@@ -53,20 +54,20 @@ public class SearchActivity extends BaseListActivity {
             suggestions.saveRecentQuery(mQuery, null);
         }
     }
-
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_sort, menu);
         return super.onCreateOptionsMenu(menu);
     }
-
+    
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(AlgoliaClient.sSortByTime ? R.id.menu_sort_recent : R.id.menu_sort_popular)
                 .setChecked(true);
         return super.onPrepareOptionsMenu(menu);
     }
-
+    
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getGroupId() == R.id.menu_sort_group) {
@@ -76,12 +77,12 @@ public class SearchActivity extends BaseListActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
+    
     @Override
     protected String getDefaultTitle() {
         return getString(R.string.title_activity_search);
     }
-
+    
     @Override
     protected Fragment instantiateListFragment() {
         Bundle args = new Bundle();
@@ -93,7 +94,7 @@ public class SearchActivity extends BaseListActivity {
         }
         return Fragment.instantiate(this, ListFragment.class.getName(), args);
     }
-
+    
     private void sort(boolean byTime) {
         if (AlgoliaClient.sSortByTime == byTime) {
             return;

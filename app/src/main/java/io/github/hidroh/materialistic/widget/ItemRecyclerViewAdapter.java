@@ -20,10 +20,6 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.TypedArray;
-import android.os.Build;
-import androidx.annotation.CallSuper;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.view.Gravity;
@@ -31,6 +27,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.CallSuper;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.lang.ref.WeakReference;
 import java.util.HashMap;
@@ -57,9 +58,12 @@ public abstract class ItemRecyclerViewAdapter<VH extends ItemRecyclerViewAdapter
     private static final int DURATION_PER_LINE_MILLIS = 20;
     LayoutInflater mLayoutInflater;
     private ItemManager mItemManager;
-    @Inject UserServices mUserServices;
-    @Inject PopupMenu mPopupMenu;
-    @Inject AlertDialogBuilder mAlertDialogBuilder;
+    @Inject
+    UserServices mUserServices;
+    @Inject
+    PopupMenu mPopupMenu;
+    @Inject
+    AlertDialogBuilder mAlertDialogBuilder;
     private int mTertiaryTextColorResId;
     private int mSecondaryTextColorResId;
     private int mCardBackgroundColorResId;
@@ -69,15 +73,15 @@ public abstract class ItemRecyclerViewAdapter<VH extends ItemRecyclerViewAdapter
     private final Map<String, Integer> mLineCounted = new HashMap<>();
     private int mCacheMode = ItemManager.MODE_DEFAULT;
     private float mLineHeight = 1.0f;
-
+    
     public interface PositionCallback {
         void onPosition(int position);
     }
-
+    
     ItemRecyclerViewAdapter(ItemManager itemManager) {
         mItemManager = itemManager;
     }
-
+    
     @Override
     public void attach(Context context, RecyclerView recyclerView) {
         super.attach(context, recyclerView);
@@ -97,9 +101,9 @@ public abstract class ItemRecyclerViewAdapter<VH extends ItemRecyclerViewAdapter
         mCardHighlightColorResId = ta.getInt(3, 0);
         ta.recycle();
     }
-
+    
     @Override
-    public void onBindViewHolder(final VH holder, int position) {
+    public void onBindViewHolder(@NonNull final VH holder, int position) {
         final Item item = getItem(position);
         if (item == null) {
             return;
@@ -111,23 +115,23 @@ public abstract class ItemRecyclerViewAdapter<VH extends ItemRecyclerViewAdapter
             bind(holder, item);
         }
     }
-
+    
     @Override
     public long getItemId(int position) {
         Item item = getItem(position);
         return item != null ? item.getLongId() : RecyclerView.NO_ID;
     }
-
+    
     public void setCacheMode(int cacheMode) {
         mCacheMode = cacheMode;
     }
-
+    
     public void initDisplayOptions(Context context) {
         mContentMaxLines = Preferences.getCommentMaxLines(context);
         mUsername = Preferences.getUsername(context);
         mLineHeight = Preferences.getLineHeight(context);
     }
-
+    
     public void getNextPosition(int position, int direction, PositionCallback callback) {
         switch (direction) {
             case Navigable.DIRECTION_UP:
@@ -138,12 +142,13 @@ public abstract class ItemRecyclerViewAdapter<VH extends ItemRecyclerViewAdapter
                 break;
         }
     }
-
-    public void lockBinding(int[] lock) { }
-
+    
+    public void lockBinding(int[] lock) {
+    }
+    
     @Nullable
     protected abstract Item getItem(int position);
-
+    
     @CallSuper
     protected void bind(final VH holder, final Item item) {
         if (item == null) {
@@ -168,7 +173,7 @@ public abstract class ItemRecyclerViewAdapter<VH extends ItemRecyclerViewAdapter
         }
         bindActions(holder, item);
     }
-
+    
     protected void clear(VH holder) {
         holder.mCommentButton.setVisibility(View.GONE);
         holder.mPostedTextView.setOnClickListener(null);
@@ -176,36 +181,36 @@ public abstract class ItemRecyclerViewAdapter<VH extends ItemRecyclerViewAdapter
         holder.mContentTextView.setText(R.string.loading_text);
         holder.mReadMoreTextView.setVisibility(View.GONE);
     }
-
+    
     @Synthetic
     boolean isAttached() {
         return mContext != null;
     }
-
+    
     private void load(int adapterPosition, Item item) {
         item.setLocalRevision(0);
         mItemManager.getItem(item.getId(), mCacheMode,
                 new ItemResponseListener(this, adapterPosition, item));
     }
-
+    
     protected void onItemLoaded(int position, Item item) {
         if (position < getItemCount()) {
             notifyItemChanged(position);
         }
     }
-
+    
     private void highlightUserItem(VH holder, Item item) {
         boolean highlight = !TextUtils.isEmpty(mUsername) &&
                 TextUtils.equals(mUsername, item.getBy());
         holder.mContentView.setBackgroundColor(highlight ?
                 mCardHighlightColorResId : mCardBackgroundColorResId);
     }
-
+    
     private void decorateDead(VH holder, Item item) {
         holder.mContentTextView.setTextColor(item.isDead() ?
                 mSecondaryTextColorResId : mTertiaryTextColorResId);
     }
-
+    
     private void toggleCollapsibleContent(final VH holder, final Item item, int lineCount) {
         if (item.isContentExpanded() || lineCount <= mContentMaxLines) {
             holder.mContentTextView.setMaxLines(Integer.MAX_VALUE);
@@ -219,11 +224,11 @@ public abstract class ItemRecyclerViewAdapter<VH extends ItemRecyclerViewAdapter
             item.setContentExpanded(true);
             v.setVisibility(View.GONE);
             ObjectAnimator.ofInt(holder.mContentTextView, PROPERTY_MAX_LINES, lineCount)
-                    .setDuration((lineCount - mContentMaxLines) * DURATION_PER_LINE_MILLIS)
+                    .setDuration((long) (lineCount - mContentMaxLines) * DURATION_PER_LINE_MILLIS)
                     .start();
         });
     }
-
+    
     private void bindActions(final VH holder, final Item item) {
         if (item.isDead() || item.isDeleted()) {
             holder.mMoreButton.setVisibility(View.INVISIBLE);
@@ -231,36 +236,36 @@ public abstract class ItemRecyclerViewAdapter<VH extends ItemRecyclerViewAdapter
         }
         holder.mMoreButton.setVisibility(View.VISIBLE);
         holder.mMoreButton.setOnClickListener(v ->
-            mPopupMenu.create(mContext, holder.mMoreButton, Gravity.NO_GRAVITY)
-                .inflate(R.menu.menu_contextual_comment)
-                .setOnMenuItemClickListener(menuItem -> {
-                    if (menuItem.getItemId() == R.id.menu_contextual_vote) {
-                        vote(item);
-                        return true;
-                    }
-                    if (menuItem.getItemId() == R.id.menu_contextual_comment) {
-                        mContext.startActivity(new Intent(mContext, ComposeActivity.class)
-                                .putExtra(ComposeActivity.EXTRA_PARENT_ID, item.getId())
-                                .putExtra(ComposeActivity.EXTRA_PARENT_TEXT, item.getText()));
-                        return true;
-                    }
-                    if (menuItem.getItemId() == R.id.menu_contextual_share) {
-                        AppUtils.share(mContext,
-                                item.isStoryType() ? item.getDisplayedTitle() : null,
-                                item.isStoryType() ? item.getUrl() :
-                                        item.getDisplayedText() == null ?
-                                                null : item.getDisplayedText().toString());
-                        return true;
-                    }
-                    return false;
-                })
-                .show());
+                mPopupMenu.create(mContext, holder.mMoreButton, Gravity.NO_GRAVITY)
+                        .inflate(R.menu.menu_contextual_comment)
+                        .setOnMenuItemClickListener(menuItem -> {
+                            if (menuItem.getItemId() == R.id.menu_contextual_vote) {
+                                vote(item);
+                                return true;
+                            }
+                            if (menuItem.getItemId() == R.id.menu_contextual_comment) {
+                                mContext.startActivity(new Intent(mContext, ComposeActivity.class)
+                                        .putExtra(ComposeActivity.EXTRA_PARENT_ID, item.getId())
+                                        .putExtra(ComposeActivity.EXTRA_PARENT_TEXT, item.getText()));
+                                return true;
+                            }
+                            if (menuItem.getItemId() == R.id.menu_contextual_share) {
+                                AppUtils.share(mContext,
+                                        item.isStoryType() ? item.getDisplayedTitle() : null,
+                                        item.isStoryType() ? item.getUrl() :
+                                                item.getDisplayedText() == null ?
+                                                        null : item.getDisplayedText().toString());
+                                return true;
+                            }
+                            return false;
+                        })
+                        .show());
     }
-
+    
     private void vote(final Item item) {
         mUserServices.voteUp(mContext, item.getId(), new VoteCallback(this));
     }
-
+    
     @Synthetic
     void onVoted(Boolean successful) {
         if (successful == null) {
@@ -271,7 +276,7 @@ public abstract class ItemRecyclerViewAdapter<VH extends ItemRecyclerViewAdapter
             AppUtils.showLogin(mContext, mAlertDialogBuilder);
         }
     }
-
+    
     static class ItemViewHolder extends RecyclerView.ViewHolder {
         boolean mIsFooter;
         TextView mPostedTextView;
@@ -280,7 +285,7 @@ public abstract class ItemRecyclerViewAdapter<VH extends ItemRecyclerViewAdapter
         TextView mCommentButton;
         View mMoreButton;
         View mContentView;
-
+        
         ItemViewHolder(View itemView) {
             super(itemView);
             mPostedTextView = (TextView) itemView.findViewById(R.id.posted);
@@ -292,30 +297,30 @@ public abstract class ItemRecyclerViewAdapter<VH extends ItemRecyclerViewAdapter
             mMoreButton = itemView.findViewById(R.id.button_more);
             mContentView = itemView.findViewById(R.id.content);
         }
-
+        
         ItemViewHolder(View itemView, @SuppressWarnings("UnusedParameters") Object payload) {
             super(itemView);
             mIsFooter = true;
         }
-
+        
         boolean isFooter() {
             return mIsFooter;
         }
     }
-
+    
     private static class ItemResponseListener implements ResponseListener<Item> {
         private final WeakReference<ItemRecyclerViewAdapter> mAdapter;
         private final int mPosition;
         private final Item mPartialItem;
-
+        
         @Synthetic
         ItemResponseListener(ItemRecyclerViewAdapter adapter, int position,
-                                    Item partialItem) {
+                             Item partialItem) {
             mAdapter = new WeakReference<>(adapter);
             mPosition = position;
             mPartialItem = partialItem;
         }
-
+        
         @Override
         public void onResponse(@Nullable Item response) {
             if (mAdapter.get() != null && mAdapter.get().isAttached() && response != null) {
@@ -323,28 +328,28 @@ public abstract class ItemRecyclerViewAdapter<VH extends ItemRecyclerViewAdapter
                 mAdapter.get().onItemLoaded(mPosition, mPartialItem);
             }
         }
-
+        
         @Override
         public void onError(String errorMessage) {
             // do nothing
         }
     }
-
+    
     static class VoteCallback extends UserServices.Callback {
         private final WeakReference<ItemRecyclerViewAdapter> mAdapter;
-
+        
         @Synthetic
         VoteCallback(ItemRecyclerViewAdapter adapter) {
             mAdapter = new WeakReference<>(adapter);
         }
-
+        
         @Override
         public void onDone(boolean successful) {
             if (mAdapter.get() != null && mAdapter.get().isAttached()) {
                 mAdapter.get().onVoted(successful);
             }
         }
-
+        
         @Override
         public void onError(Throwable throwable) {
             if (mAdapter.get() != null && mAdapter.get().isAttached()) {

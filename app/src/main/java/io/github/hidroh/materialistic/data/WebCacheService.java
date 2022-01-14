@@ -19,8 +19,9 @@ package io.github.hidroh.materialistic.data;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import androidx.annotation.Nullable;
 import android.webkit.WebView;
+
+import androidx.annotation.Nullable;
 
 import io.github.hidroh.materialistic.Preferences;
 import io.github.hidroh.materialistic.widget.AdBlockWebViewClient;
@@ -28,13 +29,13 @@ import io.github.hidroh.materialistic.widget.CacheableWebView;
 
 public class WebCacheService extends Service {
     static final String EXTRA_URL = "extra:url";
-
+    
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
-
+    
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent == null) { // restarted

@@ -19,11 +19,6 @@ package io.github.hidroh.materialistic;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import com.google.android.material.textfield.TextInputLayout;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,6 +26,13 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.lang.ref.WeakReference;
 import java.net.MalformedURLException;
@@ -49,14 +51,17 @@ public class SubmitActivity extends InjectableActivity {
     private static final String STATE_TEXT = "state:text";
     // matching title url without any trailing text
     private static final String REGEX_FUZZY_URL = "(.*)((http|https)://[^\\s]*)$";
-    @Inject UserServices mUserServices;
-    @Inject AlertDialogBuilder mAlertDialogBuilder;
-    @Synthetic TextView mTitleEditText;
+    @Inject
+    UserServices mUserServices;
+    @Inject
+    AlertDialogBuilder mAlertDialogBuilder;
+    @Synthetic
+    TextView mTitleEditText;
     private TextView mContentEditText;
     private TextInputLayout mTitleLayout;
     private TextInputLayout mContentLayout;
     private boolean mSending;
-
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,19 +102,19 @@ public class SubmitActivity extends InjectableActivity {
             }
         }
     }
-
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_submit, menu);
         return super.onCreateOptionsMenu(menu);
     }
-
+    
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.menu_send).setEnabled(!mSending);
         return super.onPrepareOptionsMenu(menu);
     }
-
+    
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -143,14 +148,14 @@ public class SubmitActivity extends InjectableActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
+    
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(STATE_SUBJECT, mTitleEditText.getText().toString());
         outState.putString(STATE_TEXT, mContentEditText.getText().toString());
     }
-
+    
     @Override
     public void onBackPressed() {
         mAlertDialogBuilder
@@ -160,7 +165,7 @@ public class SubmitActivity extends InjectableActivity {
                 .setPositiveButton(android.R.string.ok, (dialog, which) -> SubmitActivity.super.onBackPressed())
                 .show();
     }
-
+    
     private boolean validate() {
         mTitleLayout.setErrorEnabled(false);
         mContentLayout.setErrorEnabled(false);
@@ -172,14 +177,14 @@ public class SubmitActivity extends InjectableActivity {
         }
         return mTitleEditText.length() > 0 && mContentEditText.length() > 0;
     }
-
+    
     private void submit(boolean isUrl) {
         toggleControls(true);
         Toast.makeText(this, R.string.sending, Toast.LENGTH_SHORT).show();
         mUserServices.submit(this, mTitleEditText.getText().toString(),
                 mContentEditText.getText().toString(), isUrl, new SubmitCallback(this));
     }
-
+    
     @Synthetic
     void onSubmitted(Boolean successful) {
         if (successful == null) {
@@ -198,7 +203,7 @@ public class SubmitActivity extends InjectableActivity {
             AppUtils.showLogin(this, mAlertDialogBuilder);
         }
     }
-
+    
     @Synthetic
     void onError(int message, Uri data) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
@@ -206,7 +211,7 @@ public class SubmitActivity extends InjectableActivity {
             startActivity(new Intent(Intent.ACTION_VIEW).setData(data));
         }
     }
-
+    
     private boolean isUrl(String text) {
         try {
             new URL(text); // try parsing
@@ -215,7 +220,7 @@ public class SubmitActivity extends InjectableActivity {
         }
         return true;
     }
-
+    
     private void extractUrl(String text) {
         Matcher matcher = Pattern.compile(REGEX_FUZZY_URL).matcher(text);
         if (matcher.find() && matcher.groupCount() >= 3) { // group 1: title, group 2: url, group 3: scheme
@@ -223,7 +228,7 @@ public class SubmitActivity extends InjectableActivity {
             mContentEditText.setText(matcher.group(2));
         }
     }
-
+    
     @NonNull
     private String trimTitle(String title) {
         int lastIndex = title.length() - 1;
@@ -237,7 +242,7 @@ public class SubmitActivity extends InjectableActivity {
         }
         return lastIndex >= 0 ? title.substring(0, lastIndex + 1) : "";
     }
-
+    
     private void toggleControls(boolean sending) {
         if (isFinishing()) {
             return;
@@ -247,22 +252,22 @@ public class SubmitActivity extends InjectableActivity {
         mContentEditText.setEnabled(!sending);
         supportInvalidateOptionsMenu();
     }
-
+    
     static class SubmitCallback extends UserServices.Callback {
         private final WeakReference<SubmitActivity> mSubmitActivity;
-
+        
         @Synthetic
         SubmitCallback(SubmitActivity submitActivity) {
             mSubmitActivity = new WeakReference<>(submitActivity);
         }
-
+        
         @Override
         public void onDone(boolean successful) {
             if (mSubmitActivity.get() != null && !mSubmitActivity.get().isActivityDestroyed()) {
                 mSubmitActivity.get().onSubmitted(successful);
             }
         }
-
+        
         @Override
         public void onError(Throwable throwable) {
             if (mSubmitActivity.get() != null && !mSubmitActivity.get().isActivityDestroyed()) {
