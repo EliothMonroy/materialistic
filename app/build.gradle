@@ -19,7 +19,7 @@ android {
                 'proguard-square.pro',
                 'proguard-support.pro',
                 'proguard-rx.pro'
-        resConfigs "en", "zh-rCN", "es"
+        resConfigs 'en', 'zh-rCN', 'es'
     }
 
     buildTypes {
@@ -32,20 +32,20 @@ android {
         }
     }
 
-    lintOptions {
-        htmlReport false
-        xmlReport false
-        textReport true
-        lintConfig file("${rootProject.getRootDir()}/lint.xml")
-        warningsAsErrors true
-        abortOnError true
-        explainIssues false
-        absolutePaths false
-    }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    lint {
+        abortOnError true
+        absolutePaths false
+        explainIssues false
+        htmlReport false
+        lintConfig file("${rootProject.getRootDir()}/lint.xml")
+        textReport true
+        warningsAsErrors true
+        xmlReport false
     }
 
 }
