@@ -81,8 +81,8 @@ public class ComposeActivity extends InjectableActivity {
         mParentText = getIntent().getStringExtra(EXTRA_PARENT_TEXT);
         if (!TextUtils.isEmpty(mParentText)) {
             findViewById(R.id.quote).setVisibility(View.VISIBLE);
-            final TextView toggle = (TextView) findViewById(R.id.toggle);
-            final TextView textView = (TextView) findViewById(R.id.text);
+            final TextView toggle = findViewById(R.id.toggle);
+            final TextView textView = findViewById(R.id.text);
             AppUtils.setTextWithLinks(textView, AppUtils.fromHtml(mParentText));
             toggle.setOnClickListener(v -> {
                 if (textView.getVisibility() == View.VISIBLE) {

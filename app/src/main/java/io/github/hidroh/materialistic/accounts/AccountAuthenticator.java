@@ -23,6 +23,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+
 import io.github.hidroh.materialistic.LoginActivity;
 
 public class AccountAuthenticator extends EmptyAccountAuthenticator {
@@ -34,7 +36,7 @@ public class AccountAuthenticator extends EmptyAccountAuthenticator {
     }
     
     @Override
-    public Bundle addAccount(AccountAuthenticatorResponse response, String accountType, String authTokenType, String[] requiredFeatures, Bundle options) throws NetworkErrorException {
+    public Bundle addAccount(@NonNull AccountAuthenticatorResponse response, @NonNull String accountType, @NonNull String authTokenType, @NonNull String[] requiredFeatures, @NonNull Bundle options) throws NetworkErrorException {
         Intent intent = new Intent(mContext, LoginActivity.class);
         intent.putExtra(LoginActivity.EXTRA_ADD_ACCOUNT, true);
         Bundle bundle = new Bundle();

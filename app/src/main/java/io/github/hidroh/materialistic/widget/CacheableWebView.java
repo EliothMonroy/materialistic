@@ -16,7 +16,6 @@
 
 package io.github.hidroh.materialistic.widget;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
@@ -104,11 +103,11 @@ public class CacheableWebView extends WebView {
                 WebSettings.LOAD_CACHE_ELSE_NETWORK : WebSettings.LOAD_CACHE_ONLY);
     }
     
-    @SuppressLint("SetJavaScriptEnabled")
     private void setLoadSettings() {
         WebSettings webSettings = getSettings();
         webSettings.setLoadWithOverviewMode(true);
         webSettings.setUseWideViewPort(true);
+        // TODO Investigate how to mitigate this maybe
         webSettings.setJavaScriptEnabled(true);
     }
     

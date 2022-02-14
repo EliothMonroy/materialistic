@@ -17,8 +17,7 @@
 
 <network-security-config xmlns:tools="http://schemas.android.com/tools">
     <base-config
-        cleartextTrafficPermitted="true"
-        tools:ignore="InsecureBaseConfiguration">
+        cleartextTrafficPermitted="true">
         <trust-anchors>
             <certificates src="system" />
         </trust-anchors>

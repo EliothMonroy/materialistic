@@ -61,7 +61,7 @@ class NetworkModule {
     @Provides
     @Singleton
     public Call.Factory provideCallFactory(Context context) {
-        return new OkHttpClient.Builder()
+        return (Call.Factory) new OkHttpClient.Builder()
                 .socketFactory(new SocketFactory() {
                     private final SocketFactory mDefaultFactory = SocketFactory.getDefault();
                     

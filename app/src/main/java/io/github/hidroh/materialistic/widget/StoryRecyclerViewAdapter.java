@@ -72,7 +72,7 @@ public class StoryRecyclerViewAdapter extends
     private final Object VOTED = new Object();
     private final RecyclerView.OnScrollListener mAutoViewScrollListener = new RecyclerView.OnScrollListener() {
         @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
             if (dy > 0) { // scrolling down
                 markAsViewed(((LinearLayoutManager) recyclerView.getLayoutManager())
                         .findFirstVisibleItemPosition() - 1);
@@ -106,7 +106,7 @@ public class StoryRecyclerViewAdapter extends
     private boolean mHighlightUpdated = true;
     private boolean mShowAll = true;
     private int mCacheMode = ItemManager.MODE_DEFAULT;
-    private ItemTouchHelper mItemTouchHelper;
+    private final ItemTouchHelper mItemTouchHelper;
     @Synthetic ItemTouchHelperCallback mCallback;
     @SuppressLint("NotifyDataSetChanged")
     private final Observer<Uri> mObserver = uri -> {
@@ -151,7 +151,7 @@ public class StoryRecyclerViewAdapter extends
         mCallback = new ItemTouchHelperCallback(context,
                 Preferences.getListSwipePreferences(context)) {
             @Override
-            public int getSwipeDirs(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+            public int getSwipeDirs(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
                 Item item = getItem(viewHolder.getAdapterPosition());
                 if (item == null) {
                     return 0;
@@ -162,7 +162,7 @@ public class StoryRecyclerViewAdapter extends
             }
 
             @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 Preferences.SwipeAction action = direction == ItemTouchHelper.LEFT ?
                         getLeftSwipeAction() : getRightSwipeAction();
                 Item item = getItem(viewHolder.getAdapterPosition());
@@ -237,7 +237,7 @@ public class StoryRecyclerViewAdapter extends
     }
 
     @Override
-    public void onBindViewHolder(ItemViewHolder holder, int position, List<Object> payloads) {
+    public void onBindViewHolder(@NonNull ItemViewHolder holder, int position, List<Object> payloads) {
         if (payloads.contains(VOTED)) {
             holder.animateVote(getItem(position).getScore());
         } else {
@@ -608,8 +608,8 @@ public class StoryRecyclerViewAdapter extends
         private final String mUnsaveText;
         boolean mSaved;
         private Preferences.SwipeAction[] mSwipePreferences;
-        private String[] mTexts = new String[2];
-        private int[] mColors = new int[2];
+        private final String[] mTexts = new String[2];
+        private final int[] mColors = new int[2];
 
         ItemTouchHelperCallback(Context context, Preferences.SwipeAction[] swipePreferences) {
             super(context);
