@@ -47,6 +47,7 @@ android {
         warningsAsErrors true
         xmlReport false
     }
+    namespace 'io.github.hidroh.materialistic'
 
 }
 
