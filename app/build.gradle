@@ -61,11 +61,11 @@ ext {
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.4.1',
+    implementation 'androidx.appcompat:appcompat:1.4.2',
             'androidx.recyclerview:recyclerview:1.2.1',
             'androidx.cardview:cardview:1.0.0',
             'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0',
-            'com.google.android.material:material:1.6.0',
+            'com.google.android.material:material:1.6.1',
             'androidx.preference:preference:1.2.0',
             'androidx.browser:browser:1.4.0',
             "com.squareup.dagger:dagger:$daggerVersion",
