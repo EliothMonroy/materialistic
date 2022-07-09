@@ -3,12 +3,12 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 32
+    compileSdkVersion 33
 
     defaultConfig {
         applicationId "io.github.hidroh.materialistic.elioth"
         minSdkVersion 21
-        targetSdkVersion 32
+        targetSdkVersion 33
         versionCode 79
         versionName "3.3"
         buildConfigField "int", "LATEST_RELEASE", "77"
@@ -57,7 +57,7 @@ ext {
     leakCanaryVersion = '1.6.3'
     retrofitVersion = '2.9.0'
     roomVersion = '2.4.2'
-    lifecycleVersion = '2.4.1'
+    lifecycleVersion = '2.5.0'
 }
 
 dependencies {
