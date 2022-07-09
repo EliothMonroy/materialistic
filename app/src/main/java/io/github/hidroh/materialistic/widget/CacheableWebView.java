@@ -90,11 +90,12 @@ public class CacheableWebView extends WebView {
     }
     
     private void enableCache() {
+        // TODO update this code
         WebSettings webSettings = getSettings();
-        webSettings.setAppCacheEnabled(true);
+        //webSettings.setAppCacheEnabled(true);
         webSettings.setAllowFileAccess(true);
-        webSettings.setAppCachePath(getContext().getApplicationContext()
-                .getCacheDir().getAbsolutePath());
+        //webSettings.setAppCachePath(getContext().getApplicationContext()
+        //        .getCacheDir().getAbsolutePath());
         setCacheModeInternal();
     }
     
@@ -108,7 +109,7 @@ public class CacheableWebView extends WebView {
         webSettings.setLoadWithOverviewMode(true);
         webSettings.setUseWideViewPort(true);
         // TODO Investigate how to mitigate this maybe
-        webSettings.setJavaScriptEnabled(true);
+        //webSettings.setJavaScriptEnabled(true);
     }
     
     private String getCacheableUrl(String url) {
