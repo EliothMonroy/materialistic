@@ -19,7 +19,6 @@ package io.github.hidroh.materialistic;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.ActivityNotFoundException;
@@ -78,7 +77,6 @@ import io.github.hidroh.materialistic.data.Item;
 import io.github.hidroh.materialistic.data.WebItem;
 import io.github.hidroh.materialistic.widget.PopupMenu;
 
-@SuppressWarnings("WeakerAccess")
 @PublicApi
 public class AppUtils {
     private static final String ABBR_YEAR = "y";
@@ -94,7 +92,7 @@ public class AppUtils {
     public static final int HOT_FACTOR = 3;
     private static final String HOST_ITEM = "item";
     private static final String HOST_USER = "user";
-    
+
     public static void openWebUrlExternal(Context context, @Nullable WebItem item,
                                           String url, @Nullable CustomTabsSession session) {
         if (!hasConnection(context)) {
@@ -126,12 +124,12 @@ public class AppUtils {
             context.startActivity(intents.remove(0));
         } else {
             context.startActivity(Intent.createChooser(intents.remove(0),
-                    context.getString(R.string.chooser_title))
+                            context.getString(R.string.chooser_title))
                     .putExtra(Intent.EXTRA_INITIAL_INTENTS,
                             intents.toArray(new Parcelable[0])));
         }
     }
-    
+
     public static void setTextWithLinks(TextView textView, CharSequence html) {
         textView.setText(html);
         // TODO https://code.google.com/p/android/issues/detail?id=191430
@@ -141,22 +139,22 @@ public class AppUtils {
                     action == MotionEvent.ACTION_DOWN) {
                 int x = (int) event.getX();
                 int y = (int) event.getY();
-                
+
                 TextView widget = (TextView) v;
                 x -= widget.getTotalPaddingLeft();
                 y -= widget.getTotalPaddingTop();
-                
+
                 x += widget.getScrollX();
                 y += widget.getScrollY();
-                
+
                 Layout layout = widget.getLayout();
                 int line = layout.getLineForVertical(y);
                 int off = layout.getOffsetForHorizontal(line, x);
-                
+
                 ClickableSpan[] links = Spannable.Factory.getInstance()
                         .newSpannable(widget.getText())
                         .getSpans(off, off, ClickableSpan.class);
-                
+
                 if (links.length != 0) {
                     if (action == MotionEvent.ACTION_UP) {
                         if (links[0] instanceof URLSpan) {
@@ -172,11 +170,11 @@ public class AppUtils {
             return false;
         });
     }
-    
+
     public static CharSequence fromHtml(String htmlText) {
         return fromHtml(htmlText, false);
     }
-    
+
     public static CharSequence fromHtml(String htmlText, boolean compact) {
         if (TextUtils.isEmpty(htmlText)) {
             return null;
@@ -190,7 +188,7 @@ public class AppUtils {
         }
         return trim(spanned);
     }
-    
+
     public static Intent makeSendIntentChooser(Context context, Uri data) {
         // use ACTION_SEND_MULTIPLE instead of ACTION_SEND to filter out
         // share receivers that accept only EXTRA_TEXT but not EXTRA_STREAM
@@ -202,7 +200,7 @@ public class AppUtils {
                                 }}),
                 context.getString(R.string.share_file));
     }
-    
+
     public static void openExternal(@NonNull final Context context,
                                     @NonNull PopupMenu popupMenu,
                                     @NonNull View anchor,
@@ -225,7 +223,7 @@ public class AppUtils {
                 })
                 .show();
     }
-    
+
     public static void share(@NonNull final Context context,
                              @NonNull PopupMenu popupMenu,
                              @NonNull View anchor,
@@ -247,35 +245,35 @@ public class AppUtils {
                 })
                 .show();
     }
-    
+
     public static int getThemedResId(Context context, @AttrRes int attr) {
         TypedArray a = context.getTheme().obtainStyledAttributes(new int[]{attr});
         final int resId = a.getResourceId(0, 0);
         a.recycle();
         return resId;
     }
-    
+
     public static float getDimension(Context context, @StyleRes int styleResId, @AttrRes int attr) {
         TypedArray a = context.getTheme().obtainStyledAttributes(styleResId, new int[]{attr});
         float size = a.getDimension(0, 0);
         a.recycle();
         return size;
     }
-    
+
     public static boolean isHackerNewsUrl(WebItem item) {
         return !TextUtils.isEmpty(item.getUrl()) &&
                 item.getUrl().equals(String.format(HackerNewsClient.WEB_ITEM_PATH, item.getId()));
     }
-    
+
     public static int getDimensionInDp(Context context, @DimenRes int dimenResId) {
         return (int) (context.getResources().getDimension(dimenResId) /
                 context.getResources().getDisplayMetrics().density);
     }
-    
+
     public static void restart(Activity activity) {
         activity.recreate();
     }
-    
+
     public static String getAbbreviatedTimeSpan(long timeMillis) {
         long span = Math.max(System.currentTimeMillis() - timeMillis, 0);
         if (span >= DateUtils.YEAR_IN_MILLIS) {
@@ -292,7 +290,7 @@ public class AppUtils {
         }
         return (span / DateUtils.MINUTE_IN_MILLIS) + ABBR_MINUTE;
     }
-    
+
     public static boolean isOnWiFi(Context context) {
         NetworkInfo activeNetwork = ((ConnectivityManager) context.getSystemService(
                 Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
@@ -300,13 +298,13 @@ public class AppUtils {
                 activeNetwork.isConnectedOrConnecting() &&
                 activeNetwork.getType() == ConnectivityManager.TYPE_WIFI;
     }
-    
+
     public static boolean hasConnection(Context context) {
         NetworkInfo activeNetworkInfo = ((ConnectivityManager) context.getSystemService(
                 Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
     }
-    
+
     @SuppressLint("MissingPermission")
     public static Pair<String, String> getCredentials(Context context) {
         String username = Preferences.getUsername(context);
@@ -322,7 +320,7 @@ public class AppUtils {
         }
         return null;
     }
-    
+
     /**
      * Displays UI to allow user to login
      * If no accounts exist in user's device, regardless of login status, prompt to login again
@@ -342,7 +340,7 @@ public class AppUtils {
             showAccountChooser(context, alertDialogBuilder, accounts);
         }
     }
-    
+
     public static void registerAccountsUpdatedListener(final Context context) {
         AccountManager.get(context).addOnAccountsUpdatedListener(accounts -> {
             String username = Preferences.getUsername(context);
@@ -357,8 +355,7 @@ public class AppUtils {
             Preferences.setUsername(context, null);
         }, null, true);
     }
-    
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+
     public static void openPlayStore(Context context) {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(PLAY_STORE_URL));
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
@@ -371,8 +368,7 @@ public class AppUtils {
             Toast.makeText(context, R.string.no_playstore, Toast.LENGTH_SHORT).show();
         }
     }
-    
-    @SuppressLint("MissingPermission")
+
     public static void showAccountChooser(final Context context, AlertDialogBuilder alertDialogBuilder,
                                           Account[] accounts) {
         String username = Preferences.getUsername(context);
@@ -388,15 +384,15 @@ public class AppUtils {
         int initialSelection = checked;
         DialogInterface.OnClickListener clickListener = new DialogInterface.OnClickListener() {
             private int selection = initialSelection;
-            
+
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
                         Preferences.setUsername(context, items[selection]);
                         Toast.makeText(context,
-                                context.getString(R.string.welcome, items[selection]),
-                                Toast.LENGTH_SHORT)
+                                        context.getString(R.string.welcome, items[selection]),
+                                        Toast.LENGTH_SHORT)
                                 .show();
                         dialog.dismiss();
                         break;
@@ -432,7 +428,7 @@ public class AppUtils {
                 .setNeutralButton(R.string.remove_account, clickListener)
                 .show();
     }
-    
+
     public static void toggleFab(FloatingActionButton fab, boolean visible) {
         if (visible) {
             fab.setTag(null);
@@ -442,7 +438,7 @@ public class AppUtils {
             fab.hide();
         }
     }
-    
+
     public static void toggleFabAction(FloatingActionButton fab, WebItem item, boolean commentMode) {
         Context context = fab.getContext();
         fab.setImageResource(commentMode ? R.drawable.ic_reply_white_24dp : R.drawable.ic_zoom_out_map_white_24dp);
@@ -459,28 +455,28 @@ public class AppUtils {
             }
         });
     }
-    
+
     public static String toHtmlColor(Context context, @AttrRes int colorAttr) {
         return String.format(FORMAT_HTML_COLOR, 0xFFFFFF & ContextCompat.getColor(context,
                 AppUtils.getThemedResId(context, colorAttr)));
     }
-    
+
     public static void toggleWebViewZoom(WebSettings webSettings, boolean enabled) {
         webSettings.setSupportZoom(enabled);
         webSettings.setBuiltInZoomControls(enabled);
         webSettings.setDisplayZoomControls(false);
     }
-    
+
     public static void setStatusBarDim(Window window, boolean dim) {
         setStatusBarColor(window, dim ? Color.TRANSPARENT :
                 ContextCompat.getColor(window.getContext(),
                         AppUtils.getThemedResId(window.getContext(), R.attr.colorPrimaryDark)));
     }
-    
+
     public static void setStatusBarColor(Window window, int color) {
         window.setStatusBarColor(color);
     }
-    
+
     public static void navigate(int direction, AppBarLayout appBarLayout, Navigable navigable) {
         switch (direction) {
             case Navigable.DIRECTION_DOWN:
@@ -496,7 +492,7 @@ public class AppUtils {
                 break;
         }
     }
-    
+
     public static int getDisplayHeight(Context context) {
         Display display = ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE))
                 .getDefaultDisplay();
@@ -504,12 +500,12 @@ public class AppUtils {
         display.getSize(point);
         return point.y;
     }
-    
+
     public static LayoutInflater createLayoutInflater(Context context) {
         return LayoutInflater.from(new ContextThemeWrapper(context,
                 Preferences.Theme.resolvePreferredTextSize(context)));
     }
-    
+
     public static void share(Context context, String subject, String text) {
         Intent intent = new Intent(Intent.ACTION_SEND)
                 .setType("text/plain")
@@ -520,7 +516,7 @@ public class AppUtils {
             context.startActivity(intent);
         }
     }
-    
+
     public static Uri createItemUri(@NonNull String itemId) {
         return new Uri.Builder()
                 .scheme(BuildConfig.APPLICATION_ID)
@@ -528,7 +524,7 @@ public class AppUtils {
                 .path(itemId)
                 .build();
     }
-    
+
     public static Uri createUserUri(@NonNull String userId) {
         return new Uri.Builder()
                 .scheme(BuildConfig.APPLICATION_ID)
@@ -536,7 +532,7 @@ public class AppUtils {
                 .path(userId)
                 .build();
     }
-    
+
     public static String getDataUriId(@NonNull Intent intent, String altParamId) {
         if (intent.getData() == null) {
             return null;
@@ -547,7 +543,7 @@ public class AppUtils {
             return intent.getData().getQueryParameter(altParamId);
         }
     }
-    
+
     public static String wrapHtml(Context context, String html) {
         return context.getString(R.string.html,
                 Preferences.Theme.getReadabilityTypeface(context),
@@ -559,15 +555,15 @@ public class AppUtils {
                 toHtmlPx(context, context.getResources().getDimension(R.dimen.activity_horizontal_margin)),
                 Preferences.getReadabilityLineHeight(context));
     }
-    
+
     private static float toHtmlPx(Context context, @StyleRes int textStyleAttr) {
         return toHtmlPx(context, AppUtils.getDimension(context, textStyleAttr, R.attr.contentTextSize));
     }
-    
+
     private static float toHtmlPx(Context context, float dimen) {
         return dimen / context.getResources().getDisplayMetrics().density;
     }
-    
+
     private static CharSequence trim(CharSequence charSequence) {
         if (TextUtils.isEmpty(charSequence)) {
             return charSequence;
@@ -578,7 +574,7 @@ public class AppUtils {
         }
         return charSequence.subSequence(0, end + 1);
     }
-    
+
     @NonNull
     private static Intent createViewIntent(Context context, @Nullable WebItem item,
                                            String url, @Nullable CustomTabsSession session) {
@@ -604,7 +600,7 @@ public class AppUtils {
             return new Intent(Intent.ACTION_VIEW, Uri.parse(url));
         }
     }
-    
+
     public static Intent multiWindowIntent(Activity activity, Intent intent) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && activity.isInMultiWindowMode()) {
             intent.addFlags(Intent.FLAG_ACTIVITY_LAUNCH_ADJACENT |
@@ -613,7 +609,7 @@ public class AppUtils {
         }
         return intent;
     }
-    
+
     public static void setTextAppearance(TextView textView, @StyleRes int textAppearance) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             textView.setTextAppearance(textAppearance);
@@ -621,7 +617,7 @@ public class AppUtils {
             textView.setTextAppearance(textView.getContext(), textAppearance);
         }
     }
-    
+
     public static boolean urlEquals(String thisUrl, String thatUrl) {
         if (AndroidUtils.TextUtils.isEmpty(thisUrl) || AndroidUtils.TextUtils.isEmpty(thatUrl)) {
             return false;
@@ -630,17 +626,17 @@ public class AppUtils {
         thatUrl = thatUrl.endsWith("/") ? thatUrl : thatUrl + "/";
         return AndroidUtils.TextUtils.equals(thisUrl, thatUrl);
     }
-    
+
     static class SystemUiHelper {
         private final Window window;
         private final int originalUiFlags;
         private boolean enabled = true;
-        
+
         SystemUiHelper(Window window) {
             this.window = window;
             this.originalUiFlags = window.getDecorView().getSystemUiVisibility();
         }
-        
+
         @SuppressLint("InlinedApi")
         void setFullscreen(boolean fullscreen) {
             if (!enabled) {
@@ -654,7 +650,7 @@ public class AppUtils {
                 window.getDecorView().setSystemUiVisibility(originalUiFlags);
             }
         }
-        
+
         void setEnabled(boolean enabled) {
             this.enabled = enabled;
         }

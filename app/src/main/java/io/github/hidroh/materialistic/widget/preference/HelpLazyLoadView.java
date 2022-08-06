@@ -31,11 +31,11 @@ public class HelpLazyLoadView extends ScrollView {
         super(context, attrs);
         addView(LayoutInflater.from(context).inflate(R.layout.include_help_lazy_load, this, false));
     }
-    
+
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        TabLayout tabLayout = findViewById(R.id.tab_layout);
         tabLayout.addTab(tabLayout.newTab().setText(R.string.comments));
         tabLayout.addTab(tabLayout.newTab().setText(R.string.article));
         Preferences.StoryViewMode defaultView = Preferences.getDefaultStoryView(getContext());

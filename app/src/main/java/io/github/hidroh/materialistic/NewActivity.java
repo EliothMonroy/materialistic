@@ -24,7 +24,7 @@ import io.github.hidroh.materialistic.data.ItemManager;
 
 public class NewActivity extends BaseStoriesActivity {
     public static final String EXTRA_REFRESH = NewActivity.class.getName() + ".EXTRA_REFRESH";
-    
+
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -37,18 +37,18 @@ public class NewActivity extends BaseStoriesActivity {
             }
         }
     }
-    
+
     @Override
     protected String getDefaultTitle() {
         return getString(R.string.title_activity_new);
     }
-    
+
     @NonNull
     @Override
     protected String getFetchMode() {
         return ItemManager.NEW_FETCH_MODE;
     }
-    
+
     @Override
     protected int getItemCacheMode() {
         return ItemManager.MODE_NETWORK;

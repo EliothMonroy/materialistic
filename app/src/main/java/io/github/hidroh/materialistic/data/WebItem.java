@@ -42,54 +42,54 @@ public interface WebItem extends Parcelable {
      */
     @interface Type {
     }
-    
+
     String JOB_TYPE = "job";
     String STORY_TYPE = "story";
     String COMMENT_TYPE = "comment";
     String POLL_TYPE = "poll";
-    
+
     /**
      * Gets formatted title to display
      *
      * @return formatted title or null
      */
     String getDisplayedTitle();
-    
+
     /**
      * Gets item URL to pass to {@link android.webkit.WebView#loadUrl(String)}
      *
      * @return URL or null
      */
     String getUrl();
-    
+
     /**
      * Checks if item is not a comment
      *
      * @return true if is not a comment, false otherwise
      */
     boolean isStoryType();
-    
+
     /**
      * Gets item ID string
      *
      * @return item ID string
      */
     String getId();
-    
+
     /**
      * Gets item ID
      *
      * @return item ID
      */
     long getLongId();
-    
+
     /**
      * Gets item source
      *
      * @return item source or null
      */
     String getSource();
-    
+
     /**
      * Gets formatted author for display
      *
@@ -99,7 +99,7 @@ public interface WebItem extends Parcelable {
      * @return displayed author
      */
     Spannable getDisplayedAuthor(Context context, boolean linkify, int color);
-    
+
     /**
      * Gets formatted posted time for display
      *
@@ -107,7 +107,7 @@ public interface WebItem extends Parcelable {
      * @return displayed time
      */
     Spannable getDisplayedTime(Context context);
-    
+
     /**
      * Gets item type
      *
@@ -116,7 +116,7 @@ public interface WebItem extends Parcelable {
     @NonNull
     @Type
     String getType();
-    
+
     /**
      * Checks if item is marked as favorite
      *
@@ -124,7 +124,7 @@ public interface WebItem extends Parcelable {
      * @see #setFavorite(boolean)
      */
     boolean isFavorite();
-    
+
     /**
      * Updates item's favorite status to given status
      *

@@ -27,6 +27,7 @@ import android.widget.AdapterView;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
+import androidx.annotation.NonNull;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceViewHolder;
 
@@ -45,18 +46,17 @@ public abstract class SpinnerPreference extends Preference {
     String[] mEntryValues = new String[0];
     @Synthetic
     int mSelection = 0;
-    
-    @SuppressWarnings("unused")
+
     public SpinnerPreference(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
-    
+
     public SpinnerPreference(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setWidgetLayoutResource(R.layout.preference_spinner);
         init(context, attrs);
     }
-    
+
     private void init(Context context, AttributeSet attrs) {
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.SpinnerPreference);
         int entriesResId = ta.getResourceId(R.styleable.SpinnerPreference_entries, 0);
@@ -69,12 +69,12 @@ public abstract class SpinnerPreference extends Preference {
         }
         ta.recycle();
     }
-    
+
     @Override
     protected Object onGetDefaultValue(TypedArray a, int index) {
         return a.getString(index);
     }
-    
+
     @Override
     protected void onSetInitialValue(boolean restorePersistedValue, Object defaultValue) {
         super.onSetInitialValue(restorePersistedValue, defaultValue);
@@ -86,9 +86,9 @@ public abstract class SpinnerPreference extends Preference {
             }
         }
     }
-    
+
     @Override
-    public void onBindViewHolder(PreferenceViewHolder holder) {
+    public void onBindViewHolder(@NonNull PreferenceViewHolder holder) {
         super.onBindViewHolder(holder);
         final Spinner spinner = (Spinner) holder.findViewById(R.id.spinner);
         holder.itemView.setOnClickListener(v -> spinner.performClick());
@@ -101,52 +101,52 @@ public abstract class SpinnerPreference extends Preference {
                 bindDropDownView(position, convertView);
                 return convertView;
             }
-            
+
             @Override
             public void registerDataSetObserver(DataSetObserver observer) {
                 // no op
             }
-            
+
             @Override
             public void unregisterDataSetObserver(DataSetObserver observer) {
                 // no op
             }
-            
+
             @Override
             public int getCount() {
                 return mEntries.length;
             }
-            
+
             @Override
             public Object getItem(int position) {
                 return null; // not applicable
             }
-            
+
             @Override
             public long getItemId(int position) {
                 return position;
             }
-            
+
             @Override
             public boolean hasStableIds() {
                 return true;
             }
-            
+
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 return getDropDownView(position, convertView, parent);
             }
-            
+
             @Override
             public int getItemViewType(int position) {
                 return 0;
             }
-            
+
             @Override
             public int getViewTypeCount() {
                 return 1;
             }
-            
+
             @Override
             public boolean isEmpty() {
                 return false;
@@ -159,14 +159,14 @@ public abstract class SpinnerPreference extends Preference {
                 mSelection = position;
                 persistString(mEntryValues[position]);
             }
-            
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 // no op
             }
         });
     }
-    
+
     /**
      * Create dropdown view for item at given position
      *
@@ -175,7 +175,7 @@ public abstract class SpinnerPreference extends Preference {
      * @return created view
      */
     protected abstract View createDropDownView(int position, ViewGroup parent);
-    
+
     /**
      * Customize dropdown view for given spinner item
      *

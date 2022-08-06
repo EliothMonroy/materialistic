@@ -30,7 +30,7 @@ public interface ResponseListener<T> {
      * @param response result
      */
     void onResponse(@Nullable T response);
-    
+
     /**
      * Fired when request is failed
      *

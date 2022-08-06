@@ -54,7 +54,7 @@ import io.github.hidroh.materialistic.data.WebItem;
 public abstract class ListRecyclerViewAdapter
         <VH extends ListRecyclerViewAdapter.ItemViewHolder, T extends WebItem>
         extends RecyclerView.Adapter<VH> {
-    
+
     private static final String STATE_LAST_SELECTION_POSITION = "state:lastSelectedPosition";
     private static final int VIEW_TYPE_CARD = 0;
     private static final int VIEW_TYPE_FLAT = 1;
@@ -75,7 +75,7 @@ public abstract class ListRecyclerViewAdapter
     private int mHotThreshold = Integer.MAX_VALUE;
     private final Preferences.Observable mPreferenceObservable = new Preferences.Observable();
     private boolean mMultiWindowEnabled;
-    
+
     public ListRecyclerViewAdapter(Context context) {
         mContext = context;
         mInflater = AppUtils.createLayoutInflater(mContext);
@@ -83,7 +83,7 @@ public abstract class ListRecyclerViewAdapter
         mMultiPaneListener = (MultiPaneListener) mContext;
         mMultiWindowEnabled = Preferences.multiWindowEnabled(mContext);
     }
-    
+
     @Override
     public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
@@ -91,13 +91,13 @@ public abstract class ListRecyclerViewAdapter
                         mMultiWindowEnabled = Preferences.multiWindowEnabled(mContext),
                 R.string.pref_multi_window);
     }
-    
+
     @Override
     public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onDetachedFromRecyclerView(recyclerView);
         mPreferenceObservable.unsubscribe(mContext);
     }
-    
+
     @NonNull
     @Override
     public final VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -107,7 +107,7 @@ public abstract class ListRecyclerViewAdapter
         }
         return holder;
     }
-    
+
     @Override
     public final void onBindViewHolder(@NonNull final VH holder, int position) {
         final T item = getItem(position);
@@ -126,66 +126,66 @@ public abstract class ListRecyclerViewAdapter
                 v -> openItem(item));
         bindItem(holder, position);
     }
-    
+
     @Override
     public final int getItemViewType(int position) {
         return mCardViewEnabled ? VIEW_TYPE_CARD : VIEW_TYPE_FLAT;
     }
-    
+
     @Override
     public final long getItemId(int position) {
         return getItem(position).getLongId();
     }
-    
+
     public final boolean isCardViewEnabled() {
         return mCardViewEnabled;
     }
-    
+
     @SuppressLint("NotifyDataSetChanged")
     public final void setCardViewEnabled(boolean cardViewEnabled) {
         this.mCardViewEnabled = cardViewEnabled;
         notifyDataSetChanged();
     }
-    
+
     public void setCustomTabsDelegate(CustomTabsDelegate customTabsDelegate) {
         mCustomTabsDelegate = customTabsDelegate;
     }
-    
+
     public void setHotThresHold(int hotThresHold) {
         mHotThreshold = hotThresHold;
     }
-    
+
     public Bundle saveState() {
         Bundle savedState = new Bundle();
         savedState.putInt(STATE_LAST_SELECTION_POSITION, mLastSelectedPosition);
         return savedState;
     }
-    
+
     public void restoreState(Bundle savedState) {
         if (savedState == null) {
             return;
         }
         mLastSelectedPosition = savedState.getInt(STATE_LAST_SELECTION_POSITION);
     }
-    
+
     final boolean isAttached() {
         return mContext != null;
     }
-    
+
     protected abstract VH create(ViewGroup parent, int viewType);
-    
+
     protected void loadItem(int adapterPosition) {
         // override to load item if needed
     }
-    
+
     protected abstract void bindItem(VH holder, int position);
-    
+
     protected abstract boolean isItemAvailable(T item);
-    
+
     private void clearViewHolder(VH holder) {
         holder.clear();
     }
-    
+
     /**
      * Checks if item with given ID has been selected
      *
@@ -197,7 +197,7 @@ public abstract class ListRecyclerViewAdapter
                 mMultiPaneListener.getSelectedItem() != null &&
                 itemId.equals(mMultiPaneListener.getSelectedItem().getId());
     }
-    
+
     /**
      * Gets item at position
      *
@@ -205,7 +205,7 @@ public abstract class ListRecyclerViewAdapter
      * @return item at given position or null
      */
     protected abstract T getItem(int position);
-    
+
     /**
      * Handles item click
      *
@@ -222,7 +222,7 @@ public abstract class ListRecyclerViewAdapter
             mLastSelectedPosition = holder.getAdapterPosition();
         }
     }
-    
+
     /**
      * Gets cache mode for {@link ItemManager}
      *
@@ -230,7 +230,7 @@ public abstract class ListRecyclerViewAdapter
      */
     @ItemManager.CacheMode
     protected abstract int getItemCacheMode();
-    
+
     private void openItem(T item) {
         Intent intent = new Intent(mContext, ItemActivity.class)
                 .putExtra(ItemActivity.EXTRA_CACHE_MODE, getItemCacheMode())
@@ -239,7 +239,7 @@ public abstract class ListRecyclerViewAdapter
         mContext.startActivity(mMultiWindowEnabled ?
                 AppUtils.multiWindowIntent((Activity) mContext, intent) : intent);
     }
-    
+
     /**
      * Base {@link RecyclerView.ViewHolder} class for list item view
      */
@@ -247,11 +247,11 @@ public abstract class ListRecyclerViewAdapter
         private final StoryView mStoryView;
         private final FlatCardView mCardView;
         private final int mCardElevation;
-        
+
         public interface ShowMoreOptionsListener {
             void showMoreOptions(View anchor);
         }
-        
+
         ItemViewHolder(View itemView) {
             super(itemView);
             mCardView = (FlatCardView) itemView;
@@ -259,7 +259,7 @@ public abstract class ListRecyclerViewAdapter
             mCardElevation = itemView.getContext().getResources()
                     .getDimensionPixelSize(R.dimen.cardview_elevation);
         }
-        
+
         public void bind(WebItem item,
                          int hotThreshold,
                          boolean selected,
@@ -273,42 +273,42 @@ public abstract class ListRecyclerViewAdapter
             itemView.setOnClickListener(itemClickListener);
             mStoryView.setOnCommentClickListener(commentClickListener);
         }
-        
+
         public void clear() {
             mCardView.setCardElevation(0);
             mStoryView.reset();
             itemView.setOnClickListener(null);
             itemView.setOnLongClickListener(null);
         }
-        
+
         public void flatten() {
             mCardView.flatten();
         }
-        
+
         public void animateVote(int score) {
             mStoryView.animateVote(score);
         }
-        
+
         public void setViewed(boolean viewed) {
             mStoryView.setViewed(viewed);
         }
-        
+
         public void setFavorite(boolean favorite) {
             mStoryView.setFavorite(favorite);
         }
-        
+
         public void setUpdated(Item story, boolean updated, int change) {
             mStoryView.setUpdated(story, updated, change);
         }
-        
+
         public void setChecked(boolean checked) {
             mStoryView.setChecked(checked);
         }
-        
+
         public void setOnLongClickListener(View.OnLongClickListener longClickListener) {
             itemView.setOnLongClickListener(longClickListener);
         }
-        
+
         public void bindMoreOptions(ShowMoreOptionsListener listener, boolean allowLongClick) {
             if (allowLongClick) {
                 itemView.setOnLongClickListener(v -> {

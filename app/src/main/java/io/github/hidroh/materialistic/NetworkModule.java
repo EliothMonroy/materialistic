@@ -51,48 +51,48 @@ import okhttp3.logging.HttpLoggingInterceptor;
 class NetworkModule {
     private static final String TAG_OK_HTTP = "OkHttp";
     private static final long CACHE_SIZE = 20 * 1024 * 1024; // 20 MB
-    
+
     @Provides
     @Singleton
     public RestServiceFactory provideRestServiceFactory(Call.Factory callFactory) {
         return new RestServiceFactory.Impl(callFactory);
     }
-    
+
     @Provides
     @Singleton
     public Call.Factory provideCallFactory(Context context) {
         return (Call.Factory) new OkHttpClient.Builder()
                 .socketFactory(new SocketFactory() {
                     private final SocketFactory mDefaultFactory = SocketFactory.getDefault();
-                    
+
                     @Override
                     public Socket createSocket() throws IOException {
                         Socket socket = mDefaultFactory.createSocket();
                         TrafficStats.setThreadStatsTag(1);
                         return socket;
                     }
-                    
+
                     @Override
                     public Socket createSocket(String host, int port) throws IOException {
                         Socket socket = mDefaultFactory.createSocket(host, port);
                         TrafficStats.setThreadStatsTag(1);
                         return socket;
                     }
-                    
+
                     @Override
                     public Socket createSocket(String host, int port, InetAddress localHost, int localPort) throws IOException {
                         Socket socket = mDefaultFactory.createSocket(host, port, localHost, localPort);
                         TrafficStats.setThreadStatsTag(1);
                         return socket;
                     }
-                    
+
                     @Override
                     public Socket createSocket(InetAddress host, int port) throws IOException {
                         Socket socket = mDefaultFactory.createSocket(host, port);
                         TrafficStats.setThreadStatsTag(1);
                         return socket;
                     }
-                    
+
                     @Override
                     public Socket createSocket(InetAddress address, int port, InetAddress localAddress, int localPort) throws IOException {
                         Socket socket = mDefaultFactory.createSocket(address, port, localAddress, localPort);
@@ -107,17 +107,17 @@ class NetworkModule {
                 .followRedirects(false)
                 .build();
     }
-    
+
     @Provides
     @Singleton
     public FileDownloader provideFileDownloader(Context context, Call.Factory callFactory) {
         return new FileDownloader(context, callFactory);
     }
-    
+
     static class ConnectionAwareInterceptor implements Interceptor {
-        
+
         static final Map<String, String> CACHE_ENABLED_HOSTS = new HashMap<>();
-        
+
         static {
             CACHE_ENABLED_HOSTS.put(HackerNewsClient.HOST,
                     RestServiceFactory.CACHE_CONTROL_MAX_AGE_30M);
@@ -126,13 +126,13 @@ class NetworkModule {
             CACHE_ENABLED_HOSTS.put(ReadabilityClient.HOST,
                     RestServiceFactory.CACHE_CONTROL_MAX_AGE_24H);
         }
-        
+
         private final Context mContext;
-        
+
         ConnectionAwareInterceptor(Context context) {
             mContext = context.getApplicationContext();
         }
-        
+
         @NonNull
         @Override
         public Response intercept(Chain chain) throws IOException {
@@ -146,9 +146,9 @@ class NetworkModule {
                     request);
         }
     }
-    
+
     static class CacheOverrideNetworkInterceptor implements Interceptor {
-        
+
         @NonNull
         @Override
         public Response intercept(Chain chain) throws IOException {
@@ -166,14 +166,14 @@ class NetworkModule {
             }
         }
     }
-    
+
     static class LoggingInterceptor implements Interceptor {
         private final Interceptor debugInterceptor = new HttpLoggingInterceptor(
                 message -> Log.d(TAG_OK_HTTP, message))
                 .setLevel(BuildConfig.DEBUG ?
                         HttpLoggingInterceptor.Level.BODY :
                         HttpLoggingInterceptor.Level.NONE);
-        
+
         @NonNull
         @Override
         public Response intercept(@NonNull Chain chain) throws IOException {

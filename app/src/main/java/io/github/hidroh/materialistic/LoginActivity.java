@@ -46,16 +46,16 @@ public class LoginActivity extends AccountAuthenticatorActivity {
     private EditText mPasswordEditText;
     private String mUsername;
     private String mPassword;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         String username = Preferences.getUsername(this);
         boolean addAccount = getIntent().getBooleanExtra(EXTRA_ADD_ACCOUNT, false);
         setContentView(R.layout.activity_login);
-        mUsernameLayout = (TextInputLayout) findViewById(R.id.textinput_username);
-        mPasswordLayout = (TextInputLayout) findViewById(R.id.textinput_password);
-        mUsernameEditText = (EditText) findViewById(R.id.edittext_username);
+        mUsernameLayout = findViewById(R.id.textinput_username);
+        mPasswordLayout = findViewById(R.id.textinput_password);
+        mUsernameEditText = findViewById(R.id.edittext_username);
         mLoginButton = findViewById(R.id.login_button);
         mRegisterButton = findViewById(R.id.register_button);
         if (!addAccount && !TextUtils.isEmpty(username)) {
@@ -63,7 +63,7 @@ public class LoginActivity extends AccountAuthenticatorActivity {
             mUsernameEditText.setText(username);
             mRegisterButton.setVisibility(View.GONE);
         }
-        mPasswordEditText = (EditText) findViewById(R.id.edittext_password);
+        mPasswordEditText = findViewById(R.id.edittext_password);
         mLoginButton.setOnClickListener(v -> {
             if (!validate()) {
                 return;
@@ -85,12 +85,12 @@ public class LoginActivity extends AccountAuthenticatorActivity {
                     true);
         });
     }
-    
+
     @Override
     protected boolean isDialogTheme() {
         return true;
     }
-    
+
     private boolean validate() {
         mUsernameLayout.setErrorEnabled(false);
         mPasswordLayout.setErrorEnabled(false);
@@ -102,13 +102,13 @@ public class LoginActivity extends AccountAuthenticatorActivity {
         }
         return mUsernameEditText.length() > 0 && mPasswordEditText.length() > 0;
     }
-    
+
     private void login(String username, String password, boolean createAccount) {
         mUsername = username;
         mPassword = password;
         mUserServices.login(username, password, createAccount, new LoginCallback(this));
     }
-    
+
     void onLoggedIn(boolean successful, String errorMessage) {
         mLoginButton.setEnabled(true);
         mRegisterButton.setEnabled(true);
@@ -122,7 +122,7 @@ public class LoginActivity extends AccountAuthenticatorActivity {
                     Toast.LENGTH_SHORT).show();
         }
     }
-    
+
     private void addAccount(String username, String password) {
         Account account = new Account(username, BuildConfig.APPLICATION_ID);
         mAccountManager.addAccountExplicitly(account, password, null);
@@ -134,21 +134,21 @@ public class LoginActivity extends AccountAuthenticatorActivity {
         Preferences.setUsername(this, username);
         finish();
     }
-    
+
     static class LoginCallback extends UserServices.Callback {
         private final WeakReference<LoginActivity> mLoginActivity;
-        
+
         LoginCallback(LoginActivity loginActivity) {
             mLoginActivity = new WeakReference<>(loginActivity);
         }
-        
+
         @Override
         public void onDone(boolean successful) {
             if (mLoginActivity.get() != null && !mLoginActivity.get().isActivityDestroyed()) {
                 mLoginActivity.get().onLoggedIn(successful, null);
             }
         }
-        
+
         @Override
         public void onError(Throwable throwable) {
             if (mLoginActivity.get() != null && !mLoginActivity.get().isActivityDestroyed()) {

@@ -39,24 +39,23 @@ import rx.Scheduler;
 public class AdBlocker {
     private static final String AD_HOSTS_FILE = "pgl.yoyo.org.txt";
     private static final Set<String> AD_HOSTS = new HashSet<>();
-    
+
     public static void init(Context context, Scheduler scheduler) {
         Observable.fromCallable(() -> loadFromAssets(context))
                 .onErrorReturn(throwable -> null)
                 .subscribeOn(scheduler)
                 .subscribe();
     }
-    
+
     public static boolean isAd(String url) {
         HttpUrl httpUrl = HttpUrl.parse(url);
         return isAdHost(httpUrl != null ? httpUrl.host() : "");
     }
-    
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+
     public static WebResourceResponse createEmptyResource() {
         return new WebResourceResponse("text/plain", "utf-8", new ByteArrayInputStream("".getBytes()));
     }
-    
+
     @WorkerThread
     private static Void loadFromAssets(Context context) throws IOException {
         InputStream stream = context.getAssets().open(AD_HOSTS_FILE);
@@ -69,7 +68,7 @@ public class AdBlocker {
         stream.close();
         return null;
     }
-    
+
     /**
      * Recursively walking up sub domain chain until we exhaust or find a match,
      * effectively doing a longest substring matching here

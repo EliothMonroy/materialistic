@@ -9,7 +9,9 @@ import android.os.Bundle;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
 import io.github.hidroh.materialistic.test.TestRunner;
+
 import org.robolectric.RuntimeEnvironment;
 
 import io.github.hidroh.materialistic.BuildConfig;

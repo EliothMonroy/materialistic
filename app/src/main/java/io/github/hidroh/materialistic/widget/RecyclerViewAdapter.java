@@ -24,13 +24,13 @@ import androidx.recyclerview.widget.RecyclerView;
 abstract class RecyclerViewAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
     protected Context mContext;
     protected RecyclerView mRecyclerView;
-    
+
     @CallSuper
     public void attach(Context context, RecyclerView recyclerView) {
         mContext = context;
         mRecyclerView = recyclerView;
     }
-    
+
     @CallSuper
     public void detach(Context context, RecyclerView recyclerView) {
         mContext = null;

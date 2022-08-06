@@ -15,12 +15,12 @@ public class StoryListViewModel extends ViewModel {
     private ItemManager mItemManager;
     private Scheduler mIoThreadScheduler;
     private MutableLiveData<Pair<Item[], Item[]>> mItems; // first = last updated, second = current
-    
+
     public void inject(ItemManager itemManager, Scheduler ioThreadScheduler) {
         mItemManager = itemManager;
         mIoThreadScheduler = ioThreadScheduler;
     }
-    
+
     public LiveData<Pair<Item[], Item[]>> getStories(String filter, @ItemManager.CacheMode int cacheMode) {
         if (mItems == null) {
             mItems = new MutableLiveData<>();
@@ -31,7 +31,7 @@ public class StoryListViewModel extends ViewModel {
         }
         return mItems;
     }
-    
+
     public void refreshStories(String filter, @ItemManager.CacheMode int cacheMode) {
         if (mItems == null || mItems.getValue() == null) {
             return;
@@ -40,9 +40,9 @@ public class StoryListViewModel extends ViewModel {
                 .subscribeOn(mIoThreadScheduler)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::setItems);
-        
+
     }
-    
+
     void setItems(Item[] items) {
         mItems.setValue(Pair.create(mItems.getValue() != null ? mItems.getValue().second : null, items));
     }

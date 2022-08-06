@@ -74,19 +74,19 @@ public class NavFloatingActionButton extends FloatingActionButton implements Vie
     private String mPreferenceX, mPreferenceY;
     @Synthetic
     boolean mVibrationEnabled;
-    
+
     public static void resetPosition(Context context) {
         getSharedPreferences(context).edit().clear().apply();
     }
-    
+
     public NavFloatingActionButton(Context context) {
         this(context, null);
     }
-    
+
     public NavFloatingActionButton(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
-    
+
     public NavFloatingActionButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         bindNavigationPad();
@@ -97,7 +97,7 @@ public class NavFloatingActionButton extends FloatingActionButton implements Vie
             mVibrator = null;
         }
     }
-    
+
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
@@ -106,23 +106,23 @@ public class NavFloatingActionButton extends FloatingActionButton implements Vie
                         mVibrationEnabled = Preferences.navigationVibrationEnabled(getContext()),
                 R.string.pref_navigation_vibrate);
     }
-    
+
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         stopObservingViewTree();
         mPreferenceObservable.unsubscribe(getContext());
     }
-    
+
     @Override
     public void setOnTouchListener(OnTouchListener l) {
         throw new UnsupportedOperationException();
     }
-    
+
     public void setNavigable(Navigable navigable) {
         mNavigable = navigable;
     }
-    
+
     @Synthetic
     void bindNavigationPad() {
         GestureDetectorCompat detectorCompat = new GestureDetectorCompat(getContext(),
@@ -131,20 +131,20 @@ public class NavFloatingActionButton extends FloatingActionButton implements Vie
                     public boolean onDown(MotionEvent e) {
                         return mNavigable != null;
                     }
-                    
+
                     @Override
                     public boolean onSingleTapConfirmed(MotionEvent e) {
                         Toast.makeText(getContext(), R.string.hint_nav_short,
                                 Toast.LENGTH_LONG).show();
                         return true;
                     }
-                    
+
                     @Override
                     public boolean onDoubleTap(MotionEvent e) {
                         trackKonami(DOUBLE_TAP);
                         return super.onDoubleTap(e);
                     }
-                    
+
                     @Override
                     public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1,
                                            float velocityX, float velocityY) {
@@ -158,12 +158,14 @@ public class NavFloatingActionButton extends FloatingActionButton implements Vie
                         }
                         mNavigable.onNavigate(direction);
                         if (mVibrationEnabled) {
-                            mVibrator.vibrate(VIBRATE_DURATION_MS);
+                            if (mVibrator != null) {
+                                mVibrator.vibrate(VIBRATE_DURATION_MS);
+                            }
                         }
                         trackKonami(direction);
                         return false;
                     }
-                    
+
                     @Override
                     public void onLongPress(MotionEvent e) {
                         if (mNavigable == null) {
@@ -180,7 +182,7 @@ public class NavFloatingActionButton extends FloatingActionButton implements Vie
             }
         });
     }
-    
+
     @Synthetic
     void startDrag(float startX, float startY) {
         if (mVibrationEnabled) {
@@ -189,7 +191,6 @@ public class NavFloatingActionButton extends FloatingActionButton implements Vie
         Toast.makeText(getContext(), R.string.hint_drag, Toast.LENGTH_SHORT).show();
         //noinspection Convert2Lambda
         super.setOnTouchListener(new OnTouchListener() {
-            @TargetApi(Build.VERSION_CODES.HONEYCOMB)
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 switch (motionEvent.getAction()) {
@@ -212,7 +213,7 @@ public class NavFloatingActionButton extends FloatingActionButton implements Vie
             }
         });
     }
-    
+
     @Synthetic
     void trackKonami(int direction) {
         if (KONAMI_CODE[mNextKonamiCode] != direction) {
@@ -233,18 +234,17 @@ public class NavFloatingActionButton extends FloatingActionButton implements Vie
             mNextKonamiCode++;
         }
     }
-    
+
     @Override
     public void onGlobalLayout() {
         restorePosition();
         stopObservingViewTree();
     }
-    
+
     private void stopObservingViewTree() {
         getViewTreeObserver().removeOnGlobalLayoutListener(this);
     }
-    
-    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
+
     @Synthetic
     void persistPosition() {
         getPreferences()
@@ -253,20 +253,19 @@ public class NavFloatingActionButton extends FloatingActionButton implements Vie
                 .putFloat(mPreferenceY, getY())
                 .apply();
     }
-    
-    @RequiresApi(api = Build.VERSION_CODES.HONEYCOMB)
+
     private void restorePosition() {
         setX(getPreferences().getFloat(mPreferenceX, getX()));
         setY(getPreferences().getFloat(mPreferenceY, getY()));
     }
-    
+
     private DisplayMetrics getDisplayMetrics() {
         DisplayMetrics metrics = new DisplayMetrics();
         ((WindowManager) getContext().getSystemService(Activity.WINDOW_SERVICE))
                 .getDefaultDisplay().getMetrics(metrics);
         return metrics;
     }
-    
+
     private SharedPreferences getPreferences() {
         if (mPreferences == null) {
             mPreferences = getSharedPreferences(getContext());
@@ -278,7 +277,7 @@ public class NavFloatingActionButton extends FloatingActionButton implements Vie
         }
         return mPreferences;
     }
-    
+
     private static SharedPreferences getSharedPreferences(Context context) {
         return context.getSharedPreferences(context.getPackageName() + PREFERENCES_FAB,
                 Context.MODE_PRIVATE);

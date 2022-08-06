@@ -19,11 +19,13 @@ package io.github.hidroh.materialistic;
 import android.app.ActivityManager;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+
 import androidx.annotation.CallSuper;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+
 import android.text.TextUtils;
 import android.view.Menu;
 
@@ -44,7 +46,7 @@ public abstract class ThemedActivity extends AppCompatActivity {
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        mThemeObservable.subscribe(this, (key, contextChanged) ->  onThemeChanged(key),
+        mThemeObservable.subscribe(this, (key, contextChanged) -> onThemeChanged(key),
                 R.string.pref_theme, R.string.pref_daynight_auto);
     }
 

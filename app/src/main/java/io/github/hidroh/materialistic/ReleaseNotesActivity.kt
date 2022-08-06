@@ -32,7 +32,7 @@ class ReleaseNotesActivity : InjectableActivity() {
         setContentView(R.layout.activity_release)
         findViewById<View>(R.id.button_ok).setOnClickListener { finish() }
         findViewById<View>(R.id.button_rate).setOnClickListener {
-          AppUtils.openPlayStore(this)
+            AppUtils.openPlayStore(this)
             finish()
         }
         with(findViewById<WebView>(R.id.web_view)) {

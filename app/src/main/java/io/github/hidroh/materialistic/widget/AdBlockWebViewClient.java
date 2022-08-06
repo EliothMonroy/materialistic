@@ -33,12 +33,11 @@ import io.github.hidroh.materialistic.AdBlocker;
 public class AdBlockWebViewClient extends WebViewClient {
     private final boolean mAdBlockEnabled;
     private final Map<String, Boolean> mLoadedUrls = new HashMap<>();
-    
+
     public AdBlockWebViewClient(boolean adBlockEnabled) {
         mAdBlockEnabled = adBlockEnabled;
     }
-    
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+
     @Override
     public final WebResourceResponse shouldInterceptRequest(WebView view, String url) {
         if (!mAdBlockEnabled) {
@@ -54,8 +53,7 @@ public class AdBlockWebViewClient extends WebViewClient {
         return ad ? AdBlocker.createEmptyResource() :
                 super.shouldInterceptRequest(view, url);
     }
-    
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+
     @Nullable
     @Override
     public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {

@@ -39,7 +39,7 @@ public interface PopupMenu {
      * @return this (fluent API)
      */
     PopupMenu create(Context context, View anchor, int gravity);
-    
+
     /**
      * Inflate a menu resource into this PopupMenu. This is equivalent to calling
      * popupMenu.getMenuInflater().inflate(menuRes, popupMenu.getMenu()).
@@ -48,7 +48,7 @@ public interface PopupMenu {
      * @return this (fluent API)
      */
     PopupMenu inflate(@MenuRes int menuRes);
-    
+
     /**
      * Set menu item visibility
      *
@@ -57,7 +57,7 @@ public interface PopupMenu {
      * @return this (fluent API)
      */
     PopupMenu setMenuItemVisible(@IdRes int itemResId, boolean visible);
-    
+
     /**
      * Set menu item title
      *
@@ -66,7 +66,7 @@ public interface PopupMenu {
      * @return this (fluent API)
      */
     PopupMenu setMenuItemTitle(@IdRes int itemResId, @StringRes int title);
-    
+
     /**
      * Set a listener that will be notified when the user selects an item from the menu.
      *
@@ -74,12 +74,12 @@ public interface PopupMenu {
      * @return this (fluent API)
      */
     PopupMenu setOnMenuItemClickListener(OnMenuItemClickListener listener);
-    
+
     /**
      * Show the menu popup anchored to the view specified during construction.
      */
     void show();
-    
+
     /**
      * Interface responsible for receiving menu item click events if the items themselves
      * do not have individual item click listeners.
@@ -94,40 +94,40 @@ public interface PopupMenu {
          */
         boolean onMenuItemClick(MenuItem item);
     }
-    
+
     class Impl implements PopupMenu {
         private androidx.appcompat.widget.PopupMenu mSupportPopupMenu;
-        
+
         @Override
         public PopupMenu create(Context context, View anchor, int gravity) {
             mSupportPopupMenu = new androidx.appcompat.widget.PopupMenu(context, anchor, gravity);
             return this;
         }
-        
+
         @Override
         public PopupMenu inflate(@MenuRes int menuRes) {
             mSupportPopupMenu.inflate(menuRes);
             return this;
         }
-        
+
         @Override
         public PopupMenu setMenuItemVisible(@IdRes int itemResId, boolean visible) {
             mSupportPopupMenu.getMenu().findItem(itemResId).setVisible(visible);
             return this;
         }
-        
+
         @Override
         public PopupMenu setMenuItemTitle(@IdRes int itemResId, @StringRes int title) {
             mSupportPopupMenu.getMenu().findItem(itemResId).setTitle(title);
             return this;
         }
-        
+
         @Override
         public PopupMenu setOnMenuItemClickListener(final OnMenuItemClickListener listener) {
             mSupportPopupMenu.setOnMenuItemClickListener(listener::onMenuItemClick);
             return this;
         }
-        
+
         @Override
         public void show() {
             mSupportPopupMenu.show();

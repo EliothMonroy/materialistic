@@ -22,19 +22,19 @@ import android.util.AttributeSet;
 import androidx.cardview.widget.CardView;
 
 public class FlatCardView extends CardView {
-    
+
     public FlatCardView(Context context) {
         super(context);
     }
-    
+
     public FlatCardView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
-    
+
     public FlatCardView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
-    
+
     public void flatten() {
         setRadius(0);
         setUseCompatPadding(false);

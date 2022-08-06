@@ -22,9 +22,9 @@ import androidx.annotation.Nullable;
  * Straight copies of Android's static utilities
  */
 public interface AndroidUtils {
-    
+
     class TextUtils {
-        
+
         /**
          * Returns true if a and b are equal, including if they are both null.
          * <p><i>Note: In platform versions 1.1 and earlier, this method only worked well if
@@ -49,7 +49,7 @@ public interface AndroidUtils {
             }
             return false;
         }
-        
+
         /**
          * Returns true if the string is null or 0-length.
          *

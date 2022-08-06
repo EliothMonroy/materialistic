@@ -39,8 +39,12 @@ public class HackerNewsClient implements ItemManager, UserManager {
     public static final String BASE_WEB_URL = "https://news.ycombinator.com";
     public static final String WEB_ITEM_PATH = BASE_WEB_URL + "/item?id=%s";
     static final String BASE_API_URL = "https://" + HOST + "/v0/";
-    @Inject @Named(DataModule.IO_THREAD) Scheduler mIoScheduler;
-    @Inject @Named(DataModule.MAIN_THREAD) Scheduler mMainThreadScheduler;
+    @Inject
+    @Named(DataModule.IO_THREAD)
+    Scheduler mIoScheduler;
+    @Inject
+    @Named(DataModule.MAIN_THREAD)
+    Scheduler mMainThreadScheduler;
     private final RestService mRestService;
     private final SessionManager mSessionManager;
     private final FavoriteManager mFavoriteManager;
@@ -87,17 +91,17 @@ public class HackerNewsClient implements ItemManager, UserManager {
                 break;
         }
         Observable.defer(() -> Observable.zip(
-                mSessionManager.isViewed(itemId),
-                mFavoriteManager.check(itemId),
-                itemObservable,
-                (isViewed, favorite, hackerNewsItem) -> {
-                    if (hackerNewsItem != null) {
-                        hackerNewsItem.preload();
-                        hackerNewsItem.setIsViewed(isViewed);
-                        hackerNewsItem.setFavorite(favorite);
-                    }
-                    return hackerNewsItem;
-                }))
+                        mSessionManager.isViewed(itemId),
+                        mFavoriteManager.check(itemId),
+                        itemObservable,
+                        (isViewed, favorite, hackerNewsItem) -> {
+                            if (hackerNewsItem != null) {
+                                hackerNewsItem.preload();
+                                hackerNewsItem.setIsViewed(isViewed);
+                                hackerNewsItem.setFavorite(favorite);
+                            }
+                            return hackerNewsItem;
+                        }))
                 .subscribeOn(mIoScheduler)
                 .observeOn(mMainThreadScheduler)
                 .subscribe(listener::onResponse,

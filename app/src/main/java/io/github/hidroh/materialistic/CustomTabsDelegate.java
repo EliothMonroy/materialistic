@@ -45,7 +45,7 @@ public class CustomTabsDelegate {
     private CustomTabsSession mCustomTabsSession;
     private CustomTabsClient mClient;
     private CustomTabsServiceConnection mConnection;
-    
+
     /**
      * Binds the Activity to the Custom Tabs Service.
      *
@@ -61,7 +61,7 @@ public class CustomTabsDelegate {
         mConnection = new ServiceConnection(this);
         CustomTabsClient.bindCustomTabsService(activity, getPackageNameToUse(activity), mConnection);
     }
-    
+
     /**
      * Unbinds the Activity from the Custom Tabs Service.
      *
@@ -76,7 +76,7 @@ public class CustomTabsDelegate {
         mCustomTabsSession = null;
         mConnection = null;
     }
-    
+
     /**
      * @see CustomTabsSession#mayLaunchUrl(Uri, Bundle, List)
      */
@@ -89,7 +89,7 @@ public class CustomTabsDelegate {
             session.mayLaunchUrl(uri, extras, otherLikelyBundles);
         }
     }
-    
+
     /**
      * Creates or retrieves an exiting CustomTabsSession.
      *
@@ -103,37 +103,37 @@ public class CustomTabsDelegate {
         }
         return mCustomTabsSession;
     }
-    
+
     @Synthetic
     void onServiceConnected(CustomTabsClient client) {
         mClient = client;
         mClient.warmup(0L);
     }
-    
+
     @Synthetic
     void onServiceDisconnected() {
         mClient = null;
         mCustomTabsSession = null;
     }
-    
+
     @Nullable
     private static String getPackageNameToUse(Context context) {
         List<String> browsersWithCustomTabsSupport = getBrowsersWithCustomTabsSupport(context);
         String defaultBrowser = getDefaultBrowser(context);
-        
+
         for (String browser : browsersWithCustomTabsSupport) {
             if (TextUtils.equals(browser, defaultBrowser)) {
                 return browser;
             }
         }
-        
+
         if (browsersWithCustomTabsSupport.isEmpty()) { // If no supported browser were found
             return null;
         }
-        
+
         return browsersWithCustomTabsSupport.get(0);
     }
-    
+
     /**
      * Returns the package name of the default browser on the device
      *
@@ -145,14 +145,14 @@ public class CustomTabsDelegate {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://example.com/"));
         PackageManager pm = context.getPackageManager();
         ResolveInfo resolveInfo = pm.resolveActivity(browserIntent, PackageManager.MATCH_DEFAULT_ONLY);
-        
+
         if (resolveInfo == null) { // If no default browser could be found
             return null;
         }
-        
+
         return resolveInfo.activityInfo.packageName;
     }
-    
+
     /**
      * Returns all browsers that support custom tabs
      *
@@ -174,16 +174,16 @@ public class CustomTabsDelegate {
         }
         return packagesSupportingCustomTabs;
     }
-    
+
     @Synthetic
     static class ServiceConnection extends CustomTabsServiceConnection {
         private final WeakReference<CustomTabsDelegate> mDelegate;
-        
+
         @Synthetic
         ServiceConnection(CustomTabsDelegate delegate) {
             mDelegate = new WeakReference<>(delegate);
         }
-        
+
         @Override
         public void onCustomTabsServiceConnected(@NonNull ComponentName name, @NonNull CustomTabsClient client) {
             CustomTabsDelegate delegate = mDelegate.get();
@@ -191,7 +191,7 @@ public class CustomTabsDelegate {
                 delegate.onServiceConnected(client);
             }
         }
-        
+
         @Override
         public void onServiceDisconnected(ComponentName name) {
             CustomTabsDelegate delegate = mDelegate.get();

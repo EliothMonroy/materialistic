@@ -26,12 +26,12 @@ import androidx.annotation.NonNull;
 import io.github.hidroh.materialistic.annotation.Synthetic;
 
 class UserItem implements UserManager.User {
-    public static final Creator<UserItem> CREATOR = new Creator<UserItem>() {
+    public static final Creator<UserItem> CREATOR = new Creator<>() {
         @Override
         public UserItem createFromParcel(Parcel source) {
             return new UserItem(source);
         }
-        
+
         @Override
         public UserItem[] newArray(int size) {
             return new UserItem[size];
@@ -49,10 +49,10 @@ class UserItem implements UserManager.User {
     private final String about;
     @Keep
     private final int[] submitted;
-    
+
     // view state
     private HackerNewsItem[] submittedItems;
-    
+
     @Synthetic
     UserItem(Parcel source) {
         id = source.readString();
@@ -63,38 +63,38 @@ class UserItem implements UserManager.User {
         submitted = source.createIntArray();
         submittedItems = source.createTypedArray(HackerNewsItem.CREATOR);
     }
-    
+
     @Override
     public String getId() {
         return id;
     }
-    
+
     @Override
     public String getAbout() {
         return about;
     }
-    
+
     @Override
     public long getKarma() {
         return karma;
     }
-    
+
     @Override
     public String getCreated(Context context) {
         return DateUtils.formatDateTime(context, created * 1000, DateUtils.FORMAT_SHOW_DATE);
     }
-    
+
     @NonNull
     @Override
     public Item[] getItems() {
         return submittedItems;
     }
-    
+
     @Override
     public int describeContents() {
         return 0;
     }
-    
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id);
@@ -105,11 +105,11 @@ class UserItem implements UserManager.User {
         dest.writeIntArray(submitted);
         dest.writeTypedArray(submittedItems, flags);
     }
-    
+
     void setSubmittedItems(HackerNewsItem[] submittedItems) {
         this.submittedItems = submittedItems != null ? submittedItems : new HackerNewsItem[0];
     }
-    
+
     int[] getSubmitted() {
         return submitted;
     }

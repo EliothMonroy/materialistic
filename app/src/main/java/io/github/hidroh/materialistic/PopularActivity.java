@@ -20,6 +20,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -102,7 +103,7 @@ public class PopularActivity extends BaseListActivity {
         final int stringRes;
         switch (range) {
             case AlgoliaPopularClient.LAST_24H:
-                default:
+            default:
                 stringRes = R.string.popular_range_last_24h;
                 break;
             case AlgoliaPopularClient.PAST_WEEK:

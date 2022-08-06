@@ -73,15 +73,15 @@ public class StoryView extends RelativeLayout implements Checkable {
     private final Drawable mCommentDrawable;
     private final View mBackground;
     private boolean mChecked;
-    
+
     public StoryView(Context context) {
         this(context, null);
     }
-    
+
     public StoryView(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
-    
+
     public StoryView(Context context, @Nullable AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.StoryView);
@@ -123,7 +123,7 @@ public class StoryView extends RelativeLayout implements Checkable {
         ta.recycle();
         a.recycle();
     }
-    
+
     @Override
     public void setChecked(boolean checked) {
         if (mChecked == checked) {
@@ -132,17 +132,17 @@ public class StoryView extends RelativeLayout implements Checkable {
         mChecked = checked;
         mBackground.setBackgroundColor(mChecked ? mHighlightColor : mBackgroundColor);
     }
-    
+
     @Override
     public boolean isChecked() {
         return mChecked;
     }
-    
+
     @Override
     public void toggle() {
         setChecked(!mChecked);
     }
-    
+
     public void setStory(@NonNull WebItem story, int hotThreshold) {
         if (!mIsLocal && story instanceof Item) {
             Item item = (Item) story;
@@ -193,7 +193,7 @@ public class StoryView extends RelativeLayout implements Checkable {
                 break;
         }
     }
-    
+
     public void reset() {
         if (!mIsLocal) {
             mRankTextView.setText(R.string.loading_text);
@@ -207,14 +207,14 @@ public class StoryView extends RelativeLayout implements Checkable {
         mSourceTextView.setCompoundDrawables(null, null, null, null);
         mCommentButton.setVisibility(View.INVISIBLE);
     }
-    
+
     public void setViewed(boolean isViewed) {
         if (mIsLocal) {
             return; // local always means viewed, do not decorate
         }
         mTitleTextView.setTextColor(isViewed ? mSecondaryTextColorResId : mTertiaryTextColorResId);
     }
-    
+
     public void setPromoted(int change) {
         SpannableString spannable = new SpannableString(String.format(Locale.US, PROMOTED, change));
         spannable.setSpan(new SuperscriptSpan(), 0, spannable.length(),
@@ -225,18 +225,18 @@ public class StoryView extends RelativeLayout implements Checkable {
                 Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         mRankTextView.append(spannable);
     }
-    
+
     public void setFavorite(boolean isFavorite) {
         if (mIsLocal) {
             return; // local item must be favorite, do not decorate
         }
         mBookmarked.setVisibility(isFavorite ? View.VISIBLE : View.INVISIBLE);
     }
-    
+
     public void setOnCommentClickListener(View.OnClickListener listener) {
         mCommentButton.setOnClickListener(listener);
     }
-    
+
     public void setUpdated(@NonNull Item story, boolean updated, int change) {
         if (mIsLocal) {
             return; // local items do not change
@@ -250,7 +250,7 @@ public class StoryView extends RelativeLayout implements Checkable {
             mCommentButton.append(decorateUpdated());
         }
     }
-    
+
     void animateVote(final int newScore) {
         if (mIsLocal) {
             return;
@@ -260,7 +260,7 @@ public class StoryView extends RelativeLayout implements Checkable {
             public void onAnimationStart(Animation animation) {
                 // no op
             }
-            
+
             @Override
             public void onAnimationEnd(Animation animation) {
                 new Handler().postDelayed(mVoteSwitcher::showNext, VOTE_DELAY_MILLIS);
@@ -268,7 +268,7 @@ public class StoryView extends RelativeLayout implements Checkable {
                         .getQuantityString(R.plurals.score, newScore, newScore));
                 mVoteSwitcher.getInAnimation().setAnimationListener(null);
             }
-            
+
             @Override
             public void onAnimationRepeat(Animation animation) {
                 // no op
@@ -276,11 +276,11 @@ public class StoryView extends RelativeLayout implements Checkable {
         });
         mVoteSwitcher.showNext();
     }
-    
+
     public View getMoreOptions() {
         return mMoreButton;
     }
-    
+
     private Spannable decorateUpdated() {
         SpannableStringBuilder sb = new SpannableStringBuilder("*");
         sb.setSpan(new AsteriskSpan(getContext()), sb.length() - 1, sb.length(),

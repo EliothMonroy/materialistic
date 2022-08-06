@@ -20,6 +20,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
+
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
@@ -28,6 +29,7 @@ import androidx.collection.ArrayMap;
 import androidx.appcompat.view.ActionMode;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.ItemTouchHelper;
+
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -55,12 +57,15 @@ import io.github.hidroh.materialistic.data.SyncScheduler;
 public class FavoriteRecyclerViewAdapter extends ListRecyclerViewAdapter
         <ListRecyclerViewAdapter.ItemViewHolder, Favorite> {
 
-    @Inject SyncScheduler mSyncScheduler;
+    @Inject
+    SyncScheduler mSyncScheduler;
 
     public interface ActionModeDelegate {
 
         boolean startActionMode(ActionMode.Callback callback);
+
         boolean isInActionMode();
+
         void stopActionMode();
     }
 
@@ -119,9 +124,12 @@ public class FavoriteRecyclerViewAdapter extends ListRecyclerViewAdapter
             notifyDataSetChanged();
         }
     };
-    @Synthetic final ActionModeDelegate mActionModeDelegate;
-    @Synthetic final MenuTintDelegate mMenuTintDelegate;
-    @Synthetic final ArrayMap<Integer, String> mSelected = new ArrayMap<>();
+    @Synthetic
+    final ActionModeDelegate mActionModeDelegate;
+    @Synthetic
+    final MenuTintDelegate mMenuTintDelegate;
+    @Synthetic
+    final ArrayMap<Integer, String> mSelected = new ArrayMap<>();
     private int mPendingAdd = -1;
 
     public FavoriteRecyclerViewAdapter(Context context, ActionModeDelegate actionModeDelegate) {

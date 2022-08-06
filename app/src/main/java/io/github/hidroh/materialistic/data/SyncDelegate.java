@@ -42,7 +42,6 @@ import android.webkit.WebView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.annotation.UiThread;
 import androidx.annotation.VisibleForTesting;
 import androidx.core.app.NotificationCompat;
@@ -70,7 +69,7 @@ public class SyncDelegate {
     private static final String SYNC_ACCOUNT_NAME = "Materialistic";
     private static final long TIMEOUT_MILLIS = DateUtils.MINUTE_IN_MILLIS;
     private static final String DOWNLOADS_CHANNEL_ID = "downloads";
-    
+
     private final HackerNewsClient.RestService mHnRestService;
     private final ReadabilityClient mReadabilityClient;
     private final SharedPreferences mSharedPreferences;
@@ -83,7 +82,7 @@ public class SyncDelegate {
     private Job mJob;
     @VisibleForTesting
     CacheableWebView mWebView;
-    
+
     @Inject
     SyncDelegate(Context context, RestServiceFactory factory,
                  ReadabilityClient readabilityClient) {
@@ -114,7 +113,7 @@ public class SyncDelegate {
                 .setCategory(NotificationCompat.CATEGORY_PROGRESS)
                 .setAutoCancel(true);
     }
-    
+
     @UiThread
     static void scheduleSync(Context context, Job job) {
         if (!Preferences.Offline.isEnabled(context)) {
@@ -148,11 +147,11 @@ public class SyncDelegate {
             ContentResolver.requestSync(syncAccount, SyncContentProvider.PROVIDER_AUTHORITY, extras);
         }
     }
-    
+
     void subscribe(ProgressListener listener) {
         mListener = listener;
     }
-    
+
     void performSync(@NonNull Job job) {
         // assume that connection wouldn't change until we finish syncing
         mJob = job;
@@ -166,14 +165,14 @@ public class SyncDelegate {
             syncDeferredItems();
         }
     }
-    
+
     private void syncDeferredItems() {
         Set<String> itemIds = mSharedPreferences.getAll().keySet();
         for (String itemId : itemIds) {
             scheduleSync(mContext, new JobBuilder(mContext, itemId).setNotificationEnabled(false).build());
         }
     }
-    
+
     private void sync(String itemId) {
         if (!mJob.connectionEnabled) {
             defer(itemId);
@@ -185,7 +184,7 @@ public class SyncDelegate {
         } else {
             updateProgress();
             // TODO defer on low battery as well?
-            mHnRestService.networkItem(itemId).enqueue(new Callback<HackerNewsItem>() {
+            mHnRestService.networkItem(itemId).enqueue(new Callback<>() {
                 @Override
                 public void onResponse(@NonNull Call<HackerNewsItem> call,
                                        @NonNull retrofit2.Response<HackerNewsItem> response) {
@@ -194,7 +193,7 @@ public class SyncDelegate {
                         sync(item);
                     }
                 }
-                
+
                 @Override
                 public void onFailure(@NonNull Call<HackerNewsItem> call, @NonNull Throwable t) {
                     notifyItem(itemId, null);
@@ -202,7 +201,7 @@ public class SyncDelegate {
             });
         }
     }
-    
+
     @Synthetic
     void sync(@NonNull HackerNewsItem item) {
         mSharedPreferences.edit().remove(item.getId()).apply();
@@ -211,14 +210,14 @@ public class SyncDelegate {
         syncArticle(item);
         syncChildren(item);
     }
-    
+
     private void syncReadability(@NonNull HackerNewsItem item) {
         if (mJob.readabilityEnabled && item.isStoryType()) {
             final String itemId = item.getId();
             mReadabilityClient.parse(itemId, item.getRawUrl(), content -> notifyReadability());
         }
     }
-    
+
     private void syncArticle(@NonNull HackerNewsItem item) {
         if (mJob.articleEnabled && item.isStoryType() && !TextUtils.isEmpty(item.getUrl())) {
             if (Looper.myLooper() == Looper.getMainLooper()) {
@@ -230,7 +229,7 @@ public class SyncDelegate {
             }
         }
     }
-    
+
     private void loadArticle(@NonNull final HackerNewsItem item) {
         mWebView = new CacheableWebView(mContext);
         mWebView.setWebViewClient(new AdBlockWebViewClient(Preferences.adBlockEnabled(mContext)));
@@ -244,7 +243,7 @@ public class SyncDelegate {
         notifyArticle(0);
         mWebView.loadUrl(item.getUrl());
     }
-    
+
     private void syncChildren(@NonNull HackerNewsItem item) {
         if (mJob.commentsEnabled && item.getKids() != null) {
             for (long id : item.getKids()) {
@@ -252,11 +251,11 @@ public class SyncDelegate {
             }
         }
     }
-    
+
     private void defer(String itemId) {
         mSharedPreferences.edit().putBoolean(itemId, true).apply();
     }
-    
+
     private HackerNewsItem getFromCache(String itemId) {
         try {
             return mHnRestService.cachedItem(itemId).execute().body();
@@ -264,7 +263,7 @@ public class SyncDelegate {
             return null;
         }
     }
-    
+
     @Synthetic
     void notifyItem(@NonNull String id, @Nullable HackerNewsItem item) {
         mSyncProgress.finishItem(id, item,
@@ -272,18 +271,18 @@ public class SyncDelegate {
                 mJob.readabilityEnabled && mJob.connectionEnabled);
         updateProgress();
     }
-    
+
     private void notifyReadability() {
         mSyncProgress.finishReadability();
         updateProgress();
     }
-    
+
     @Synthetic
     void notifyArticle(int newProgress) {
-        mSyncProgress.updateArticle(newProgress, 100);
+        mSyncProgress.updateArticle(newProgress);
         updateProgress();
     }
-    
+
     private void updateProgress() {
         if (mSyncProgress.getProgress() >= mSyncProgress.getMax()) { // TODO may never done
             finish(); // TODO finish once only
@@ -291,7 +290,7 @@ public class SyncDelegate {
             showProgress();
         }
     }
-    
+
     private void showProgress() {
         mNotificationManager.notify(Integer.parseInt(mJob.id), mNotificationBuilder
                 .setContentTitle(mSyncProgress.title)
@@ -302,7 +301,7 @@ public class SyncDelegate {
                 .setSortKey(mJob.id)
                 .build());
     }
-    
+
     private void finish() {
         if (mListener != null) {
             mListener.onDone(mJob.id);
@@ -310,7 +309,7 @@ public class SyncDelegate {
         }
         stopSync();
     }
-    
+
     void stopSync() {
         // TODO
         mJob.connectionEnabled = false;
@@ -318,7 +317,7 @@ public class SyncDelegate {
         mNotificationManager.cancel(id);
         mHandler.removeMessages(id);
     }
-    
+
     private PendingIntent getItemActivity(String itemId) {
         return PendingIntent.getActivity(mContext, 0,
                 new Intent(Intent.ACTION_VIEW)
@@ -329,14 +328,14 @@ public class SyncDelegate {
                         PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE :
                         PendingIntent.FLAG_ONE_SHOT);
     }
-    
+
     private static class SyncProgress {
         private final String id;
         private Boolean self;
         private int totalKids, finishedKids, webProgress, maxWebProgress;
         private Boolean readability;
         String title;
-        
+
         @Synthetic
         SyncProgress(Job job) {
             this.id = job.id;
@@ -350,15 +349,15 @@ public class SyncDelegate {
                 readability = false;
             }
         }
-        
+
         int getMax() {
             return 1 + totalKids + (readability != null ? 1 : 0) + maxWebProgress;
         }
-        
+
         int getProgress() {
             return (self != null ? 1 : 0) + finishedKids + (readability != null && readability ? 1 : 0) + webProgress;
         }
-        
+
         @Synthetic
         void finishItem(@NonNull String id, @Nullable HackerNewsItem item,
                         boolean kidsEnabled, boolean readabilityEnabled) {
@@ -368,18 +367,18 @@ public class SyncDelegate {
                 finishKid();
             }
         }
-        
+
         @Synthetic
         void finishReadability() {
             readability = true;
         }
-        
+
         @Synthetic
-        void updateArticle(int webProgress, int maxWebProgress) {
+        void updateArticle(int webProgress) {
             this.webProgress = webProgress;
-            this.maxWebProgress = maxWebProgress;
+            this.maxWebProgress = 100;
         }
-        
+
         private void finishSelf(@Nullable HackerNewsItem item, boolean kidsEnabled,
                                 boolean readabilityEnabled) {
             self = item != null;
@@ -394,29 +393,29 @@ public class SyncDelegate {
                 readability = false;
             }
         }
-        
+
         private void finishKid() {
             finishedKids++;
         }
     }
-    
+
     private static class BackgroundThreadExecutor implements Executor {
-        
+
         @Synthetic
         BackgroundThreadExecutor() {
         }
-        
+
         @Override
         public void execute(@NonNull Runnable r) {
             Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
             r.run();
         }
     }
-    
+
     interface ProgressListener {
         void onDone(String token);
     }
-    
+
     static class Job {
         private static final String EXTRA_ID = "extra:id";
         private static final String EXTRA_CONNECTION_ENABLED = "extra:connectionEnabled";
@@ -430,12 +429,11 @@ public class SyncDelegate {
         boolean articleEnabled;
         boolean commentsEnabled;
         boolean notificationEnabled;
-        
+
         Job(String id) {
             this.id = id;
         }
-        
-        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+
         Job(PersistableBundle bundle) {
             id = bundle.getString(EXTRA_ID);
             connectionEnabled = bundle.getInt(EXTRA_CONNECTION_ENABLED) == 1;
@@ -444,7 +442,7 @@ public class SyncDelegate {
             commentsEnabled = bundle.getInt(EXTRA_COMMENTS_ENABLED) == 1;
             notificationEnabled = bundle.getInt(EXTRA_NOTIFICATION_ENABLED) == 1;
         }
-        
+
         Job(Bundle bundle) {
             id = bundle.getString(EXTRA_ID);
             connectionEnabled = bundle.getBoolean(EXTRA_CONNECTION_ENABLED);
@@ -453,8 +451,7 @@ public class SyncDelegate {
             commentsEnabled = bundle.getBoolean(EXTRA_COMMENTS_ENABLED);
             notificationEnabled = bundle.getBoolean(EXTRA_NOTIFICATION_ENABLED);
         }
-        
-        @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+
         @Synthetic
         PersistableBundle toPersistableBundle() {
             PersistableBundle bundle = new PersistableBundle();
@@ -466,7 +463,7 @@ public class SyncDelegate {
             bundle.putInt(EXTRA_NOTIFICATION_ENABLED, notificationEnabled ? 1 : 0);
             return bundle;
         }
-        
+
         @Synthetic
         Bundle toBundle() {
             Bundle bundle = new Bundle();
@@ -479,10 +476,10 @@ public class SyncDelegate {
             return bundle;
         }
     }
-    
+
     public static class JobBuilder {
         private final Job job;
-        
+
         public JobBuilder(Context context, String id) {
             job = new Job(id);
             setConnectionEnabled(Preferences.Offline.currentConnectionEnabled(context));
@@ -491,28 +488,28 @@ public class SyncDelegate {
             setCommentsEnabled(Preferences.Offline.isCommentsEnabled(context));
             setNotificationEnabled(Preferences.Offline.isNotificationEnabled(context));
         }
-        
+
         void setConnectionEnabled(boolean connectionEnabled) {
             job.connectionEnabled = connectionEnabled;
         }
-        
+
         void setReadabilityEnabled(boolean readabilityEnabled) {
             job.readabilityEnabled = readabilityEnabled;
         }
-        
+
         void setArticleEnabled(boolean articleEnabled) {
             job.articleEnabled = articleEnabled;
         }
-        
+
         void setCommentsEnabled(boolean commentsEnabled) {
             job.commentsEnabled = commentsEnabled;
         }
-        
+
         public JobBuilder setNotificationEnabled(boolean notificationEnabled) {
             job.notificationEnabled = notificationEnabled;
             return this;
         }
-        
+
         public Job build() {
             return job;
         }

@@ -26,7 +26,7 @@ import android.os.Bundle;
 public abstract class AccountAuthenticatorActivity extends InjectableActivity {
     private AccountAuthenticatorResponse mAccountAuthenticatorResponse = null;
     private Bundle mResultBundle = null;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +36,7 @@ public abstract class AccountAuthenticatorActivity extends InjectableActivity {
             mAccountAuthenticatorResponse.onRequestContinued();
         }
     }
-    
+
     @Override
     public void finish() {
         if (mAccountAuthenticatorResponse != null) {
@@ -51,7 +51,7 @@ public abstract class AccountAuthenticatorActivity extends InjectableActivity {
         }
         super.finish();
     }
-    
+
     /**
      * Set the result that is to be sent as the result of the request that caused this
      * Activity to be launched. If result is null or this method is never called then

@@ -31,13 +31,13 @@ public abstract class LazyLoadFragment extends BaseFragment {
     private static final String STATE_LOADED = "state:loaded";
     private boolean mEagerLoad, mLoaded, mActivityCreated;
     private boolean mNewInstance;
-    
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         mNewInstance = false;
     }
-    
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +51,7 @@ public abstract class LazyLoadFragment extends BaseFragment {
                     !Preferences.shouldLazyLoad(getActivity());
         }
     }
-    
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -60,36 +60,36 @@ public abstract class LazyLoadFragment extends BaseFragment {
             eagerLoad();
         }
     }
-    
+
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(STATE_EAGER_LOAD, mEagerLoad);
         outState.putBoolean(STATE_LOADED, false); // allow re-loading on state restoration
     }
-    
+
     @Override
     public void onDetach() {
         super.onDetach();
         mActivityCreated = false;
     }
-    
+
     public void loadNow() {
         if (mActivityCreated) {
             mEagerLoad = true;
             eagerLoad();
         }
     }
-    
+
     /**
      * Load data after fragment becomes visible or if WIFI is enabled
      */
     protected abstract void load();
-    
+
     protected boolean isNewInstance() {
         return !getRetainInstance() || mNewInstance;
     }
-    
+
     final void eagerLoad() {
         if (mEagerLoad && !mLoaded) {
             mLoaded = true;

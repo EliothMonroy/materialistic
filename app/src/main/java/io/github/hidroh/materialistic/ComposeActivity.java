@@ -28,7 +28,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
 import java.lang.ref.WeakReference;
@@ -54,7 +53,7 @@ public class ComposeActivity extends InjectableActivity {
     private String mQuoteText;
     private String mParentId;
     private boolean mSending;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,11 +64,11 @@ public class ComposeActivity extends InjectableActivity {
         }
         AppUtils.setStatusBarColor(getWindow(), ContextCompat.getColor(this, R.color.blackT12));
         setContentView(R.layout.activity_compose);
-        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        setSupportActionBar(findViewById(R.id.toolbar));
         //noinspection ConstantConditions
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME |
                 ActionBar.DISPLAY_HOME_AS_UP);
-        mEditText = (EditText) findViewById(R.id.edittext_body);
+        mEditText = findViewById(R.id.edittext_body);
         if (savedInstanceState == null) {
             mEditText.setText(Preferences.getDraft(this, mParentId));
         }
@@ -89,7 +88,7 @@ public class ComposeActivity extends InjectableActivity {
                     toggle.setCompoundDrawablesWithIntrinsicBounds(0, 0,
                             R.drawable.ic_expand_more_white_24dp, 0);
                     textView.setVisibility(View.GONE);
-                    
+
                 } else {
                     toggle.setCompoundDrawablesWithIntrinsicBounds(0, 0,
                             R.drawable.ic_expand_less_white_24dp, 0);
@@ -98,13 +97,13 @@ public class ComposeActivity extends InjectableActivity {
             });
         }
     }
-    
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_compose, menu);
         return super.onCreateOptionsMenu(menu);
     }
-    
+
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.menu_quote).setVisible(!mSending && !TextUtils.isEmpty(mParentText));
@@ -113,7 +112,7 @@ public class ComposeActivity extends InjectableActivity {
         menu.findItem(R.id.menu_discard_draft).setEnabled(!mSending);
         return super.onPrepareOptionsMenu(menu);
     }
-    
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_send) {
@@ -152,7 +151,7 @@ public class ComposeActivity extends InjectableActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-    
+
     @Override
     public void onBackPressed() {
         if (mEditText.length() == 0 || mSending ||
@@ -171,7 +170,7 @@ public class ComposeActivity extends InjectableActivity {
                 })
                 .show();
     }
-    
+
     private void send() {
         String content = mEditText.getText().toString();
         Preferences.saveDraft(this, mParentId, content);
@@ -179,7 +178,7 @@ public class ComposeActivity extends InjectableActivity {
         Toast.makeText(this, R.string.sending, Toast.LENGTH_SHORT).show();
         mUserServices.reply(this, mParentId, content, new ComposeCallback(this, mParentId));
     }
-    
+
     @Synthetic
     void onSent(Boolean successful) {
         if (successful == null) {
@@ -198,7 +197,7 @@ public class ComposeActivity extends InjectableActivity {
             toggleControls(false);
         }
     }
-    
+
     private String createQuote() {
         if (mQuoteText == null) {
             mQuoteText = String.format(FORMAT_QUOTE, AppUtils.fromHtml(mParentText)
@@ -208,7 +207,7 @@ public class ComposeActivity extends InjectableActivity {
         }
         return mQuoteText;
     }
-    
+
     private void toggleControls(boolean sending) {
         if (isFinishing()) {
             return;
@@ -217,19 +216,19 @@ public class ComposeActivity extends InjectableActivity {
         mEditText.setEnabled(!sending);
         supportInvalidateOptionsMenu();
     }
-    
+
     static class ComposeCallback extends UserServices.Callback {
         private final WeakReference<ComposeActivity> mComposeActivity;
         private final Context mAppContext;
         private final String mParentId;
-        
+
         @Synthetic
         ComposeCallback(ComposeActivity composeActivity, String parentId) {
             mComposeActivity = new WeakReference<>(composeActivity);
             mAppContext = composeActivity.getApplicationContext();
             mParentId = parentId;
         }
-        
+
         @Override
         public void onDone(boolean successful) {
             Preferences.deleteDraft(mAppContext, mParentId);
@@ -237,7 +236,7 @@ public class ComposeActivity extends InjectableActivity {
                 mComposeActivity.get().onSent(successful);
             }
         }
-        
+
         @Override
         public void onError(Throwable throwable) {
             if (mComposeActivity.get() != null && !mComposeActivity.get().isActivityDestroyed()) {

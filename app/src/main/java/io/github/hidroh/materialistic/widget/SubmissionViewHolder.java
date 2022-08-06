@@ -23,7 +23,7 @@ import io.github.hidroh.materialistic.R;
 
 class SubmissionViewHolder extends ItemRecyclerViewAdapter.ItemViewHolder {
     final TextView mTitleTextView;
-    
+
     SubmissionViewHolder(View itemView) {
         super(itemView);
         mTitleTextView = itemView.findViewById(R.id.title);

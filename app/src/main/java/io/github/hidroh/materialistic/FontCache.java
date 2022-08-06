@@ -23,20 +23,20 @@ import android.text.TextUtils;
 import androidx.collection.ArrayMap;
 
 public class FontCache {
-    
+
     private static FontCache sInstance;
     private final ArrayMap<String, Typeface> mTypefaceMap = new ArrayMap<>();
-    
+
     public static FontCache getInstance() {
         if (sInstance == null) {
             sInstance = new FontCache();
         }
         return sInstance;
     }
-    
+
     private FontCache() {
     }
-    
+
     public Typeface get(Context context, String typefaceName) {
         if (TextUtils.isEmpty(typefaceName)) {
             return null;

@@ -30,22 +30,22 @@ import io.github.hidroh.materialistic.data.AlgoliaClient;
 import rx.schedulers.Schedulers;
 
 public class Application extends android.app.Application implements Injectable {
-    
+
     public static Typeface TYPE_FACE = null;
     private RefWatcher mRefWatcher;
     private ObjectGraph mApplicationGraph;
-    
+
     public static RefWatcher getRefWatcher(Context context) {
         Application application = (Application) context.getApplicationContext();
         return application.mRefWatcher;
     }
-    
+
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
         mApplicationGraph = ObjectGraph.create();
     }
-    
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -67,12 +67,12 @@ public class Application extends android.app.Application implements Injectable {
         AppUtils.registerAccountsUpdatedListener(this);
         AdBlocker.init(this, Schedulers.io());
     }
-    
+
     @Override
     public void inject(Object object) {
         getApplicationGraph().inject(object);
     }
-    
+
     @Override
     public ObjectGraph getApplicationGraph() {
         return mApplicationGraph;

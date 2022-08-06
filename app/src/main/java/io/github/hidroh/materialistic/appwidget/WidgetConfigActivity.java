@@ -31,7 +31,7 @@ import io.github.hidroh.materialistic.R;
 
 public class WidgetConfigActivity extends InjectableActivity {
     private int mAppWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,27 +56,27 @@ public class WidgetConfigActivity extends InjectableActivity {
         }
         findViewById(R.id.button_ok).setOnClickListener(v -> configure());
     }
-    
+
     @Override
     protected boolean isDialogTheme() {
         return true;
     }
-    
+
     private void configure() {
         new WidgetHelper(this).configure(mAppWidgetId);
         setResult(RESULT_OK, new Intent().putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, mAppWidgetId));
         finish();
     }
-    
+
     public static class WidgetConfigurationFragment extends PreferenceFragmentCompat {
-        
+
         private final SharedPreferences.OnSharedPreferenceChangeListener mListener =
                 (sharedPreferences, key) -> {
                     if (TextUtils.equals(key, getString(R.string.pref_widget_query))) {
                         setFilterQuery();
                     }
                 };
-        
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -84,31 +84,34 @@ public class WidgetConfigActivity extends InjectableActivity {
                 getPreferenceManager().setSharedPreferencesName(WidgetHelper.getConfigName(
                         getArguments().getInt(AppWidgetManager.EXTRA_APPWIDGET_ID)));
             }
-            getPreferenceManager().getSharedPreferences()
-                    .registerOnSharedPreferenceChangeListener(mListener);
+            if (getPreferenceManager().getSharedPreferences() != null) {
+                getPreferenceManager().getSharedPreferences()
+                        .registerOnSharedPreferenceChangeListener(mListener);
+            }
             setFilterQuery();
         }
-        
+
         @Override
         public void onCreatePreferences(Bundle bundle, String s) {
             addPreferencesFromResource(R.xml.preferences_widget);
         }
-        
+
         @Override
         public void onDestroy() {
             super.onDestroy();
-            getPreferenceManager().getSharedPreferences()
-                    .unregisterOnSharedPreferenceChangeListener(mListener);
+            if (getPreferenceManager().getSharedPreferences() != null) {
+                getPreferenceManager().getSharedPreferences()
+                        .unregisterOnSharedPreferenceChangeListener(mListener);
+            }
         }
-        
+
         private void setFilterQuery() {
             String key = getString(R.string.pref_widget_query);
             if (getPreferenceManager().findPreference(key) != null) {
                 getPreferenceManager().findPreference(key).setSummary(getPreferenceManager().getSharedPreferences()
                         .getString(key, null));
             }
-            
-            
+
         }
     }
 }

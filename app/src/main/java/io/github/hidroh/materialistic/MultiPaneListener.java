@@ -30,14 +30,14 @@ public interface MultiPaneListener {
      * @param item selected item or null if selection is clear
      */
     void onItemSelected(@Nullable WebItem item);
-    
+
     /**
      * Gets item that has been opened via {@link #onItemSelected(WebItem)}
      *
      * @return opened item or null
      */
     WebItem getSelectedItem();
-    
+
     /**
      * Checks if multi pane configuration is active
      *

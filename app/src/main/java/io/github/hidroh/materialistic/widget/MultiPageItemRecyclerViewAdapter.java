@@ -33,13 +33,13 @@ public class MultiPageItemRecyclerViewAdapter
         extends ItemRecyclerViewAdapter<ItemRecyclerViewAdapter.ItemViewHolder> {
     private static final int VIEW_TYPE_FOOTER = -1;
     private final Item[] mItems;
-    
+
     public MultiPageItemRecyclerViewAdapter(ItemManager itemManager, Item[] items) {
         super(itemManager);
         mItems = Arrays.copyOf(items, items.length + 1);
         mItems[items.length] = null; // footer
     }
-    
+
     @NonNull
     @Override
     public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -48,14 +48,14 @@ public class MultiPageItemRecyclerViewAdapter
         }
         return new ItemViewHolder(mLayoutInflater.inflate(R.layout.item_comment, parent, false));
     }
-    
+
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
         if (!holder.isFooter()) {
             super.onBindViewHolder(holder, position);
         }
     }
-    
+
     @Override
     public int getItemViewType(int position) {
         if (getItem(position) == null) {
@@ -63,12 +63,12 @@ public class MultiPageItemRecyclerViewAdapter
         }
         return super.getItemViewType(position);
     }
-    
+
     @Override
     protected Item getItem(int position) {
         return mItems[position];
     }
-    
+
     @Override
     protected void bind(final ItemViewHolder holder, final Item item) {
         super.bind(holder, item);
@@ -84,12 +84,12 @@ public class MultiPageItemRecyclerViewAdapter
             holder.mCommentButton.setOnClickListener(v -> openItem(item));
         }
     }
-    
+
     @Override
     public int getItemCount() {
         return mItems.length;
     }
-    
+
     private void openItem(Item item) {
         mContext.startActivity(new Intent(mContext, ItemActivity.class)
                 .putExtra(ItemActivity.EXTRA_ITEM, item)

@@ -59,6 +59,7 @@ import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
+
 import io.github.hidroh.materialistic.annotation.Synthetic;
 import io.github.hidroh.materialistic.data.FileDownloader;
 import io.github.hidroh.materialistic.data.Item;
@@ -77,7 +78,7 @@ import static android.view.View.VISIBLE;
 
 public class WebFragment extends LazyLoadFragment
         implements Scrollable, KeyDelegate.BackInterceptor {
-    public static final String EXTRA_ITEM = WebFragment.class.getName() +".EXTRA_ITEM";
+    public static final String EXTRA_ITEM = WebFragment.class.getName() + ".EXTRA_ITEM";
     private static final String STATE_EMPTY = "state:empty";
     private static final String STATE_READABILITY = "state:readability";
     static final String ACTION_FULLSCREEN = WebFragment.class.getName() + ".ACTION_FULLSCREEN";
@@ -87,11 +88,16 @@ public class WebFragment extends LazyLoadFragment
     private static final int DEFAULT_PROGRESS = 20;
     public static final String PDF_LOADER_URL = "file:///android_asset/pdf/index.html";
     private static final String PDF_MIME_TYPE = "application/pdf";
-    @Synthetic WebView mWebView;
+    @Synthetic
+    WebView mWebView;
     private NestedScrollView mScrollView;
-    @Synthetic boolean mExternalRequired = false;
-    @Inject @Named(ActivityModule.HN) ItemManager mItemManager;
-    @Inject PopupMenu mPopupMenu;
+    @Synthetic
+    boolean mExternalRequired = false;
+    @Inject
+    @Named(ActivityModule.HN)
+    ItemManager mItemManager;
+    @Inject
+    PopupMenu mPopupMenu;
     private KeyDelegate.NestedScrollViewHelper mScrollableHelper;
     private final Preferences.Observable mPreferenceObservable = new Preferences.Observable();
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -102,7 +108,8 @@ public class WebFragment extends LazyLoadFragment
     };
     private ViewGroup mFullscreenView;
     private ViewGroup mScrollViewContent;
-    @Synthetic ImageButton mButtonRefresh;
+    @Synthetic
+    ImageButton mButtonRefresh;
     private ViewSwitcher mControls;
     private EditText mEditText;
     private View mButtonMore;
@@ -113,8 +120,10 @@ public class WebFragment extends LazyLoadFragment
     protected String mContent;
     private AppUtils.SystemUiHelper mSystemUiHelper;
     private View mFragmentView;
-    @Inject ReadabilityClient mReadabilityClient;
-    @Inject FileDownloader mFileDownloader;
+    @Inject
+    ReadabilityClient mReadabilityClient;
+    @Inject
+    FileDownloader mFileDownloader;
     private WebItem mItem;
     private boolean mIsHackerNewsUrl, mEmpty, mReadability;
     private PdfAndroidJavascriptBridge mPdfAndroidJavascriptBridge;
@@ -142,7 +151,9 @@ public class WebFragment extends LazyLoadFragment
         } else {
             mReadability = Preferences.getDefaultStoryView(getActivity()) ==
                     Preferences.StoryViewMode.Readability;
-            mItem = getArguments().getParcelable(EXTRA_ITEM);
+            if (getArguments() != null) {
+                mItem = getArguments().getParcelable(EXTRA_ITEM);
+            }
         }
         mIsHackerNewsUrl = AppUtils.isHackerNewsUrl(mItem);
     }
@@ -151,16 +162,16 @@ public class WebFragment extends LazyLoadFragment
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         if (isNewInstance()) {
             mFragmentView = inflater.inflate(R.layout.fragment_web, container, false);
-            mFullscreenView = (ViewGroup) mFragmentView.findViewById(R.id.fullscreen);
-            mScrollViewContent = (ViewGroup) mFragmentView.findViewById(R.id.scroll_view_content);
-            mScrollView = (NestedScrollView) mFragmentView.findViewById(R.id.nested_scroll_view);
-            mControls = (ViewSwitcher) mFragmentView.findViewById(R.id.control_switcher);
-            mWebView = (WebView) mFragmentView.findViewById(R.id.web_view);
-            mButtonRefresh = (ImageButton) mFragmentView.findViewById(R.id.button_refresh);
+            mFullscreenView = mFragmentView.findViewById(R.id.fullscreen);
+            mScrollViewContent = mFragmentView.findViewById(R.id.scroll_view_content);
+            mScrollView = mFragmentView.findViewById(R.id.nested_scroll_view);
+            mControls = mFragmentView.findViewById(R.id.control_switcher);
+            mWebView = mFragmentView.findViewById(R.id.web_view);
+            mButtonRefresh = mFragmentView.findViewById(R.id.button_refresh);
             mButtonMore = mFragmentView.findViewById(R.id.button_more);
             mButtonNext = mFragmentView.findViewById(R.id.button_next);
             mButtonNext.setEnabled(false);
-            mEditText = (EditText) mFragmentView.findViewById(R.id.edittext);
+            mEditText = mFragmentView.findViewById(R.id.edittext);
             setUpWebControls(mFragmentView);
             setUpWebView(mFragmentView);
         }
@@ -419,7 +430,10 @@ public class WebFragment extends LazyLoadFragment
                         })
                         .setMenuItemVisible(R.id.menu_font_options, fontEnabled())
                         .show());
-        mEditText.setOnEditorActionListener((v, actionId, event) -> { findInPage(); return true; });
+        mEditText.setOnEditorActionListener((v, actionId, event) -> {
+            findInPage();
+            return true;
+        });
     }
 
     private void setUpWebView(View view) {
@@ -515,7 +529,7 @@ public class WebFragment extends LazyLoadFragment
             // so let's add some reasonable limit just in case
             int i = 0;
             while (mWebView.zoomOut() && i < 30) {
-              i++;
+                i++;
             }
             mFullscreenView.removeView(mScrollViewContent);
             mScrollView.addView(mScrollViewContent);
@@ -656,7 +670,8 @@ public class WebFragment extends LazyLoadFragment
 
     static class PdfAndroidJavascriptBridge {
         private final File mFile;
-        private @Nullable RandomAccessFile mRandomAccessFile;
+        private @Nullable
+        RandomAccessFile mRandomAccessFile;
         private @Nullable
         final Callbacks mCallback;
         private final Handler mHandler;
@@ -673,7 +688,7 @@ public class WebFragment extends LazyLoadFragment
                 if (mRandomAccessFile == null) {
                     mRandomAccessFile = new RandomAccessFile(mFile, "r");
                 }
-                final int bufferSize = (int)(end - begin);
+                final int bufferSize = (int) (end - begin);
                 byte[] data = new byte[bufferSize];
                 mRandomAccessFile.seek(begin);
                 mRandomAccessFile.read(data);
@@ -724,6 +739,7 @@ public class WebFragment extends LazyLoadFragment
 
         interface Callbacks {
             void onFailure();
+
             void onLoad();
         }
     }

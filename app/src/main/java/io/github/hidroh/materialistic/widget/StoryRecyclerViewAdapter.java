@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.collection.ArrayMap;
@@ -35,6 +36,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.SortedListAdapterCallback;
+
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
@@ -96,18 +98,26 @@ public class StoryRecyclerViewAdapter extends
             return item1.getLongId() == item2.getLongId();
         }
     };
-    @Inject @Named(ActivityModule.HN) ItemManager mItemManager;
-    @Inject SessionManager mSessionManager;
-    @Synthetic final SortedList<Item> mItems = new SortedList<>(Item.class, mSortedListCallback);
-    @Synthetic final ArraySet<Item> mAdded = new ArraySet<>();
-    @Synthetic final ArrayMap<String, Integer> mPromoted = new ArrayMap<>();
-    @Synthetic int mFavoriteRevision = 1;
+    @Inject
+    @Named(ActivityModule.HN)
+    ItemManager mItemManager;
+    @Inject
+    SessionManager mSessionManager;
+    @Synthetic
+    final SortedList<Item> mItems = new SortedList<>(Item.class, mSortedListCallback);
+    @Synthetic
+    final ArraySet<Item> mAdded = new ArraySet<>();
+    @Synthetic
+    final ArrayMap<String, Integer> mPromoted = new ArrayMap<>();
+    @Synthetic
+    int mFavoriteRevision = 1;
     private String mUsername;
     private boolean mHighlightUpdated = true;
     private boolean mShowAll = true;
     private int mCacheMode = ItemManager.MODE_DEFAULT;
     private final ItemTouchHelper mItemTouchHelper;
-    @Synthetic ItemTouchHelperCallback mCallback;
+    @Synthetic
+    ItemTouchHelperCallback mCallback;
     @SuppressLint("NotifyDataSetChanged")
     private final Observer<Uri> mObserver = uri -> {
         if (uri == null) {
@@ -553,7 +563,7 @@ public class StoryRecyclerViewAdapter extends
 
         @Synthetic
         ItemResponseListener(StoryRecyclerViewAdapter adapter,
-                                    Item partialItem) {
+                             Item partialItem) {
             mAdapter = new WeakReference<>(adapter);
             mPartialItem = partialItem;
         }
@@ -579,7 +589,7 @@ public class StoryRecyclerViewAdapter extends
 
         @Synthetic
         VoteCallback(StoryRecyclerViewAdapter adapter, int position,
-                            Item item) {
+                     Item item) {
             mAdapter = new WeakReference<>(adapter);
             mPosition = position;
             mItem = item;

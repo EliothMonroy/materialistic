@@ -30,13 +30,13 @@ import androidx.fragment.app.Fragment;
 public abstract class BaseFragment extends Fragment {
     protected final MenuTintDelegate mMenuTintDelegate = new MenuTintDelegate();
     private boolean mAttached;
-    
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         mAttached = true;
     }
-    
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -45,7 +45,7 @@ public abstract class BaseFragment extends Fragment {
         }
         mMenuTintDelegate.onActivityCreated(getActivity());
     }
-    
+
     @Override
     public final void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         if (isAttached()) { // TODO http://b.android.com/80783
@@ -53,34 +53,36 @@ public abstract class BaseFragment extends Fragment {
             mMenuTintDelegate.onOptionsMenuCreated(menu);
         }
     }
-    
+
     @Override
     public final void onPrepareOptionsMenu(@NonNull Menu menu) {
         if (isAttached()) { // TODO http://b.android.com/80783
             prepareOptionsMenu(menu);
         }
     }
-    
+
     @Override
     public void onDetach() {
         super.onDetach();
         mAttached = false;
     }
-    
+
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Application.getRefWatcher(getActivity()).watch(this);
+        if (getActivity() != null) {
+            Application.getRefWatcher(getActivity()).watch(this);
+        }
     }
-    
+
     public boolean isAttached() {
         return mAttached;
     }
-    
+
     protected void createOptionsMenu(Menu menu, MenuInflater inflater) {
         // override to create options menu
     }
-    
+
     protected void prepareOptionsMenu(Menu menu) {
         // override to prepare options menu
     }

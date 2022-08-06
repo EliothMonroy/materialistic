@@ -27,7 +27,7 @@ public class TextView extends AppCompatTextView {
     public TextView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
-    
+
     public TextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         if (!isInEditMode()) {

@@ -29,13 +29,13 @@ import io.github.hidroh.materialistic.widget.CacheableWebView;
 
 public class WebCacheService extends Service {
     static final String EXTRA_URL = "extra:url";
-    
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
-    
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent == null) { // restarted

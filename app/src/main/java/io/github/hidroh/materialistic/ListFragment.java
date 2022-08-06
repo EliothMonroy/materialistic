@@ -47,7 +47,7 @@ import io.github.hidroh.materialistic.widget.StoryRecyclerViewAdapter;
 import rx.Scheduler;
 
 public class ListFragment extends BaseListFragment {
-    
+
     public static final String EXTRA_ITEM_MANAGER = ListFragment.class.getName() + ".EXTRA_ITEM_MANAGER";
     public static final String EXTRA_FILTER = ListFragment.class.getName() + ".EXTRA_FILTER";
     private static final String STATE_FILTER = "state:filter";
@@ -90,11 +90,11 @@ public class ListFragment extends BaseListFragment {
     private RefreshCallback mRefreshCallback;
     private String mFilter;
     private int mCacheMode = ItemManager.MODE_DEFAULT;
-    
+
     public interface RefreshCallback {
         void onRefreshed();
     }
-    
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -106,7 +106,7 @@ public class ListFragment extends BaseListFragment {
                 R.string.pref_username,
                 R.string.pref_auto_viewed);
     }
-    
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -117,7 +117,7 @@ public class ListFragment extends BaseListFragment {
             mFilter = getArguments().getString(EXTRA_FILTER);
         }
     }
-    
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -139,7 +139,7 @@ public class ListFragment extends BaseListFragment {
         });
         return view;
     }
-    
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -171,9 +171,9 @@ public class ListFragment extends BaseListFragment {
         getAdapter().setUpdateListener((showAll, itemCount, actionClickListener) -> {
             if (showAll) {
                 Snackbar.make(mRecyclerView,
-                        getResources().getQuantityString(R.plurals.new_stories_count,
-                                itemCount, itemCount),
-                        Snackbar.LENGTH_LONG)
+                                getResources().getQuantityString(R.plurals.new_stories_count,
+                                        itemCount, itemCount),
+                                Snackbar.LENGTH_LONG)
                         .setAction(R.string.show_me, actionClickListener)
                         .show();
             } else {
@@ -183,7 +183,7 @@ public class ListFragment extends BaseListFragment {
                         Snackbar.LENGTH_INDEFINITE);
                 snackbar.setAction(R.string.show_all, actionClickListener).show();
             }
-            
+
         });
         mStoryListViewModel = new ViewModelProvider(this).get(StoryListViewModel.class);
         mStoryListViewModel.inject(itemManager, mIoThreadScheduler);
@@ -199,28 +199,28 @@ public class ListFragment extends BaseListFragment {
             }
         });
     }
-    
+
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(STATE_FILTER, mFilter);
         outState.putInt(STATE_CACHE_MODE, mCacheMode);
     }
-    
+
     @Override
     public void onDetach() {
         mPreferenceObservable.unsubscribe(getActivity());
         mRefreshCallback = null;
         super.onDetach();
     }
-    
+
     public void filter(String filter) {
         mFilter = filter;
         getAdapter().setHighlightUpdated(false);
         mSwipeRefreshLayout.setRefreshing(true);
         refresh();
     }
-    
+
     @Override
     protected StoryRecyclerViewAdapter getAdapter() {
         if (mAdapter == null) {
@@ -228,18 +228,18 @@ public class ListFragment extends BaseListFragment {
         }
         return mAdapter;
     }
-    
+
     private void onPreferenceChanged(int key, boolean contextChanged) {
         if (!contextChanged) {
             getAdapter().initDisplayOptions(mRecyclerView);
         }
     }
-    
+
     private void refresh() {
         getAdapter().setShowAll(true);
         mStoryListViewModel.refreshStories(mFilter, mCacheMode);
     }
-    
+
     @Synthetic
     void onItemsLoaded(Item[] items) {
         if (!isAttached()) {

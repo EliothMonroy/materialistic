@@ -30,24 +30,24 @@ import java.util.List;
 
 public class FabAwareScrollBehavior extends AppBarLayout.ScrollingViewBehavior {
     static final Object HIDDEN = new Object();
-    
+
     public FabAwareScrollBehavior(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
-    
+
     @Override
     public boolean layoutDependsOn(CoordinatorLayout parent, View child, View dependency) {
         return super.layoutDependsOn(parent, child, dependency) ||
                 dependency instanceof FloatingActionButton;
     }
-    
+
     @Override
     public boolean onStartNestedScroll(@NonNull CoordinatorLayout coordinatorLayout, @NonNull View child, @NonNull View directTargetChild, @NonNull View target, int axes, int type) {
         // Ensure we react to vertical scrolling
         return axes == ViewCompat.SCROLL_AXIS_VERTICAL
                 || super.onStartNestedScroll(coordinatorLayout, child, directTargetChild, target, axes, type);
     }
-    
+
     @Override
     public void onNestedScroll(@NonNull CoordinatorLayout coordinatorLayout, @NonNull View child, @NonNull View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed, int type) {
         super.onNestedScroll(coordinatorLayout, child, target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, type);

@@ -41,7 +41,7 @@ import javax.inject.Inject;
 import io.github.hidroh.materialistic.annotation.Synthetic;
 
 public abstract class DrawerActivity extends InjectableActivity {
-    
+
     @Inject
     AlertDialogBuilder mAlertDialogBuilder;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -61,14 +61,14 @@ public abstract class DrawerActivity extends InjectableActivity {
             setUsername();
         }
     };
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_drawer);
         mDrawer = findViewById(R.id.drawer);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerAccount = (TextView) findViewById(R.id.drawer_account);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
+        mDrawerAccount = findViewById(R.id.drawer_account);
         mDrawerLogout = findViewById(R.id.drawer_logout);
         mDrawerUser = findViewById(R.id.drawer_user);
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.open_drawer,
@@ -95,24 +95,24 @@ public abstract class DrawerActivity extends InjectableActivity {
         setUpDrawer();
         setUsername();
     }
-    
+
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         mDrawerToggle.syncState();
     }
-    
+
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
-    
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return mDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
     }
-    
+
     @Override
     public void onBackPressed() {
         if (mDrawerLayout.isDrawerOpen(mDrawer)) {
@@ -123,7 +123,7 @@ public abstract class DrawerActivity extends InjectableActivity {
             super.onBackPressed();
         }
     }
-    
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -131,14 +131,14 @@ public abstract class DrawerActivity extends InjectableActivity {
         PreferenceManager.getDefaultSharedPreferences(this)
                 .unregisterOnSharedPreferenceChangeListener(mLoginListener);
     }
-    
+
     @Override
     public void setContentView(int layoutResID) {
         ViewGroup drawerLayout = (ViewGroup) findViewById(R.id.drawer_layout);
         View view = getLayoutInflater().inflate(layoutResID, drawerLayout, false);
         drawerLayout.addView(view, 0);
     }
-    
+
     private void setUpDrawer() {
         mDrawerAccount.setOnClickListener(v -> showLogin());
         mDrawerLogout.setOnClickListener(v -> confirmLogout());
@@ -179,9 +179,9 @@ public abstract class DrawerActivity extends InjectableActivity {
             navigate(UserActivity.class, extras);
         });
         findViewById(R.id.drawer_feedback).setOnClickListener(v -> navigate(FeedbackActivity.class));
-        
+
     }
-    
+
     private void showLogin() {
         Account[] accounts = AccountManager.get(this)
                 .getAccountsByType(BuildConfig.APPLICATION_ID);
@@ -191,7 +191,7 @@ public abstract class DrawerActivity extends InjectableActivity {
             AppUtils.showAccountChooser(this, mAlertDialogBuilder, accounts);
         }
     }
-    
+
     private void confirmLogout() {
         mAlertDialogBuilder.init(this)
                 .setMessage(R.string.logout_confirm)
@@ -200,17 +200,17 @@ public abstract class DrawerActivity extends InjectableActivity {
                         Preferences.setUsername(this, null))
                 .show();
     }
-    
+
     private void navigate(Class<? extends Activity> activityClass) {
         navigate(activityClass, null);
     }
-    
+
     private void navigate(Class<? extends Activity> activityClass, @Nullable Bundle extras) {
         mPendingNavigation = !getClass().equals(activityClass) ? activityClass : null;
         mPendingNavigationExtras = extras;
         closeDrawers();
     }
-    
+
     private void setUsername() {
         String username = Preferences.getUsername(this);
         if (!TextUtils.isEmpty(username)) {
@@ -223,7 +223,7 @@ public abstract class DrawerActivity extends InjectableActivity {
             mDrawerUser.setVisibility(View.GONE);
         }
     }
-    
+
     private void closeDrawers() {
         mDrawerLayout.closeDrawers();
     }

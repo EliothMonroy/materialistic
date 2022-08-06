@@ -45,7 +45,7 @@ import io.github.hidroh.materialistic.annotation.Synthetic;
 
 class HackerNewsItem implements Item {
     private static final String AUTHOR_SEPARATOR = " - ";
-    
+
     // The item's unique id. Required.
     @Keep
     private final long id;
@@ -89,7 +89,7 @@ class HackerNewsItem implements Item {
     // In the case of stories or polls, the total comment count.
     @Keep
     private int descendants = -1;
-    
+
     // view state
     private boolean favorite;
     private boolean viewed;
@@ -104,7 +104,7 @@ class HackerNewsItem implements Item {
     private boolean voted;
     private boolean pendingVoted;
     private long next, previous;
-    
+
     // non parcelable fields
     private HackerNewsItem[] kidItems;
     private HackerNewsItem parentItem;
@@ -112,28 +112,28 @@ class HackerNewsItem implements Item {
     private Spannable displayedAuthor;
     private CharSequence displayedText;
     private int defaultColor;
-    
-    public static final Creator<HackerNewsItem> CREATOR = new Creator<HackerNewsItem>() {
+
+    public static final Creator<HackerNewsItem> CREATOR = new Creator<>() {
         @Override
         public HackerNewsItem createFromParcel(Parcel source) {
             return new HackerNewsItem(source);
         }
-        
+
         @Override
         public HackerNewsItem[] newArray(int size) {
             return new HackerNewsItem[size];
         }
     };
-    
+
     HackerNewsItem(long id) {
         this.id = id;
     }
-    
+
     private HackerNewsItem(long id, int level) {
         this(id);
         this.level = level;
     }
-    
+
     @Synthetic
     HackerNewsItem(Parcel source) {
         id = source.readLong();
@@ -164,7 +164,7 @@ class HackerNewsItem implements Item {
         next = source.readLong();
         previous = source.readLong();
     }
-    
+
     @Override
     public void populate(Item info) {
         title = info.getTitle();
@@ -186,37 +186,37 @@ class HackerNewsItem implements Item {
         favorite = info.isFavorite();
         localRevision = 1;
     }
-    
+
     @Override
     public String getRawType() {
         return type;
     }
-    
+
     @Override
     public String getRawUrl() {
         return url;
     }
-    
+
     @Override
     public long[] getKids() {
         return kids;
     }
-    
+
     @Override
     public String getBy() {
         return by;
     }
-    
+
     @Override
     public long getTime() {
         return time;
     }
-    
+
     @Override
     public int describeContents() {
         return 0;
     }
-    
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(id);
@@ -247,22 +247,22 @@ class HackerNewsItem implements Item {
         dest.writeLong(next);
         dest.writeLong(previous);
     }
-    
+
     @Override
     public String getId() {
         return String.valueOf(id);
     }
-    
+
     @Override
     public long getLongId() {
         return id;
     }
-    
+
     @Override
     public String getTitle() {
         return title;
     }
-    
+
     @Override
     public String getDisplayedTitle() {
         switch (getType()) {
@@ -275,13 +275,13 @@ class HackerNewsItem implements Item {
                 return title;
         }
     }
-    
+
     @NonNull
     @Override
     public String getType() {
         return !TextUtils.isEmpty(type) ? type : STORY_TYPE;
     }
-    
+
     @Override
     public Spannable getDisplayedAuthor(Context context, boolean linkify, int color) {
         if (displayedAuthor == null) {
@@ -301,7 +301,7 @@ class HackerNewsItem implements Item {
                 Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         return displayedAuthor;
     }
-    
+
     @Override
     public Spannable getDisplayedTime(Context context) {
         if (displayedTime == null) {
@@ -318,31 +318,31 @@ class HackerNewsItem implements Item {
         }
         return displayedTime;
     }
-    
+
     @Override
     public int getKidCount() {
         if (descendants > 0) {
             return descendants;
         }
-        
+
         return kids != null ? kids.length : 0;
     }
-    
+
     @Override
     public int getLastKidCount() {
         return lastKidCount;
     }
-    
+
     @Override
     public void setLastKidCount(int lastKidCount) {
         this.lastKidCount = lastKidCount;
     }
-    
+
     @Override
     public boolean hasNewKids() {
         return hasNewDescendants;
     }
-    
+
     @Override
     public String getUrl() {
         switch (getType()) {
@@ -354,7 +354,7 @@ class HackerNewsItem implements Item {
                 return TextUtils.isEmpty(url) ? getItemUrl(getId()) : url;
         }
     }
-    
+
     @NonNull
     private SpannableString createAuthorSpannable(boolean authorLink) {
         SpannableString bySpannable = new SpannableString(AUTHOR_SEPARATOR + by);
@@ -370,7 +370,7 @@ class HackerNewsItem implements Item {
                 view.getContext().startActivity(new Intent(Intent.ACTION_VIEW)
                         .setData(AppUtils.createUserUri(getBy())));
             }
-            
+
             @Override
             public void updateDrawState(TextPaint ds) {
                 super.updateDrawState(ds);
@@ -382,22 +382,22 @@ class HackerNewsItem implements Item {
                 Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         return bySpannable;
     }
-    
+
     private String getItemUrl(String itemId) {
         return String.format(HackerNewsClient.WEB_ITEM_PATH, itemId);
     }
-    
+
     @Override
     public String getSource() {
         return TextUtils.isEmpty(getUrl()) ? null : Uri.parse(getUrl()).getHost();
     }
-    
+
     @Override
     public HackerNewsItem[] getKidItems() {
         if (kids == null || kids.length == 0) {
             return new HackerNewsItem[0];
         }
-        
+
         if (kidItems == null) {
             kidItems = new HackerNewsItem[kids.length];
             for (int i = 0; i < kids.length; i++) {
@@ -412,15 +412,15 @@ class HackerNewsItem implements Item {
                 kidItems[i] = item;
             }
         }
-        
+
         return kidItems;
     }
-    
+
     @Override
     public String getText() {
         return text;
     }
-    
+
     @Override
     public CharSequence getDisplayedText() {
         if (displayedText == null) {
@@ -428,7 +428,7 @@ class HackerNewsItem implements Item {
         }
         return displayedText;
     }
-    
+
     @Override
     public boolean isStoryType() {
         switch (getType()) {
@@ -441,52 +441,52 @@ class HackerNewsItem implements Item {
                 return false;
         }
     }
-    
+
     @Override
     public boolean isFavorite() {
         return favorite;
     }
-    
+
     @Override
     public void setFavorite(boolean favorite) {
         this.favorite = favorite;
     }
-    
+
     @Override
     public int getLocalRevision() {
         return localRevision;
     }
-    
+
     @Override
     public void setLocalRevision(int localRevision) {
         this.localRevision = localRevision;
     }
-    
+
     @Override
     public int getDescendants() {
         return descendants;
     }
-    
+
     @Override
     public boolean isViewed() {
         return viewed;
     }
-    
+
     @Override
     public void setIsViewed(boolean isViewed) {
         viewed = isViewed;
     }
-    
+
     @Override
     public int getLevel() {
         return level;
     }
-    
+
     @Override
     public String getParent() {
         return String.valueOf(parent);
     }
-    
+
     @Override
     public Item getParentItem() {
         if (parent == 0) {
@@ -497,69 +497,69 @@ class HackerNewsItem implements Item {
         }
         return parentItem;
     }
-    
+
     @Override
     public boolean isDeleted() {
         return deleted;
     }
-    
+
     @Override
     public boolean isDead() {
         return dead;
     }
-    
+
     @Override
     public int getScore() {
         return score;
     }
-    
+
     @Override
     public void incrementScore() {
         score++;
         voted = true;
         pendingVoted = true;
     }
-    
+
     @Override
     public boolean isVoted() {
         return voted;
     }
-    
+
     @Override
     public boolean isPendingVoted() {
         return pendingVoted;
     }
-    
+
     @Override
     public void clearPendingVoted() {
         pendingVoted = false;
     }
-    
+
     @Override
     public boolean isCollapsed() {
         return collapsed;
     }
-    
+
     @Override
     public void setCollapsed(boolean collapsed) {
         this.collapsed = collapsed;
     }
-    
+
     @Override
     public int getRank() {
         return rank;
     }
-    
+
     @Override
     public boolean isContentExpanded() {
         return contentExpanded;
     }
-    
+
     @Override
     public void setContentExpanded(boolean expanded) {
         contentExpanded = expanded;
     }
-    
+
     @Override
     public long getNeighbour(int direction) {
         switch (direction) {
@@ -575,17 +575,17 @@ class HackerNewsItem implements Item {
                 return 0L;
         }
     }
-    
+
     @Override
     public int hashCode() {
         return (int) id;
     }
-    
+
     @Override
     public boolean equals(Object o) {
         return o instanceof HackerNewsItem && id == ((HackerNewsItem) o).id;
     }
-    
+
     void preload() {
         getDisplayedText(); // pre-load HTML
         getKidItems(); // pre-construct kids

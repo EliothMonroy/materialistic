@@ -22,14 +22,14 @@ import android.content.Context;
  * Represents an item that can be displayed as story/comment
  */
 public interface Item extends WebItem {
-    
+
     /**
      * Sets information from given item
      *
      * @param info source item
      */
     void populate(Item info);
-    
+
     /**
      * Gets raw item type, used to be parsed by {@link #getType()}
      *
@@ -37,7 +37,7 @@ public interface Item extends WebItem {
      * @see Type
      */
     String getRawType();
-    
+
     /**
      * Gets raw URL
      *
@@ -45,7 +45,7 @@ public interface Item extends WebItem {
      * @see #getUrl()
      */
     String getRawUrl();
-    
+
     /**
      * Gets array of kid IDs
      *
@@ -54,7 +54,7 @@ public interface Item extends WebItem {
      * @see #getKidItems()
      */
     long[] getKids();
-    
+
     /**
      * Gets author name
      *
@@ -62,7 +62,7 @@ public interface Item extends WebItem {
      * @see WebItem#getDisplayedAuthor(Context, boolean, int)
      */
     String getBy();
-    
+
     /**
      * Gets posted time
      *
@@ -70,7 +70,7 @@ public interface Item extends WebItem {
      * @see WebItem#getDisplayedAuthor(Context, boolean, int)
      */
     long getTime();
-    
+
     /**
      * Gets title
      *
@@ -78,7 +78,7 @@ public interface Item extends WebItem {
      * @see #getDisplayedTitle()
      */
     String getTitle();
-    
+
     /**
      * Gets item text
      *
@@ -86,7 +86,7 @@ public interface Item extends WebItem {
      * @see #getDisplayedTitle()
      */
     String getText();
-    
+
     /**
      * Gets number of kids, contained in {@link #getKids()}
      *
@@ -95,7 +95,7 @@ public interface Item extends WebItem {
      * @see #getKidItems()
      */
     int getKidCount();
-    
+
     /**
      * Gets previous number of kids, before {@link #populate(Item)} is called
      *
@@ -103,21 +103,21 @@ public interface Item extends WebItem {
      * @see #setLastKidCount(int)
      */
     int getLastKidCount();
-    
+
     /**
      * Sets previous number of kids, before {@link #populate(Item)} is called
      *
      * @param lastKidCount previous number of kids
      */
     void setLastKidCount(int lastKidCount);
-    
+
     /**
      * Checks if item has new kids after {@link #populate(Item)}
      *
      * @return true if has new kids, false otherwise
      */
     boolean hasNewKids();
-    
+
     /**
      * Gets array of kids, with corresponding IDs in {@link #getKids()}
      *
@@ -126,7 +126,7 @@ public interface Item extends WebItem {
      * @see #getKidCount()
      */
     Item[] getKidItems();
-    
+
     /**
      * Gets item's current revision. A revision can be used to determined if item state is stale
      * and needs updated
@@ -137,7 +137,7 @@ public interface Item extends WebItem {
      * @see #setFavorite(boolean)
      */
     int getLocalRevision();
-    
+
     /**
      * Updates item's current revision to new one
      *
@@ -145,75 +145,75 @@ public interface Item extends WebItem {
      * @see #getLocalRevision()
      */
     void setLocalRevision(int localRevision);
-    
+
     /**
      * Gets item's descendants if any
      *
      * @return item's descendants or -1 if none
      */
     int getDescendants();
-    
+
     /**
      * Indicates if this item has been viewed
      *
      * @return true if viewed, falst if not, null if unknown
      */
     boolean isViewed();
-    
+
     /**
      * Sets item view status
      *
      * @param isViewed true if has been viewed, false otherwise
      */
     void setIsViewed(boolean isViewed);
-    
+
     /**
      * Gets item level, i.e. how many ascendants it has
      *
      * @return item level
      */
     int getLevel();
-    
+
     /**
      * Gets parent ID if any
      *
      * @return parent ID or 0 if none
      */
     String getParent();
-    
+
     /**
      * Gets parent item if any
      *
      * @return parent item or null
      */
     Item getParentItem();
-    
+
     /**
      * Checks if item has been deleted
      *
      * @return true if deleted, false otherwise
      */
     boolean isDeleted();
-    
+
     /**
      * Checks if item is dead
      *
      * @return true if dead, false otherwise
      */
     boolean isDead();
-    
+
     /**
      * Gets item's score
      *
      * @return item's score
      */
     int getScore();
-    
+
     /**
      * Increments item's score
      */
     void incrementScore();
-    
+
     /**
      * Checks if item has been voted via a user action
      *
@@ -221,7 +221,7 @@ public interface Item extends WebItem {
      * @see #incrementScore()
      */
     boolean isVoted();
-    
+
     /**
      * Checks if item has pending vote via a user action
      *
@@ -229,7 +229,7 @@ public interface Item extends WebItem {
      * @see #incrementScore()
      */
     boolean isPendingVoted();
-    
+
     /**
      * Clears pending voted status
      *
@@ -237,43 +237,43 @@ public interface Item extends WebItem {
      * @see #incrementScore()
      */
     void clearPendingVoted();
-    
+
     /**
      * Checks if item is collapsed
      *
      * @return true if collapsed, false otherwise
      */
     boolean isCollapsed();
-    
+
     /**
      * Sets item collapsed state
      *
      * @param collapsed true to collapse, false otherwise
      */
     void setCollapsed(boolean collapsed);
-    
+
     /**
      * Gets item's rank among its siblings
      *
      * @return item's rank
      */
     int getRank();
-    
+
     /**
      * Checks if item content is expanded
      *
      * @return true if expanded, false otherwise
      */
     boolean isContentExpanded();
-    
+
     /**
      * Sets item content expanded state
      *
      * @param expanded true to expand, false otherwise
      */
     void setContentExpanded(boolean expanded);
-    
+
     long getNeighbour(int direction);
-    
+
     CharSequence getDisplayedText();
 }

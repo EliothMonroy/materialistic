@@ -44,9 +44,10 @@ import static org.mockito.Mockito.when;
 public class UserServicesClientTest {
     private UserServices userServices;
     private Call call;
-    private Response.Builder responseBuilder = createResponseBuilder();
+    private final Response.Builder responseBuilder = createResponseBuilder();
     private Account account;
-    @Captor ArgumentCaptor<Throwable> throwableCaptor;
+    @Captor
+    ArgumentCaptor<Throwable> throwableCaptor;
 
     @Before
     public void setUp() {

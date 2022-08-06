@@ -36,15 +36,15 @@ public class IconButton extends AppCompatImageButton {
     };
     private final ColorStateList mColorStateList;
     private final boolean mTinted;
-    
+
     public IconButton(Context context) {
         this(context, null);
     }
-    
+
     public IconButton(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
-    
+
     public IconButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setBackgroundResource(AppUtils.getThemedResId(context, R.attr.selectableItemBackgroundBorderless));
@@ -63,17 +63,17 @@ public class IconButton extends AppCompatImageButton {
         setImageDrawable(getDrawable());
         ta.recycle();
     }
-    
+
     @Override
     public void setImageResource(int resId) {
         setImageDrawable(ContextCompat.getDrawable(getContext(), resId));
     }
-    
+
     @Override
     public void setImageDrawable(Drawable drawable) {
         super.setImageDrawable(tint(drawable));
     }
-    
+
     private Drawable tint(Drawable drawable) {
         if (drawable == null) {
             return null;

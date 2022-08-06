@@ -37,7 +37,7 @@ import java.lang.annotation.RetentionPolicy;
  * Helper that intercepts key events and interprets them into navigation actions
  */
 public class KeyDelegate {
-    
+
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({
             DIRECTION_NONE,
@@ -46,11 +46,11 @@ public class KeyDelegate {
     })
     @interface Direction {
     }
-    
+
     private static final int DIRECTION_NONE = 0;
     private static final int DIRECTION_UP = 1;
     private static final int DIRECTION_DOWN = 2;
-    
+
     private final SharedPreferences.OnSharedPreferenceChangeListener mPreferenceListener;
     private String mPreferenceKey;
     private boolean mEnabled;
@@ -58,7 +58,7 @@ public class KeyDelegate {
     private AppBarLayout mAppBarLayout;
     private boolean mAppBarEnabled = true;
     private BackInterceptor mBackInterceptor;
-    
+
     public KeyDelegate() {
         mPreferenceListener = (sharedPreferences, key) -> {
             if (TextUtils.equals(key, mPreferenceKey)) {
@@ -66,7 +66,7 @@ public class KeyDelegate {
             }
         };
     }
-    
+
     /**
      * Attaches this delegate to given activity lifecycle
      * Should call {@link #detach(Activity)} accordingly
@@ -81,7 +81,7 @@ public class KeyDelegate {
         PreferenceManager.getDefaultSharedPreferences(activity)
                 .registerOnSharedPreferenceChangeListener(mPreferenceListener);
     }
-    
+
     /**
      * Detaches this delegate from given activity lifecycle
      * Should already call {@link #attach(Activity)}
@@ -95,7 +95,7 @@ public class KeyDelegate {
         mScrollable = null;
         mAppBarLayout = null;
     }
-    
+
     /**
      * Binds navigation objects that would be scrolled by key events
      *
@@ -106,7 +106,7 @@ public class KeyDelegate {
         mScrollable = scrollable;
         mAppBarLayout = appBarLayout;
     }
-    
+
     /**
      * Toggle {@link AppBarLayout} expand/collapse
      *
@@ -115,7 +115,7 @@ public class KeyDelegate {
     void setAppBarEnabled(boolean enabled) {
         mAppBarEnabled = enabled;
     }
-    
+
     /**
      * Intercepts back pressed
      *
@@ -124,7 +124,7 @@ public class KeyDelegate {
     void setBackInterceptor(BackInterceptor backInterceptor) {
         mBackInterceptor = backInterceptor;
     }
-    
+
     /**
      * Calls from {@link Activity#onKeyDown(int, KeyEvent)} to delegate
      *
@@ -146,7 +146,7 @@ public class KeyDelegate {
         }
         return false;
     }
-    
+
     /**
      * Calls from {@link Activity#onKeyUp(int, KeyEvent)} to delegate
      *
@@ -168,7 +168,7 @@ public class KeyDelegate {
         }
         return false;
     }
-    
+
     /**
      * Calls from {@link Activity#onKeyLongPress(int, KeyEvent)} to delegate
      *
@@ -190,7 +190,7 @@ public class KeyDelegate {
         }
         return false;
     }
-    
+
     private void shortPress(@Direction int direction) {
         if (mScrollable == null) {
             return;
@@ -214,7 +214,7 @@ public class KeyDelegate {
                 break;
         }
     }
-    
+
     private void longPress(@Direction int direction) {
         switch (direction) {
             case DIRECTION_DOWN:
@@ -231,12 +231,12 @@ public class KeyDelegate {
                 break;
         }
     }
-    
+
     /**
      * Helper class to navigate vertical RecyclerView
      */
     static class RecyclerViewHelper implements Scrollable {
-        
+
         @Retention(RetentionPolicy.SOURCE)
         @IntDef({
                 SCROLL_ITEM,
@@ -244,15 +244,15 @@ public class KeyDelegate {
         })
         @interface ScrollMode {
         }
-        
+
         static final int SCROLL_ITEM = 0;
         static final int SCROLL_PAGE = 1;
-        
+
         private final RecyclerView mRecyclerView;
         private final @ScrollMode
         int mScrollMode;
         private boolean mSmoothScroll = true;
-        
+
         RecyclerViewHelper(RecyclerView recyclerView, @ScrollMode int scrollMode) {
             mRecyclerView = recyclerView;
             if (!(mRecyclerView.getLayoutManager() instanceof LinearLayoutManager)) {
@@ -260,12 +260,12 @@ public class KeyDelegate {
             }
             mScrollMode = scrollMode;
         }
-        
+
         @Override
         public void scrollToTop() {
             mRecyclerView.scrollToPosition(0);
         }
-        
+
         @Override
         public boolean scrollToNext() {
             int pos = mScrollMode == SCROLL_ITEM ?
@@ -281,7 +281,7 @@ public class KeyDelegate {
                 return false;
             }
         }
-        
+
         @Override
         public boolean scrollToPrevious() {
             switch (mScrollMode) {
@@ -305,16 +305,16 @@ public class KeyDelegate {
                     }
             }
         }
-        
+
         void smoothScrollEnabled(boolean enabled) {
             mSmoothScroll = enabled;
         }
-        
+
         int getCurrentPosition() {
             // TODO handle last page item
             return getLinearLayoutManager().findFirstVisibleItemPosition();
         }
-        
+
         int[] scrollToPosition(int position) {
             if (position >= 0 && position < mRecyclerView.getAdapter().getItemCount()) {
                 if (!mSmoothScroll) {
@@ -336,39 +336,39 @@ public class KeyDelegate {
                 return null;
             }
         }
-        
+
         private LinearLayoutManager getLinearLayoutManager() {
             return (LinearLayoutManager) mRecyclerView.getLayoutManager();
         }
     }
-    
+
     /**
      * Helper class to navigate vertical NestedScrollView
      */
     static class NestedScrollViewHelper implements Scrollable {
-        
+
         private final NestedScrollView mScrollView;
-        
+
         NestedScrollViewHelper(NestedScrollView nestedScrollView) {
             mScrollView = nestedScrollView;
         }
-        
+
         @Override
         public void scrollToTop() {
             mScrollView.smoothScrollTo(0, 0);
         }
-        
+
         @Override
         public boolean scrollToNext() {
             return mScrollView.pageScroll(View.FOCUS_DOWN);
         }
-        
+
         @Override
         public boolean scrollToPrevious() {
             return mScrollView.pageScroll(View.FOCUS_UP);
         }
     }
-    
+
     /**
      * Callback interface for back pressed events
      */

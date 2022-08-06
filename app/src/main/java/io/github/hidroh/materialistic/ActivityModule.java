@@ -40,19 +40,19 @@ public class ActivityModule {
     public static final String ALGOLIA = "algolia";
     public static final String POPULAR = "popular";
     public static final String HN = "hn";
-    
+
     private final Context mContext;
-    
+
     public ActivityModule(Context context) {
         mContext = context;
     }
-    
+
     @Provides
     @Singleton
     public Context provideContext() {
         return mContext;
     }
-    
+
     @Provides
     @Singleton
     public AccountManager provideAccountManager(Context context) {

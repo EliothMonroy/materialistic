@@ -40,19 +40,19 @@ public class Favorite implements WebItem {
     private boolean favorite;
     private Spannable displayedTime;
     private final Spannable displayedAuthor = new SpannableString("");
-    
-    public static final Creator<Favorite> CREATOR = new Creator<Favorite>() {
+
+    public static final Creator<Favorite> CREATOR = new Creator<>() {
         @Override
         public Favorite createFromParcel(Parcel source) {
             return new Favorite(source);
         }
-        
+
         @Override
         public Favorite[] newArray(int size) {
             return new Favorite[size];
         }
     };
-    
+
     Favorite(String itemId, String url, String title, long time) {
         this.itemId = itemId;
         this.url = url;
@@ -60,7 +60,7 @@ public class Favorite implements WebItem {
         this.time = time;
         this.favorite = true;
     }
-    
+
     @Synthetic
     Favorite(Parcel source) {
         itemId = source.readString();
@@ -69,37 +69,37 @@ public class Favorite implements WebItem {
         favorite = source.readInt() != 0;
         time = source.readLong();
     }
-    
+
     @Override
     public String getUrl() {
         return url;
     }
-    
+
     @Override
     public boolean isStoryType() {
         return true;
     }
-    
+
     @Override
     public String getId() {
         return itemId;
     }
-    
+
     @Override
     public long getLongId() {
         return Long.parseLong(itemId);
     }
-    
+
     @Override
     public String getDisplayedTitle() {
         return title;
     }
-    
+
     @Override
     public Spannable getDisplayedAuthor(Context context, boolean linkify, int color) {
         return displayedAuthor;
     }
-    
+
     @Override
     public Spannable getDisplayedTime(Context context) {
         if (displayedTime == null) {
@@ -108,40 +108,40 @@ public class Favorite implements WebItem {
         }
         return displayedTime;
     }
-    
+
     @Override
     public String getSource() {
         return TextUtils.isEmpty(url) ? null : Uri.parse(url).getHost();
     }
-    
+
     @NonNull
     @Override
     public String getType() {
         // TODO treating all saved items as stories for now
         return STORY_TYPE;
     }
-    
+
     @Override
     public boolean isFavorite() {
         return favorite;
     }
-    
+
     @Override
     public void setFavorite(boolean favorite) {
         this.favorite = favorite;
     }
-    
+
     @NonNull
     @Override
     public String toString() {
         return String.format("%s (%s) - %s", title, url, String.format(HackerNewsClient.WEB_ITEM_PATH, itemId));
     }
-    
+
     @Override
     public int describeContents() {
         return 0;
     }
-    
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(itemId);
@@ -150,7 +150,7 @@ public class Favorite implements WebItem {
         dest.writeInt(favorite ? 1 : 0);
         dest.writeLong(time);
     }
-    
+
     long getTime() {
         return time;
     }

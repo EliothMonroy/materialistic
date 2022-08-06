@@ -49,7 +49,7 @@ public class ItemPagerAdapter extends FragmentStatePagerAdapter {
     private final int mDefaultItem;
     private final boolean mRetainInstance;
     private TabLayout.OnTabSelectedListener mTabListener;
-    
+
     public ItemPagerAdapter(Context context, FragmentManager fm, @NonNull Builder builder) {
         super(fm);
         mContext = context;
@@ -60,7 +60,7 @@ public class ItemPagerAdapter extends FragmentStatePagerAdapter {
         mDefaultItem = Math.min(getCount() - 1,
                 builder.defaultViewMode == Preferences.StoryViewMode.Comment ? 0 : 1);
     }
-    
+
     @NonNull
     @Override
     public Fragment getItem(int position) {
@@ -82,19 +82,19 @@ public class ItemPagerAdapter extends FragmentStatePagerAdapter {
         }
         return Fragment.instantiate(mContext, fragmentName, args);
     }
-    
+
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         mFragments[position] = (Fragment) super.instantiateItem(container, position);
         return mFragments[position];
     }
-    
+
     @Override
     public int getCount() {
         return mItem.isStoryType() && !mShowArticle ? 1 : 2;
     }
-    
+
     @Override
     public CharSequence getPageTitle(int position) {
         if (position == 0) {
@@ -107,7 +107,7 @@ public class ItemPagerAdapter extends FragmentStatePagerAdapter {
         }
         return mContext.getString(mItem.isStoryType() ? R.string.article : R.string.full_text);
     }
-    
+
     public void bind(ViewPager viewPager, TabLayout tabLayout,
                      FloatingActionButton navigationFab, FloatingActionButton genericFab) {
         viewPager.setPageMargin(viewPager.getResources().getDimensionPixelOffset(R.dimen.divider));
@@ -123,7 +123,7 @@ public class ItemPagerAdapter extends FragmentStatePagerAdapter {
                 Fragment fragment = getItem(viewPager.getCurrentItem());
                 ((LazyLoadFragment) fragment).loadNow();
             }
-            
+
             @Override
             public void onTabReselected(TabLayout.Tab tab) {
                 Fragment fragment = getItem(viewPager.getCurrentItem());
@@ -133,9 +133,9 @@ public class ItemPagerAdapter extends FragmentStatePagerAdapter {
         tabLayout.addOnTabSelectedListener(mTabListener);
         viewPager.setCurrentItem(mDefaultItem);
         toggleFabs(mDefaultItem == 0, navigationFab, genericFab);
-        
+
     }
-    
+
     @Synthetic
     void toggleFabs(boolean isComments,
                     FloatingActionButton navigationFab,
@@ -145,40 +145,40 @@ public class ItemPagerAdapter extends FragmentStatePagerAdapter {
         AppUtils.toggleFab(genericFab, true);
         AppUtils.toggleFabAction(genericFab, mItem, isComments);
     }
-    
+
     public void unbind(TabLayout tabLayout) {
         if (mTabListener != null) {
             tabLayout.removeOnTabSelectedListener(mTabListener);
         }
     }
-    
+
     public static class Builder {
         WebItem item;
         boolean showArticle;
         int cacheMode;
         Preferences.StoryViewMode defaultViewMode;
         boolean retainInstance;
-        
+
         public Builder setItem(@NonNull WebItem item) {
             this.item = item;
             return this;
         }
-        
+
         public Builder setShowArticle(boolean showArticle) {
             this.showArticle = showArticle;
             return this;
         }
-        
+
         public Builder setCacheMode(int cacheMode) {
             this.cacheMode = cacheMode;
             return this;
         }
-        
+
         public Builder setDefaultViewMode(Preferences.StoryViewMode viewMode) {
             this.defaultViewMode = viewMode;
             return this;
         }
-        
+
         public Builder setRetainInstance(boolean retainInstance) {
             this.retainInstance = retainInstance;
             return this;

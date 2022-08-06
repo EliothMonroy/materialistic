@@ -20,10 +20,13 @@ import android.app.SearchManager;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.Observer;
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+
 import androidx.fragment.app.Fragment;
+
 import android.text.TextUtils;
 
 import io.github.hidroh.materialistic.data.FavoriteManager;

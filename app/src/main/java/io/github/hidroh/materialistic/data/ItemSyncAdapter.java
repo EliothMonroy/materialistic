@@ -33,20 +33,20 @@ import androidx.annotation.VisibleForTesting;
 class ItemSyncAdapter extends AbstractThreadedSyncAdapter {
     private final RestServiceFactory mFactory;
     private final ReadabilityClient mReadabilityClient;
-    
+
     ItemSyncAdapter(Context context, RestServiceFactory factory,
                     ReadabilityClient readabilityClient) {
         super(context, true);
         mFactory = factory;
         mReadabilityClient = readabilityClient;
     }
-    
+
     @Override
     public void onPerformSync(Account account, Bundle extras, String authority,
                               ContentProviderClient provider, SyncResult syncResult) {
         createSyncDelegate().performSync(new SyncDelegate.Job(extras));
     }
-    
+
     @VisibleForTesting
     @NonNull
     SyncDelegate createSyncDelegate() {

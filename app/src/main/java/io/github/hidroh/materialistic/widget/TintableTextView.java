@@ -30,13 +30,13 @@ import io.github.hidroh.materialistic.AppUtils;
 import io.github.hidroh.materialistic.R;
 
 public class TintableTextView extends AppCompatTextView {
-    
+
     private int mTextColor;
-    
+
     public TintableTextView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
-    
+
     public TintableTextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mTextColor = getTextColor(context, attrs);
@@ -49,12 +49,12 @@ public class TintableTextView extends AppCompatTextView {
                 ta.getDrawable(R.styleable.TintableTextView_iconBottom));
         ta.recycle();
     }
-    
+
     @Override
     public void setCompoundDrawablesWithIntrinsicBounds(Drawable left, Drawable top, Drawable right, Drawable bottom) {
         super.setCompoundDrawablesWithIntrinsicBounds(tint(left), tint(top), tint(right), tint(bottom));
     }
-    
+
     @Override
     public void setTextColor(int color) {
         mTextColor = color;
@@ -62,7 +62,7 @@ public class TintableTextView extends AppCompatTextView {
         Drawable[] drawables = getCompoundDrawables();
         setCompoundDrawablesWithIntrinsicBounds(drawables[0], drawables[1], drawables[2], drawables[3]);
     }
-    
+
     private int getTextColor(Context context, AttributeSet attrs) {
         int defaultTextColor = ContextCompat.getColor(getContext(),
                 AppUtils.getThemedResId(getContext(), android.R.attr.textColorTertiary));
@@ -80,7 +80,7 @@ public class TintableTextView extends AppCompatTextView {
         ta.recycle();
         return textColor;
     }
-    
+
     private Drawable tint(@Nullable Drawable drawable) {
         if (drawable == null) {
             return null;

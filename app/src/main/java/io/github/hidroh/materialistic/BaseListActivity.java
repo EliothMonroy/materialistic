@@ -34,7 +34,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.SearchView;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -60,7 +59,7 @@ import io.github.hidroh.materialistic.widget.ViewPager;
  * List activity that renders alternative layouts for portrait/landscape
  */
 public abstract class BaseListActivity extends DrawerActivity implements MultiPaneListener {
-    
+
     protected static final String LIST_FRAGMENT_TAG = BaseListActivity.class.getName() +
             ".LIST_FRAGMENT_TAG";
     private static final String STATE_SELECTED_ITEM = "state:selectedItem";
@@ -97,14 +96,14 @@ public abstract class BaseListActivity extends DrawerActivity implements MultiPa
         }
     };
     private ItemPagerAdapter mAdapter;
-    
+
     @SuppressWarnings("ConstantConditions")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
         setTitle(getDefaultTitle());
-        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        setSupportActionBar(findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME |
                 ActionBar.DISPLAY_HOME_AS_UP | ActionBar.DISPLAY_SHOW_TITLE);
         findViewById(R.id.toolbar).setOnClickListener(v -> {
@@ -113,18 +112,18 @@ public abstract class BaseListActivity extends DrawerActivity implements MultiPa
                 scrollable.scrollToTop();
             }
         });
-        mAppBar = (AppBarLayout) findViewById(R.id.appbar);
+        mAppBar = findViewById(R.id.appbar);
         mIsMultiPane = getResources().getBoolean(R.bool.multi_pane);
         if (mIsMultiPane) {
             LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver,
                     new IntentFilter(WebFragment.ACTION_FULLSCREEN));
             mListView = findViewById(android.R.id.list);
-            mTabLayout = (TabLayout) findViewById(R.id.tab_layout);
+            mTabLayout = findViewById(R.id.tab_layout);
             mTabLayout.setVisibility(View.GONE);
-            mViewPager = (ViewPager) findViewById(R.id.content);
+            mViewPager = findViewById(R.id.content);
             mViewPager.setVisibility(View.GONE);
-            mReplyButton = (FloatingActionButton) findViewById(R.id.reply_button);
-            mNavButton = (NavFloatingActionButton) findViewById(R.id.navigation_button);
+            mReplyButton = findViewById(R.id.reply_button);
+            mNavButton = findViewById(R.id.navigation_button);
             mNavButton.setNavigable(direction ->
                     // if callback is fired navigable should not be null
                     ((Navigable) ((ItemPagerAdapter) mViewPager.getAdapter()).getItem(0))
@@ -157,7 +156,7 @@ public abstract class BaseListActivity extends DrawerActivity implements MultiPa
                 R.string.pref_story_display,
                 R.string.pref_multi_window);
     }
-    
+
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -165,10 +164,10 @@ public abstract class BaseListActivity extends DrawerActivity implements MultiPa
             Snackbar snackbar = Snackbar.make(findViewById(R.id.content_frame),
                     R.string.hint_update, Snackbar.LENGTH_INDEFINITE);
             snackbar.setAction(R.string.title_activity_release,
-                    v -> {
-                        snackbar.dismiss();
-                        startActivity(new Intent(BaseListActivity.this, ReleaseNotesActivity.class));
-                    })
+                            v -> {
+                                snackbar.dismiss();
+                                startActivity(new Intent(BaseListActivity.this, ReleaseNotesActivity.class));
+                            })
                     .setActionTextColor(ContextCompat.getColor(this, R.color.orange500))
                     .addCallback(new Snackbar.Callback() {
                         @Override
@@ -179,14 +178,14 @@ public abstract class BaseListActivity extends DrawerActivity implements MultiPa
                     .show();
         }
     }
-    
+
     @Override
     protected void onStart() {
         super.onStart();
         mCustomTabsDelegate.bindCustomTabsService(this);
         mKeyDelegate.attach(this);
     }
-    
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         if (mIsMultiPane) {
@@ -204,7 +203,7 @@ public abstract class BaseListActivity extends DrawerActivity implements MultiPa
         }
         return super.onCreateOptionsMenu(menu);
     }
-    
+
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         if (mIsMultiPane) {
@@ -213,7 +212,7 @@ public abstract class BaseListActivity extends DrawerActivity implements MultiPa
         }
         return isSearchable() || super.onPrepareOptionsMenu(menu);
     }
-    
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_share) {
@@ -231,21 +230,21 @@ public abstract class BaseListActivity extends DrawerActivity implements MultiPa
         }
         return super.onOptionsItemSelected(item);
     }
-    
+
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putParcelable(STATE_SELECTED_ITEM, mSelectedItem);
         outState.putBoolean(STATE_FULLSCREEN, mFullscreen);
     }
-    
+
     @Override
     protected void onStop() {
         super.onStop();
         mCustomTabsDelegate.unbindCustomTabsService(this);
         mKeyDelegate.detach(this);
     }
-    
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -254,7 +253,7 @@ public abstract class BaseListActivity extends DrawerActivity implements MultiPa
             LocalBroadcastManager.getInstance(this).unregisterReceiver(mReceiver);
         }
     }
-    
+
     @Override
     public void onBackPressed() {
         if (!mIsMultiPane || !mFullscreen) {
@@ -264,7 +263,7 @@ public abstract class BaseListActivity extends DrawerActivity implements MultiPa
                     WebFragment.ACTION_FULLSCREEN).putExtra(WebFragment.EXTRA_FULLSCREEN, false));
         }
     }
-    
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         mKeyDelegate.setScrollable(getScrollableList(), mAppBar);
@@ -272,26 +271,26 @@ public abstract class BaseListActivity extends DrawerActivity implements MultiPa
         return mKeyDelegate.onKeyDown(keyCode, event) ||
                 super.onKeyDown(keyCode, event);
     }
-    
+
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
         return mKeyDelegate.onKeyUp(keyCode, event) ||
                 super.onKeyUp(keyCode, event);
     }
-    
+
     @Override
     public boolean onKeyLongPress(int keyCode, KeyEvent event) {
         return mKeyDelegate.onKeyLongPress(keyCode, event) ||
                 super.onKeyLongPress(keyCode, event);
     }
-    
+
     @NonNull
     @Override
     public ActionBar getSupportActionBar() {
         //noinspection ConstantConditions
         return super.getSupportActionBar();
     }
-    
+
     @Override
     public void onItemSelected(@Nullable WebItem item) {
         WebItem previousItem = mSelectedItem;
@@ -310,17 +309,17 @@ public abstract class BaseListActivity extends DrawerActivity implements MultiPa
             openSinglePaneItem();
         }
     }
-    
+
     @Override
     public WebItem getSelectedItem() {
         return mSelectedItem;
     }
-    
+
     @Override
     public boolean isMultiPane() {
         return mIsMultiPane;
     }
-    
+
     /**
      * Checks if activity should have search view
      *
@@ -329,21 +328,21 @@ public abstract class BaseListActivity extends DrawerActivity implements MultiPa
     protected boolean isSearchable() {
         return true;
     }
-    
+
     /**
      * Gets default title to be displayed in list-only layout
      *
      * @return displayed title
      */
     protected abstract String getDefaultTitle();
-    
+
     /**
      * Creates list fragment to host list data
      *
      * @return list fragment
      */
     protected abstract Fragment instantiateListFragment();
-    
+
     /**
      * Gets cache mode for {@link ItemManager}
      *
@@ -353,7 +352,7 @@ public abstract class BaseListActivity extends DrawerActivity implements MultiPa
     protected int getItemCacheMode() {
         return ItemManager.MODE_DEFAULT;
     }
-    
+
     @Synthetic
     void setFullscreen() {
         mAppBar.setExpanded(!mFullscreen, true);
@@ -363,12 +362,12 @@ public abstract class BaseListActivity extends DrawerActivity implements MultiPa
         mViewPager.setSwipeEnabled(!mFullscreen);
         AppUtils.toggleFab(mReplyButton, !mFullscreen);
     }
-    
+
     private Scrollable getScrollableList() {
         // TODO landscape behavior?
         return (Scrollable) getSupportFragmentManager().findFragmentByTag(LIST_FRAGMENT_TAG);
     }
-    
+
     private KeyDelegate.BackInterceptor getBackInterceptor() {
         if (mViewPager == null ||
                 mViewPager.getAdapter() == null ||
@@ -383,7 +382,7 @@ public abstract class BaseListActivity extends DrawerActivity implements MultiPa
             return null;
         }
     }
-    
+
     private void openSinglePaneItem() {
         if (mExternalBrowser && mStoryViewMode != Preferences.StoryViewMode.Comment) {
             AppUtils.openWebUrlExternal(this, mSelectedItem, mSelectedItem.getUrl(), mCustomTabsDelegate.getSession());
@@ -394,7 +393,7 @@ public abstract class BaseListActivity extends DrawerActivity implements MultiPa
             startActivity(mMultiWindowEnabled ? AppUtils.multiWindowIntent(this, intent) : intent);
         }
     }
-    
+
     private void openMultiPaneItem() {
         if (mSelectedItem == null) {
             setTitle(getDefaultTitle());
@@ -413,7 +412,7 @@ public abstract class BaseListActivity extends DrawerActivity implements MultiPa
             mSessionManager.view(mSelectedItem.getId());
         }
     }
-    
+
     private void bindViewPager() {
         if (mAdapter != null) {
             mAdapter.unbind(mTabLayout);
@@ -428,7 +427,7 @@ public abstract class BaseListActivity extends DrawerActivity implements MultiPa
             setFullscreen();
         }
     }
-    
+
     @SuppressLint("RestrictedApi")
     private void unbindViewPager() {
         // fragment manager always restores view pager fragments,
@@ -443,7 +442,7 @@ public abstract class BaseListActivity extends DrawerActivity implements MultiPa
         }
         transaction.commit();
     }
-    
+
     private void onPreferenceChanged(int key, boolean contextChanged) {
         if (key == R.string.pref_external) {
             mExternalBrowser = Preferences.externalBrowserEnabled(this);

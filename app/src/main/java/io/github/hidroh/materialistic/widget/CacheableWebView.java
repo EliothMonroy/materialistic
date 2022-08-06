@@ -35,25 +35,25 @@ public class CacheableWebView extends WebView {
     private static final String CACHE_PREFIX = "webarchive-";
     private static final String CACHE_EXTENSION = ".mht";
     private ArchiveClient mArchiveClient = new ArchiveClient();
-    
+
     public CacheableWebView(Context context) {
         this(context, null);
     }
-    
+
     public CacheableWebView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
-    
+
     public CacheableWebView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
-    
+
     @Override
     public void reloadUrl(String url) {
         super.reloadUrl(getCacheableUrl(url));
     }
-    
+
     @Override
     public void loadUrl(String url) {
         if (TextUtils.isEmpty(url)) {
@@ -62,7 +62,7 @@ public class CacheableWebView extends WebView {
         mArchiveClient.lastProgress = 0;
         super.loadUrl(getCacheableUrl(url));
     }
-    
+
     @Override
     public void loadUrl(String url, Map<String, String> additionalHttpHeaders) {
         if (TextUtils.isEmpty(url)) {
@@ -71,7 +71,7 @@ public class CacheableWebView extends WebView {
         mArchiveClient.lastProgress = 0;
         super.loadUrl(getCacheableUrl(url), additionalHttpHeaders);
     }
-    
+
     @Override
     public void setWebChromeClient(WebChromeClient client) {
         if (!(client instanceof ArchiveClient)) {
@@ -81,14 +81,14 @@ public class CacheableWebView extends WebView {
         mArchiveClient = (ArchiveClient) client;
         super.setWebChromeClient(mArchiveClient);
     }
-    
+
     private void init() {
         enableCache();
         setLoadSettings();
         setWebViewClient(new WebViewClient());
         setWebChromeClient(mArchiveClient);
     }
-    
+
     private void enableCache() {
         // TODO update this code
         WebSettings webSettings = getSettings();
@@ -98,12 +98,12 @@ public class CacheableWebView extends WebView {
         //        .getCacheDir().getAbsolutePath());
         setCacheModeInternal();
     }
-    
+
     private void setCacheModeInternal() {
         getSettings().setCacheMode(AppUtils.hasConnection(getContext()) ?
                 WebSettings.LOAD_CACHE_ELSE_NETWORK : WebSettings.LOAD_CACHE_ONLY);
     }
-    
+
     private void setLoadSettings() {
         WebSettings webSettings = getSettings();
         webSettings.setLoadWithOverviewMode(true);
@@ -111,7 +111,7 @@ public class CacheableWebView extends WebView {
         // TODO Investigate how to mitigate this maybe
         //webSettings.setJavaScriptEnabled(true);
     }
-    
+
     private String getCacheableUrl(String url) {
         if (TextUtils.equals(url, BLANK) || TextUtils.equals(url, FILE)) {
             return url;
@@ -124,7 +124,7 @@ public class CacheableWebView extends WebView {
         File cacheFile = new File(mArchiveClient.cacheFileName);
         return cacheFile.exists() ? Uri.fromFile(cacheFile).toString() : url;
     }
-    
+
     private String generateCacheFilename(String url) {
         return getContext().getApplicationContext().getCacheDir().getAbsolutePath() +
                 File.separator +
@@ -132,11 +132,11 @@ public class CacheableWebView extends WebView {
                 url.hashCode() +
                 CACHE_EXTENSION;
     }
-    
+
     public static class ArchiveClient extends WebChromeClient {
         int lastProgress = 0;
         String cacheFileName = null;
-        
+
         @CallSuper
         @Override
         public void onProgressChanged(android.webkit.WebView view, int newProgress) {
@@ -148,6 +148,6 @@ public class CacheableWebView extends WebView {
                 view.saveWebArchive(cacheFileName);
             }
         }
-        
+
     }
 }

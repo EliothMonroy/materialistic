@@ -28,7 +28,7 @@ public interface LocalItemManager<T> {
      * @return number of items, 0 if none
      */
     int getSize();
-    
+
     /**
      * Gets item at given position
      *
@@ -36,7 +36,7 @@ public interface LocalItemManager<T> {
      * @return item at given position, or null if none
      */
     T getItem(int position);
-    
+
     /**
      * Initiates an async query for local items
      *
@@ -44,12 +44,12 @@ public interface LocalItemManager<T> {
      * @param filter   query filter if any
      */
     void attach(Observer observer, String filter);
-    
+
     /**
      * Cleans up any extra state created by {@link #attach(Observer, String)}
      */
     void detach();
-    
+
     /**
      * Callback interface for local items change events
      */

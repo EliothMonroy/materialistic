@@ -36,19 +36,19 @@ public class PopupSettingsFragment extends AppCompatDialogFragment {
     static final String EXTRA_SUMMARY = PopupSettingsFragment.class.getName() + ".EXTRA_SUMMARY";
     static final String EXTRA_XML_PREFERENCES = PopupSettingsFragment.class.getName() +
             ".EXTRA_XML_PREFERENCES";
-    
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_popup_settings, container, false);
     }
-    
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         return new BottomSheetDialog(getActivity(), getTheme());
     }
-    
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -61,19 +61,23 @@ public class PopupSettingsFragment extends AppCompatDialogFragment {
                     .commit();
         }
     }
-    
+
     public static class PreferenceFragment extends PreferenceFragmentCompat {
-        
+
         @Override
         public void onCreatePreferences(Bundle bundle, String s) {
             addPreferencesFromResource(R.xml.preferences_category);
             Preference category = findPreference(getString(R.string.pref_category));
             int summary, title;
-            if ((title = getArguments().getInt(EXTRA_TITLE, 0)) != 0) {
-                category.setTitle(title);
+            if (getArguments() != null && (title = getArguments().getInt(EXTRA_TITLE, 0)) != 0) {
+                if (category != null) {
+                    category.setTitle(title);
+                }
             }
             if ((summary = getArguments().getInt(EXTRA_SUMMARY, 0)) != 0) {
-                category.setSummary(summary);
+                if (category != null) {
+                    category.setSummary(summary);
+                }
             }
             int[] preferences = getArguments().getIntArray(EXTRA_XML_PREFERENCES);
             if (preferences != null) {
@@ -83,12 +87,12 @@ public class PopupSettingsFragment extends AppCompatDialogFragment {
             }
         }
     }
-    
+
     static class BottomSheetDialog extends com.google.android.material.bottomsheet.BottomSheetDialog {
         public BottomSheetDialog(@NonNull Context context, @StyleRes int theme) {
             super(context, theme);
         }
-        
+
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -97,6 +101,6 @@ public class PopupSettingsFragment extends AppCompatDialogFragment {
                     width > 0 ? width : ViewGroup.LayoutParams.MATCH_PARENT,
                     ViewGroup.LayoutParams.MATCH_PARENT);
         }
-        
+
     }
 }

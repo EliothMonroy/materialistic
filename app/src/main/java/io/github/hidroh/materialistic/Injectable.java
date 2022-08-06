@@ -29,6 +29,6 @@ public interface Injectable {
      * @param object object with members to be injected
      */
     void inject(Object object);
-    
+
     ObjectGraph getApplicationGraph();
 }

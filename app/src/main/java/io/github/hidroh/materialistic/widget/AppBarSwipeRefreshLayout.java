@@ -33,26 +33,26 @@ import io.github.hidroh.materialistic.R;
  */
 public class AppBarSwipeRefreshLayout extends SwipeRefreshLayout implements AppBarLayout.OnOffsetChangedListener {
     private AppBarLayout mAppBar;
-    
+
     public AppBarSwipeRefreshLayout(Context context) {
         super(context);
     }
-    
+
     public AppBarSwipeRefreshLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
-    
+
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
         if (getContext() instanceof Activity) {
-            mAppBar = (AppBarLayout) ((Activity) getContext()).findViewById(R.id.appbar);
+            mAppBar = ((Activity) getContext()).findViewById(R.id.appbar);
             if (mAppBar != null) {
                 mAppBar.addOnOffsetChangedListener(this);
             }
         }
     }
-    
+
     @Override
     protected void onDetachedFromWindow() {
         if (mAppBar != null) {
@@ -61,7 +61,7 @@ public class AppBarSwipeRefreshLayout extends SwipeRefreshLayout implements AppB
         }
         super.onDetachedFromWindow();
     }
-    
+
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int i) {
         this.setEnabled(i == 0);

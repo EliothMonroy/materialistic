@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.preference.PreferenceGroup;
 import androidx.preference.PreferenceViewHolder;
@@ -29,7 +30,7 @@ import io.github.hidroh.materialistic.R;
 public class PreferenceHelp extends PreferenceGroup {
     private final int mLayoutResId;
     private final String mTitle;
-    
+
     public PreferenceHelp(Context context, AttributeSet attrs) {
         super(context, attrs, R.attr.preferenceHelpStyle);
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.PreferenceHelp);
@@ -40,7 +41,7 @@ public class PreferenceHelp extends PreferenceGroup {
             a.recycle();
         }
     }
-    
+
     @Override
     protected void onClick() {
         if (mLayoutResId == 0) {
@@ -53,9 +54,9 @@ public class PreferenceHelp extends PreferenceGroup {
                 .create()
                 .show();
     }
-    
+
     @Override
-    public void onBindViewHolder(PreferenceViewHolder holder) {
+    public void onBindViewHolder(@NonNull PreferenceViewHolder holder) {
         super.onBindViewHolder(holder);
         holder.setDividerAllowedAbove(false);
     }

@@ -30,7 +30,7 @@ import androidx.core.graphics.drawable.DrawableCompat;
  */
 public class MenuTintDelegate {
     private int mTextColorPrimary;
-    
+
     /**
      * Callback that should be triggered after activity has been created
      *
@@ -40,7 +40,7 @@ public class MenuTintDelegate {
         mTextColorPrimary = ContextCompat.getColor(context,
                 AppUtils.getThemedResId(context, android.R.attr.textColorPrimary));
     }
-    
+
     /**
      * Callback that should be triggered after menu has been inflated
      *
@@ -56,7 +56,7 @@ public class MenuTintDelegate {
             DrawableCompat.setTint(drawable, mTextColorPrimary);
         }
     }
-    
+
     @SuppressWarnings("unused")
     public void setIcon(MenuItem item, @DrawableRes int icon) {
         item.setIcon(icon);

@@ -39,29 +39,29 @@ public class ThreadPreviewRecyclerViewAdapter extends ItemRecyclerViewAdapter<Su
     private final List<String> mExpanded = new ArrayList<>();
     private int mLevelIndicatorWidth;
     private final String mUsername;
-    
+
     public ThreadPreviewRecyclerViewAdapter(ItemManager itemManager, Item item) {
         super(itemManager);
         mItems.add(item);
         mUsername = item.getBy();
     }
-    
+
     @Override
     public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
         attach(recyclerView.getContext(), recyclerView);
         mLevelIndicatorWidth = AppUtils.getDimensionInDp(mContext, R.dimen.level_indicator_width);
     }
-    
+
     @Override
     public void onDetachedFromRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onDetachedFromRecyclerView(recyclerView);
         detach(recyclerView.getContext(), recyclerView);
     }
-    
+
     @NonNull
     @Override
-    public SubmissionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public SubmissionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         SubmissionViewHolder holder = new SubmissionViewHolder(mLayoutInflater
                 .inflate(R.layout.item_submission, parent, false));
         final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams)
@@ -71,17 +71,17 @@ public class ThreadPreviewRecyclerViewAdapter extends ItemRecyclerViewAdapter<Su
         holder.mCommentButton.setVisibility(View.GONE);
         return holder;
     }
-    
+
     @Override
     public int getItemCount() {
         return mItems.size();
     }
-    
+
     @Override
     public int getItemViewType(int position) {
         return position;
     }
-    
+
     @Override
     protected void bind(SubmissionViewHolder holder, final Item item) {
         super.bind(holder, item);
@@ -111,12 +111,12 @@ public class ThreadPreviewRecyclerViewAdapter extends ItemRecyclerViewAdapter<Su
             });
         }
     }
-    
+
     @Override
     protected Item getItem(int position) {
         return mItems.get(position);
     }
-    
+
     private void openItem(Item item) {
         mContext.startActivity(new Intent(mContext, ItemActivity.class)
                 .putExtra(ItemActivity.EXTRA_ITEM, item));

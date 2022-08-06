@@ -30,7 +30,7 @@ import io.github.hidroh.materialistic.data.ItemManager;
 
 public abstract class BaseStoriesActivity extends BaseListActivity
         implements ListFragment.RefreshCallback {
-    
+
     private static final String STATE_LAST_UPDATED = "state:lastUpdated";
     @Synthetic
     Long mLastUpdated;
@@ -58,7 +58,7 @@ public abstract class BaseStoriesActivity extends BaseListActivity
     };
     @Synthetic
     final Handler mHandler = new Handler();
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,20 +66,20 @@ public abstract class BaseStoriesActivity extends BaseListActivity
             mLastUpdated = savedInstanceState.getLong(STATE_LAST_UPDATED);
         }
     }
-    
+
     @Override
     protected void onResume() {
         super.onResume();
         mHandler.removeCallbacks(mLastUpdateTask);
         mHandler.post(mLastUpdateTask);
     }
-    
+
     @Override
     protected void onPause() {
         super.onPause();
         mHandler.removeCallbacks(mLastUpdateTask);
     }
-    
+
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -87,7 +87,7 @@ public abstract class BaseStoriesActivity extends BaseListActivity
             outState.putLong(STATE_LAST_UPDATED, mLastUpdated);
         }
     }
-    
+
     @Override
     public void onRefreshed() {
         onItemSelected(null);
@@ -95,11 +95,11 @@ public abstract class BaseStoriesActivity extends BaseListActivity
         mHandler.removeCallbacks(mLastUpdateTask);
         mHandler.post(mLastUpdateTask);
     }
-    
+
     @NonNull
     @ItemManager.FetchMode
     protected abstract String getFetchMode();
-    
+
     @Override
     protected Fragment instantiateListFragment() {
         Bundle args = new Bundle();
@@ -107,5 +107,5 @@ public abstract class BaseStoriesActivity extends BaseListActivity
         args.putString(ListFragment.EXTRA_FILTER, getFetchMode());
         return Fragment.instantiate(this, ListFragment.class.getName(), args);
     }
-    
+
 }

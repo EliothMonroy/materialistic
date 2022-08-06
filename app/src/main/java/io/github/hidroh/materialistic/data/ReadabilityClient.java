@@ -36,16 +36,16 @@ import rx.schedulers.Schedulers;
 
 public interface ReadabilityClient {
     String HOST = "mercury.postlight.com";
-    
+
     interface Callback {
         void onResponse(String content);
     }
-    
+
     void parse(String itemId, String url, Callback callback);
-    
+
     @WorkerThread
     void parse(String itemId, String url);
-    
+
     class Impl implements ReadabilityClient {
         private static final CharSequence EMPTY_CONTENT = "<div></div>";
         private final MercuryService mMercuryService;
@@ -56,23 +56,23 @@ public interface ReadabilityClient {
         @Inject
         @Named(DataModule.MAIN_THREAD)
         Scheduler mMainThreadScheduler;
-        
+
         interface MercuryService {
             String MERCURY_API_URL = "https://" + HOST + "/";
             String X_API_KEY = "x-api-key: ";
-            
+
             @Headers({RestServiceFactory.CACHE_CONTROL_MAX_AGE_24H,
                     X_API_KEY + BuildConfig.MERCURY_TOKEN})
             @GET("parser")
             Observable<Readable> parse(@Query("url") String url);
         }
-        
+
         static class Readable {
             @Keep
             @Synthetic
             String content;
         }
-        
+
         @Inject
         public Impl(LocalCache cache, RestServiceFactory factory) {
             mMercuryService = factory.rxEnabled(true)
@@ -80,7 +80,7 @@ public interface ReadabilityClient {
                             MercuryService.class);
             mCache = cache;
         }
-        
+
         @Override
         public void parse(String itemId, String url, Callback callback) {
             Observable.defer(() -> fromCache(itemId))
@@ -91,7 +91,7 @@ public interface ReadabilityClient {
                     .observeOn(mMainThreadScheduler)
                     .subscribe(callback::onResponse);
         }
-        
+
         @WorkerThread
         @Override
         public void parse(String itemId, String url) {
@@ -102,7 +102,7 @@ public interface ReadabilityClient {
                     .observeOn(Schedulers.immediate())
                     .subscribe();
         }
-        
+
         @NonNull
         private Observable<String> fromNetwork(String itemId, String url) {
             return mMercuryService.parse(url)
@@ -110,7 +110,7 @@ public interface ReadabilityClient {
                     .map(readable -> readable == null ? null : readable.content)
                     .doOnNext(content -> mCache.putReadability(itemId, content));
         }
-        
+
         private Observable<String> fromCache(String itemId) {
             return Observable.just(mCache.getReadability(itemId));
         }

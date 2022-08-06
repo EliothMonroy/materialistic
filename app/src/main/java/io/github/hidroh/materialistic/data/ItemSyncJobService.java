@@ -16,10 +16,8 @@
 
 package io.github.hidroh.materialistic.data;
 
-import android.annotation.TargetApi;
 import android.app.job.JobParameters;
 import android.app.job.JobService;
-import android.os.Build;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
@@ -33,14 +31,13 @@ import javax.inject.Inject;
 import io.github.hidroh.materialistic.ActivityModule;
 import io.github.hidroh.materialistic.Injectable;
 
-@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 public class ItemSyncJobService extends JobService {
     @Inject
     RestServiceFactory mFactory;
     @Inject
     ReadabilityClient mReadabilityClient;
     private final Map<String, SyncDelegate> mSyncDelegates = new HashMap<>();
-    
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -49,7 +46,7 @@ public class ItemSyncJobService extends JobService {
                 .plus(new ActivityModule(this))
                 .inject(this);
     }
-    
+
     @Override
     public boolean onStartJob(JobParameters jobParameters) {
         String jobId = String.valueOf(jobParameters.getJobId());
@@ -64,7 +61,7 @@ public class ItemSyncJobService extends JobService {
         syncDelegate.performSync(new SyncDelegate.Job(jobParameters.getExtras()));
         return true;
     }
-    
+
     @Override
     public boolean onStopJob(JobParameters jobParameters) {
         String key = String.valueOf(jobParameters.getJobId());
@@ -73,7 +70,7 @@ public class ItemSyncJobService extends JobService {
         }
         return true;
     }
-    
+
     @VisibleForTesting
     @NonNull
     SyncDelegate createSyncDelegate() {

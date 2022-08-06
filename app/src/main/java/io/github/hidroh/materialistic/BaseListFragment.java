@@ -42,7 +42,7 @@ abstract class BaseListFragment extends BaseFragment implements Scrollable {
     private KeyDelegate.RecyclerViewHelper mScrollableHelper;
     protected RecyclerView mRecyclerView;
     private final Preferences.Observable mPreferenceObservable = new Preferences.Observable();
-    
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -51,13 +51,13 @@ abstract class BaseListFragment extends BaseFragment implements Scrollable {
                 R.string.pref_text_size,
                 R.string.pref_list_item_view);
     }
-    
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
     }
-    
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -79,7 +79,7 @@ abstract class BaseListFragment extends BaseFragment implements Scrollable {
             }
         });
     }
-    
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -92,12 +92,12 @@ abstract class BaseListFragment extends BaseFragment implements Scrollable {
         mScrollableHelper = new KeyDelegate.RecyclerViewHelper(mRecyclerView,
                 KeyDelegate.RecyclerViewHelper.SCROLL_PAGE);
     }
-    
+
     @Override
     protected void createOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_list, menu);
     }
-    
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_list) {
@@ -106,7 +106,7 @@ abstract class BaseListFragment extends BaseFragment implements Scrollable {
         }
         return super.onOptionsItemSelected(item);
     }
-    
+
     private void showPreferences() {
         Bundle args = new Bundle();
         args.putInt(PopupSettingsFragment.EXTRA_TITLE, R.string.list_display_options);
@@ -118,35 +118,35 @@ abstract class BaseListFragment extends BaseFragment implements Scrollable {
                 PopupSettingsFragment.class.getName(), args))
                 .show(getFragmentManager(), PopupSettingsFragment.class.getName());
     }
-    
+
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBundle(STATE_ADAPTER, getAdapter().saveState());
     }
-    
+
     @Override
     public void onDetach() {
         super.onDetach();
         mPreferenceObservable.unsubscribe(getActivity());
         mRecyclerView.setAdapter(null); // force adapter detach
     }
-    
+
     @Override
     public void scrollToTop() {
         mScrollableHelper.scrollToTop();
     }
-    
+
     @Override
     public boolean scrollToNext() {
         return mScrollableHelper.scrollToNext();
     }
-    
+
     @Override
     public boolean scrollToPrevious() {
         return mScrollableHelper.scrollToPrevious();
     }
-    
+
     private void onPreferenceChanged(int key, boolean contextChanged) {
         if (contextChanged) {
             mRecyclerView.setAdapter(getAdapter());
@@ -154,6 +154,6 @@ abstract class BaseListFragment extends BaseFragment implements Scrollable {
             getAdapter().setCardViewEnabled(Preferences.isListItemCardView(getActivity()));
         }
     }
-    
+
     protected abstract ListRecyclerViewAdapter getAdapter();
 }

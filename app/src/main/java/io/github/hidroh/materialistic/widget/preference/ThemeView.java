@@ -30,11 +30,11 @@ import io.github.hidroh.materialistic.AppUtils;
 import io.github.hidroh.materialistic.R;
 
 public class ThemeView extends CardView {
-    
+
     public ThemeView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
-    
+
     public ThemeView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         LayoutInflater.from(context).inflate(R.layout.theme_view, this, true);
@@ -46,5 +46,5 @@ public class ThemeView extends CardView {
         setCardBackgroundColor(ContextCompat.getColor(wrapper, cardBackgroundColor));
         ((TextView) findViewById(R.id.content)).setTextColor(ContextCompat.getColor(wrapper, textColor));
     }
-    
+
 }

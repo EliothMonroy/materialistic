@@ -57,7 +57,7 @@ public abstract class ItemRecyclerViewAdapter<VH extends ItemRecyclerViewAdapter
     private static final String PROPERTY_MAX_LINES = "maxLines";
     private static final int DURATION_PER_LINE_MILLIS = 20;
     LayoutInflater mLayoutInflater;
-    private ItemManager mItemManager;
+    private final ItemManager mItemManager;
     @Inject
     UserServices mUserServices;
     @Inject
@@ -73,15 +73,15 @@ public abstract class ItemRecyclerViewAdapter<VH extends ItemRecyclerViewAdapter
     private final Map<String, Integer> mLineCounted = new HashMap<>();
     private int mCacheMode = ItemManager.MODE_DEFAULT;
     private float mLineHeight = 1.0f;
-    
+
     public interface PositionCallback {
         void onPosition(int position);
     }
-    
+
     ItemRecyclerViewAdapter(ItemManager itemManager) {
         mItemManager = itemManager;
     }
-    
+
     @Override
     public void attach(Context context, RecyclerView recyclerView) {
         super.attach(context, recyclerView);
@@ -101,7 +101,7 @@ public abstract class ItemRecyclerViewAdapter<VH extends ItemRecyclerViewAdapter
         mCardHighlightColorResId = ta.getInt(3, 0);
         ta.recycle();
     }
-    
+
     @Override
     public void onBindViewHolder(@NonNull final VH holder, int position) {
         final Item item = getItem(position);
@@ -115,23 +115,23 @@ public abstract class ItemRecyclerViewAdapter<VH extends ItemRecyclerViewAdapter
             bind(holder, item);
         }
     }
-    
+
     @Override
     public long getItemId(int position) {
         Item item = getItem(position);
         return item != null ? item.getLongId() : RecyclerView.NO_ID;
     }
-    
+
     public void setCacheMode(int cacheMode) {
         mCacheMode = cacheMode;
     }
-    
+
     public void initDisplayOptions(Context context) {
         mContentMaxLines = Preferences.getCommentMaxLines(context);
         mUsername = Preferences.getUsername(context);
         mLineHeight = Preferences.getLineHeight(context);
     }
-    
+
     public void getNextPosition(int position, int direction, PositionCallback callback) {
         switch (direction) {
             case Navigable.DIRECTION_UP:
@@ -142,13 +142,13 @@ public abstract class ItemRecyclerViewAdapter<VH extends ItemRecyclerViewAdapter
                 break;
         }
     }
-    
+
     public void lockBinding(int[] lock) {
     }
-    
+
     @Nullable
     protected abstract Item getItem(int position);
-    
+
     @CallSuper
     protected void bind(final VH holder, final Item item) {
         if (item == null) {
@@ -173,7 +173,7 @@ public abstract class ItemRecyclerViewAdapter<VH extends ItemRecyclerViewAdapter
         }
         bindActions(holder, item);
     }
-    
+
     protected void clear(VH holder) {
         holder.mCommentButton.setVisibility(View.GONE);
         holder.mPostedTextView.setOnClickListener(null);
@@ -181,36 +181,36 @@ public abstract class ItemRecyclerViewAdapter<VH extends ItemRecyclerViewAdapter
         holder.mContentTextView.setText(R.string.loading_text);
         holder.mReadMoreTextView.setVisibility(View.GONE);
     }
-    
+
     @Synthetic
     boolean isAttached() {
         return mContext != null;
     }
-    
+
     private void load(int adapterPosition, Item item) {
         item.setLocalRevision(0);
         mItemManager.getItem(item.getId(), mCacheMode,
                 new ItemResponseListener(this, adapterPosition, item));
     }
-    
+
     protected void onItemLoaded(int position, Item item) {
         if (position < getItemCount()) {
             notifyItemChanged(position);
         }
     }
-    
+
     private void highlightUserItem(VH holder, Item item) {
         boolean highlight = !TextUtils.isEmpty(mUsername) &&
                 TextUtils.equals(mUsername, item.getBy());
         holder.mContentView.setBackgroundColor(highlight ?
                 mCardHighlightColorResId : mCardBackgroundColorResId);
     }
-    
+
     private void decorateDead(VH holder, Item item) {
         holder.mContentTextView.setTextColor(item.isDead() ?
                 mSecondaryTextColorResId : mTertiaryTextColorResId);
     }
-    
+
     private void toggleCollapsibleContent(final VH holder, final Item item, int lineCount) {
         if (item.isContentExpanded() || lineCount <= mContentMaxLines) {
             holder.mContentTextView.setMaxLines(Integer.MAX_VALUE);
@@ -228,7 +228,7 @@ public abstract class ItemRecyclerViewAdapter<VH extends ItemRecyclerViewAdapter
                     .start();
         });
     }
-    
+
     private void bindActions(final VH holder, final Item item) {
         if (item.isDead() || item.isDeleted()) {
             holder.mMoreButton.setVisibility(View.INVISIBLE);
@@ -261,11 +261,11 @@ public abstract class ItemRecyclerViewAdapter<VH extends ItemRecyclerViewAdapter
                         })
                         .show());
     }
-    
+
     private void vote(final Item item) {
         mUserServices.voteUp(mContext, item.getId(), new VoteCallback(this));
     }
-    
+
     @Synthetic
     void onVoted(Boolean successful) {
         if (successful == null) {
@@ -276,7 +276,7 @@ public abstract class ItemRecyclerViewAdapter<VH extends ItemRecyclerViewAdapter
             AppUtils.showLogin(mContext, mAlertDialogBuilder);
         }
     }
-    
+
     static class ItemViewHolder extends RecyclerView.ViewHolder {
         boolean mIsFooter;
         TextView mPostedTextView;
@@ -285,34 +285,34 @@ public abstract class ItemRecyclerViewAdapter<VH extends ItemRecyclerViewAdapter
         TextView mCommentButton;
         View mMoreButton;
         View mContentView;
-        
+
         ItemViewHolder(View itemView) {
             super(itemView);
-            mPostedTextView = (TextView) itemView.findViewById(R.id.posted);
+            mPostedTextView = itemView.findViewById(R.id.posted);
             mPostedTextView.setMovementMethod(LinkMovementMethod.getInstance());
-            mContentTextView = (TextView) itemView.findViewById(R.id.text);
-            mReadMoreTextView = (TextView) itemView.findViewById(R.id.more);
-            mCommentButton = (TextView) itemView.findViewById(R.id.comment);
+            mContentTextView = itemView.findViewById(R.id.text);
+            mReadMoreTextView = itemView.findViewById(R.id.more);
+            mCommentButton = itemView.findViewById(R.id.comment);
             mCommentButton.setVisibility(View.GONE);
             mMoreButton = itemView.findViewById(R.id.button_more);
             mContentView = itemView.findViewById(R.id.content);
         }
-        
+
         ItemViewHolder(View itemView, @SuppressWarnings("UnusedParameters") Object payload) {
             super(itemView);
             mIsFooter = true;
         }
-        
+
         boolean isFooter() {
             return mIsFooter;
         }
     }
-    
+
     private static class ItemResponseListener implements ResponseListener<Item> {
         private final WeakReference<ItemRecyclerViewAdapter> mAdapter;
         private final int mPosition;
         private final Item mPartialItem;
-        
+
         @Synthetic
         ItemResponseListener(ItemRecyclerViewAdapter adapter, int position,
                              Item partialItem) {
@@ -320,7 +320,7 @@ public abstract class ItemRecyclerViewAdapter<VH extends ItemRecyclerViewAdapter
             mPosition = position;
             mPartialItem = partialItem;
         }
-        
+
         @Override
         public void onResponse(@Nullable Item response) {
             if (mAdapter.get() != null && mAdapter.get().isAttached() && response != null) {
@@ -328,28 +328,28 @@ public abstract class ItemRecyclerViewAdapter<VH extends ItemRecyclerViewAdapter
                 mAdapter.get().onItemLoaded(mPosition, mPartialItem);
             }
         }
-        
+
         @Override
         public void onError(String errorMessage) {
             // do nothing
         }
     }
-    
+
     static class VoteCallback extends UserServices.Callback {
         private final WeakReference<ItemRecyclerViewAdapter> mAdapter;
-        
+
         @Synthetic
         VoteCallback(ItemRecyclerViewAdapter adapter) {
             mAdapter = new WeakReference<>(adapter);
         }
-        
+
         @Override
         public void onDone(boolean successful) {
             if (mAdapter.get() != null && mAdapter.get().isAttached()) {
                 mAdapter.get().onVoted(successful);
             }
         }
-        
+
         @Override
         public void onError(Throwable throwable) {
             if (mAdapter.get() != null && mAdapter.get().isAttached()) {

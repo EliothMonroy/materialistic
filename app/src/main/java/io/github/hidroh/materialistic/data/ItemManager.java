@@ -27,7 +27,7 @@ import java.lang.annotation.RetentionPolicy;
  * Data repository for {@link Item}
  */
 public interface ItemManager {
-    
+
     @Retention(RetentionPolicy.SOURCE)
     @StringDef({
             TOP_FETCH_MODE,
@@ -39,14 +39,14 @@ public interface ItemManager {
     })
     @interface FetchMode {
     }
-    
+
     String TOP_FETCH_MODE = "top";
     String NEW_FETCH_MODE = "new";
     String ASK_FETCH_MODE = "ask";
     String SHOW_FETCH_MODE = "show";
     String JOBS_FETCH_MODE = "jobs";
     String BEST_FETCH_MODE = "best";
-    
+
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({
             MODE_DEFAULT,
@@ -55,11 +55,11 @@ public interface ItemManager {
     })
     @interface CacheMode {
     }
-    
+
     int MODE_DEFAULT = 0;
     int MODE_CACHE = 1;
     int MODE_NETWORK = 2;
-    
+
     /**
      * Gets array of top stories
      *
@@ -68,7 +68,7 @@ public interface ItemManager {
      * @param listener  callback to be notified on response
      */
     void getStories(String filter, @CacheMode int cacheMode, final ResponseListener<Item[]> listener);
-    
+
     /**
      * Gets individual item by ID
      *
@@ -77,7 +77,7 @@ public interface ItemManager {
      * @param listener  callback to be notified on response
      */
     void getItem(String itemId, @CacheMode int cacheMode, ResponseListener<Item> listener);
-    
+
     /**
      * Gets array of stories
      *
@@ -87,7 +87,7 @@ public interface ItemManager {
      */
     @WorkerThread
     Item[] getStories(String filter, @CacheMode int cacheMode);
-    
+
     /**
      * Gets individual item by ID
      *

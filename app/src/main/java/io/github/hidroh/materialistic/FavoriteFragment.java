@@ -32,7 +32,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.view.ActionMode;
 import androidx.appcompat.widget.SearchView;
-import androidx.recyclerview.widget.RecyclerView;
 
 import javax.inject.Inject;
 
@@ -57,7 +56,7 @@ public class FavoriteFragment extends BaseListFragment
     AlertDialogBuilder mAlertDialogBuilder;
     private View mEmptySearchView;
     private View mEmptyView;
-    
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,10 +64,12 @@ public class FavoriteFragment extends BaseListFragment
             mFilter = savedInstanceState.getString(STATE_FILTER);
             mSearchViewExpanded = savedInstanceState.getBoolean(STATE_SEARCH_VIEW_EXPANDED);
         } else {
-            mFilter = getArguments().getString(EXTRA_FILTER);
+            if (getArguments() != null) {
+                mFilter = getArguments().getString(EXTRA_FILTER);
+            }
         }
     }
-    
+
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
@@ -86,18 +87,18 @@ public class FavoriteFragment extends BaseListFragment
         mEmptyView.setVisibility(View.INVISIBLE);
         return view;
     }
-    
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
     }
-    
+
     @Override
     public void onStart() {
         super.onStart();
         mFavoriteManager.attach(this, mFilter);
     }
-    
+
     @Override
     protected void createOptionsMenu(final Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_search, menu);
@@ -107,7 +108,7 @@ public class FavoriteFragment extends BaseListFragment
             super.createOptionsMenu(menu, inflater);
         }
     }
-    
+
     @Override
     protected void prepareOptionsMenu(Menu menu) {
         // allow clearing filter if empty, or filter if non-empty
@@ -117,7 +118,7 @@ public class FavoriteFragment extends BaseListFragment
             super.prepareOptionsMenu(menu);
         }
     }
-    
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_clear) {
@@ -125,25 +126,27 @@ public class FavoriteFragment extends BaseListFragment
             return true;
         }
         if (item.getItemId() == R.id.menu_export) {
-            mFavoriteManager.export(getActivity(), mFilter);
-            return true;
+            if (getActivity() != null) {
+                mFavoriteManager.export(getActivity(), mFilter);
+                return true;
+            }
         }
         return super.onOptionsItemSelected(item);
     }
-    
+
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(STATE_FILTER, mFilter);
         outState.putBoolean(STATE_SEARCH_VIEW_EXPANDED, mSearchViewExpanded);
     }
-    
+
     @Override
     public void onStop() {
         super.onStop();
         mFavoriteManager.detach();
     }
-    
+
     @Override
     public void onDetach() {
         super.onDetach();
@@ -151,7 +154,7 @@ public class FavoriteFragment extends BaseListFragment
             mActionMode.finish();
         }
     }
-    
+
     /**
      * Filters list data by given query
      *
@@ -162,7 +165,7 @@ public class FavoriteFragment extends BaseListFragment
         mFilter = query;
         mFavoriteManager.attach(this, mFilter);
     }
-    
+
     @Override
     protected FavoriteRecyclerViewAdapter getAdapter() {
         if (mAdapter == null) {
@@ -170,7 +173,7 @@ public class FavoriteFragment extends BaseListFragment
         }
         return mAdapter;
     }
-    
+
     @Override
     public boolean startActionMode(ActionMode.Callback callback) {
         if (mSearchViewExpanded) {
@@ -181,26 +184,28 @@ public class FavoriteFragment extends BaseListFragment
         }
         return true;
     }
-    
+
     @Override
     public boolean isInActionMode() {
         return mActionMode != null && !mSearchViewExpanded;
     }
-    
+
     @Override
     public void stopActionMode() {
         mActionMode = null;
     }
-    
+
     @Override
     public void onChanged() {
         getAdapter().notifyChanged();
         if (!isDetached()) {
             toggleEmptyView(getAdapter().getItemCount() == 0, mFilter);
-            getActivity().invalidateOptionsMenu();
+            if (getActivity() != null) {
+                getActivity().invalidateOptionsMenu();
+            }
         }
     }
-    
+
     private void toggleEmptyView(boolean isEmpty, String filter) {
         if (isEmpty) {
             if (TextUtils.isEmpty(filter)) {
@@ -217,7 +222,7 @@ public class FavoriteFragment extends BaseListFragment
             mEmptySearchView.setVisibility(View.INVISIBLE);
         }
     }
-    
+
     private void createSearchView(MenuItem menuSearch) {
         final SearchView searchView = (SearchView) mActionViewResolver.getActionView(menuSearch);
         searchView.setQueryHint(getString(R.string.hint_search_saved_stories));
@@ -236,7 +241,7 @@ public class FavoriteFragment extends BaseListFragment
             return false;
         });
     }
-    
+
     private void clear() {
         mAlertDialogBuilder
                 .init(getActivity())

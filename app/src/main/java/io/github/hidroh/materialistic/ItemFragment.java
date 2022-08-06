@@ -53,7 +53,7 @@ import io.github.hidroh.materialistic.widget.SinglePageItemRecyclerViewAdapter;
 import io.github.hidroh.materialistic.widget.SnappyLinearLayoutManager;
 
 public class ItemFragment extends LazyLoadFragment implements Scrollable, Navigable {
-    
+
     public static final String EXTRA_ITEM = ItemFragment.class.getName() + ".EXTRA_ITEM";
     public static final String EXTRA_CACHE_MODE = ItemFragment.class.getName() + ".EXTRA_CACHE_MODE";
     private static final String STATE_ITEM = "state:item";
@@ -76,7 +76,7 @@ public class ItemFragment extends LazyLoadFragment implements Scrollable, Naviga
     private final Preferences.Observable mPreferenceObservable = new Preferences.Observable();
     private CommentItemDecoration mItemDecoration;
     private View mFragmentView;
-    
+
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -92,7 +92,7 @@ public class ItemFragment extends LazyLoadFragment implements Scrollable, Naviga
                 R.string.pref_smooth_scroll,
                 R.string.pref_color_code_opacity);
     }
-    
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,7 +103,9 @@ public class ItemFragment extends LazyLoadFragment implements Scrollable, Naviga
             mItemId = savedInstanceState.getString(STATE_ITEM_ID);
             mAdapterItems = savedInstanceState.getParcelable(STATE_ADAPTER_ITEMS);
         } else {
-            mCacheMode = getArguments().getInt(EXTRA_CACHE_MODE, ItemManager.MODE_DEFAULT);
+            if (getArguments() != null) {
+                mCacheMode = getArguments().getInt(EXTRA_CACHE_MODE, ItemManager.MODE_DEFAULT);
+            }
             WebItem item = getArguments().getParcelable(EXTRA_ITEM);
             if (item instanceof Item) {
                 mItem = (Item) item;
@@ -111,7 +113,7 @@ public class ItemFragment extends LazyLoadFragment implements Scrollable, Naviga
             mItemId = item != null ? item.getId() : null;
         }
     }
-    
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable final Bundle savedInstanceState) {
         if (isNewInstance()) {
@@ -137,7 +139,7 @@ public class ItemFragment extends LazyLoadFragment implements Scrollable, Naviga
         }
         return mFragmentView;
     }
-    
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -147,7 +149,7 @@ public class ItemFragment extends LazyLoadFragment implements Scrollable, Naviga
             mScrollableHelper.smoothScrollEnabled(Preferences.smoothScrollEnabled(getActivity()));
         }
     }
-    
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.menu_comments) {
@@ -156,7 +158,7 @@ public class ItemFragment extends LazyLoadFragment implements Scrollable, Naviga
         }
         return super.onOptionsItemSelected(item);
     }
-    
+
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -165,7 +167,7 @@ public class ItemFragment extends LazyLoadFragment implements Scrollable, Naviga
         outState.putParcelable(STATE_ADAPTER_ITEMS, mAdapterItems);
         outState.putInt(STATE_CACHE_MODE, mCacheMode);
     }
-    
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -173,28 +175,28 @@ public class ItemFragment extends LazyLoadFragment implements Scrollable, Naviga
             mAdapter.detach(getActivity(), mRecyclerView);
         }
     }
-    
+
     @Override
     public void onDetach() {
         super.onDetach();
         mPreferenceObservable.unsubscribe(getActivity());
     }
-    
+
     @Override
     public void scrollToTop() {
         mScrollableHelper.scrollToTop();
     }
-    
+
     @Override
     public boolean scrollToNext() {
         return mScrollableHelper.scrollToNext();
     }
-    
+
     @Override
     public boolean scrollToPrevious() {
         return mScrollableHelper.scrollToPrevious();
     }
-    
+
     @Override
     public void onNavigate(int direction) {
         if (mAdapter == null) { // no kids
@@ -204,7 +206,7 @@ public class ItemFragment extends LazyLoadFragment implements Scrollable, Naviga
                 direction,
                 position -> mAdapter.lockBinding(mScrollableHelper.scrollToPosition(position)));
     }
-    
+
     @Override
     protected void load() {
         if (mItem != null) {
@@ -213,16 +215,16 @@ public class ItemFragment extends LazyLoadFragment implements Scrollable, Naviga
             loadKidData();
         }
     }
-    
+
     @Override
     protected void createOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_item_view, menu);
     }
-    
+
     private void loadKidData() {
         mItemManager.getItem(mItemId, mCacheMode, new ItemResponseListener(this));
     }
-    
+
     void onItemLoaded(@Nullable Item item) {
         mSwipeRefreshLayout.setRefreshing(false);
         if (item != null) {
@@ -232,13 +234,13 @@ public class ItemFragment extends LazyLoadFragment implements Scrollable, Naviga
             bindKidData();
         }
     }
-    
+
     private void bindKidData() {
         if (mItem == null || mItem.getKidCount() == 0) {
             mEmptyView.setVisibility(View.VISIBLE);
             return;
         }
-        
+
         mEmptyView.setVisibility(View.GONE);
         String displayOption = Preferences.getCommentDisplayOption(getActivity());
         if (Preferences.isSinglePage(getActivity(), displayOption)) {
@@ -257,7 +259,7 @@ public class ItemFragment extends LazyLoadFragment implements Scrollable, Naviga
         mAdapter.attach(getActivity(), mRecyclerView);
         mRecyclerView.setAdapter(mAdapter);
     }
-    
+
     @SuppressLint("NotifyDataSetChanged")
     private void onPreferenceChanged(int key, boolean contextChanged) {
         if (contextChanged || key == R.string.pref_comment_display) {
@@ -270,7 +272,7 @@ public class ItemFragment extends LazyLoadFragment implements Scrollable, Naviga
             mAdapter.notifyDataSetChanged();
         }
     }
-    
+
     private void showPreferences() {
         Bundle args = new Bundle();
         args.putInt(PopupSettingsFragment.EXTRA_TITLE, R.string.font_options);
@@ -282,28 +284,28 @@ public class ItemFragment extends LazyLoadFragment implements Scrollable, Naviga
                 PopupSettingsFragment.class.getName(), args))
                 .show(getFragmentManager(), PopupSettingsFragment.class.getName());
     }
-    
+
     private void notifyItemLoaded(@NonNull Item item) {
         if (getActivity() instanceof ItemChangedListener) {
             ((ItemChangedListener) getActivity()).onItemChanged(item);
         }
     }
-    
+
     static class ItemResponseListener implements ResponseListener<Item> {
         private final WeakReference<ItemFragment> mItemFragment;
-        
+
         @Synthetic
         ItemResponseListener(ItemFragment itemFragment) {
             mItemFragment = new WeakReference<>(itemFragment);
         }
-        
+
         @Override
         public void onResponse(@Nullable Item response) {
             if (mItemFragment.get() != null && mItemFragment.get().isAttached()) {
                 mItemFragment.get().onItemLoaded(response);
             }
         }
-        
+
         @Override
         public void onError(String errorMessage) {
             if (mItemFragment.get() != null && mItemFragment.get().isAttached()) {
@@ -311,7 +313,7 @@ public class ItemFragment extends LazyLoadFragment implements Scrollable, Naviga
             }
         }
     }
-    
+
     interface ItemChangedListener {
         void onItemChanged(@NonNull Item item);
     }
