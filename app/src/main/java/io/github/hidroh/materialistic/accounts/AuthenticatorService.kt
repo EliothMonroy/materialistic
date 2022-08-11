@@ -13,27 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package io.github.hidroh.materialistic.accounts
 
-package io.github.hidroh.materialistic.accounts;
+import android.app.Service
+import android.content.Intent
+import android.os.IBinder
 
-import android.app.Service;
-import android.content.Intent;
-import android.os.IBinder;
-
-import androidx.annotation.Nullable;
-
-public class AuthenticatorService extends Service {
-    private AccountAuthenticator mAuthenticator;
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        mAuthenticator = new AccountAuthenticator(this);
+class AuthenticatorService : Service() {
+    private var mAuthenticator: AccountAuthenticator? = null
+    override fun onCreate() {
+        super.onCreate()
+        mAuthenticator = AccountAuthenticator(this)
     }
 
-    @Nullable
-    @Override
-    public IBinder onBind(Intent intent) {
-        return mAuthenticator.getIBinder();
+    override fun onBind(intent: Intent): IBinder? {
+        return mAuthenticator!!.iBinder
     }
 }
