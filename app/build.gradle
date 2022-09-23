@@ -7,7 +7,7 @@ android {
 
     defaultConfig {
         applicationId "io.github.hidroh.materialistic.elioth"
-        minSdkVersion 21
+        minSdkVersion 23
         targetSdkVersion 33
         versionCode 79
         versionName "3.3"

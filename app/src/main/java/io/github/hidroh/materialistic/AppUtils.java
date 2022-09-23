@@ -406,11 +406,7 @@ public class AppUtils {
                         if (selection < 0) {
                             break;
                         }
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
-                            AccountManager.get(context).removeAccount(accounts[selection], null, null, null);
-                        } else {
-                            AccountManager.get(context).removeAccount(accounts[selection], null, null);
-                        }
+                        AccountManager.get(context).removeAccount(accounts[selection], null, null, null);
                         dialog.dismiss();
                         break;
                     default:
@@ -591,9 +587,7 @@ public class AppUtils {
                                 new Intent(context, ItemActivity.class)
                                         .putExtra(ItemActivity.EXTRA_ITEM, item)
                                         .putExtra(ItemActivity.EXTRA_OPEN_COMMENTS, true),
-                                Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
-                                        PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE :
-                                        PendingIntent.FLAG_ONE_SHOT));
+                                PendingIntent.FLAG_ONE_SHOT | PendingIntent.FLAG_IMMUTABLE));
             }
             return builder.build().intent.setData(Uri.parse(url));
         } else {
@@ -611,11 +605,7 @@ public class AppUtils {
     }
 
     public static void setTextAppearance(TextView textView, @StyleRes int textAppearance) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            textView.setTextAppearance(textAppearance);
-        } else {
-            textView.setTextAppearance(textView.getContext(), textAppearance);
-        }
+        textView.setTextAppearance(textAppearance);
     }
 
     public static boolean urlEquals(String thisUrl, String thatUrl) {
