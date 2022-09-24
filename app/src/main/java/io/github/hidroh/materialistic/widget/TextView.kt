@@ -13,25 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package io.github.hidroh.materialistic.widget
 
-package io.github.hidroh.materialistic.widget;
+import android.content.Context
+import android.util.AttributeSet
+import kotlin.jvm.JvmOverloads
+import androidx.appcompat.widget.AppCompatTextView
+import io.github.hidroh.materialistic.Application
 
-import android.content.Context;
-import android.util.AttributeSet;
-
-import androidx.appcompat.widget.AppCompatTextView;
-
-import io.github.hidroh.materialistic.Application;
-
-public class TextView extends AppCompatTextView {
-    public TextView(Context context, AttributeSet attrs) {
-        this(context, attrs, 0);
-    }
-
-    public TextView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        if (!isInEditMode()) {
-            setTypeface(Application.TYPE_FACE);
+class TextView @JvmOverloads constructor(
+    context: Context?,
+    attrs: AttributeSet?,
+    defStyleAttr: Int = 0
+) : AppCompatTextView(
+    context!!, attrs, defStyleAttr
+) {
+    init {
+        if (!isInEditMode) {
+            typeface = Application.TYPE_FACE
         }
     }
 }
