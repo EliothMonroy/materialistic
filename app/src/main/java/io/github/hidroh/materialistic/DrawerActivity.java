@@ -134,7 +134,7 @@ public abstract class DrawerActivity extends InjectableActivity {
 
     @Override
     public void setContentView(int layoutResID) {
-        ViewGroup drawerLayout = (ViewGroup) findViewById(R.id.drawer_layout);
+        ViewGroup drawerLayout = findViewById(R.id.drawer_layout);
         View view = getLayoutInflater().inflate(layoutResID, drawerLayout, false);
         drawerLayout.addView(view, 0);
     }
@@ -143,7 +143,7 @@ public abstract class DrawerActivity extends InjectableActivity {
         mDrawerAccount.setOnClickListener(v -> showLogin());
         mDrawerLogout.setOnClickListener(v -> confirmLogout());
         View moreContainer = findViewById(R.id.drawer_more_container);
-        TextView moreToggle = (TextView) findViewById(R.id.drawer_more);
+        TextView moreToggle = findViewById(R.id.drawer_more);
         moreToggle.setOnClickListener(v -> {
             if (moreContainer.getVisibility() == View.VISIBLE) {
                 moreToggle.setTextColor(ContextCompat.getColor(DrawerActivity.this,

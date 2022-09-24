@@ -179,7 +179,7 @@ public class WebFragment extends LazyLoadFragment
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setHasOptionsMenu(true);
         if (isNewInstance()) {
@@ -437,7 +437,7 @@ public class WebFragment extends LazyLoadFragment
     }
 
     private void setUpWebView(View view) {
-        mProgressBar = (ProgressBar) view.findViewById(R.id.progress);
+        mProgressBar = view.findViewById(R.id.progress);
         mWebView.setBackgroundColor(Color.TRANSPARENT);
         mWebView.setWebViewClient(new AdBlockWebViewClient(Preferences.adBlockEnabled(getActivity())) {
             @Override

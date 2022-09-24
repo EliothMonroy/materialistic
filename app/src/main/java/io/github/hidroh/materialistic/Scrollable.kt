@@ -13,29 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package io.github.hidroh.materialistic;
+package io.github.hidroh.materialistic
 
 /**
  * Interface for things that can be scrolled vertically
  */
-public interface Scrollable {
+interface Scrollable {
     /**
      * Scrolls this instance to top, i.e. until no more content above
      */
-    void scrollToTop();
+    fun scrollToTop()
 
     /**
      * Scrolls to reveal more content below current content
      *
      * @return true if successful, false if unable to scroll
      */
-    boolean scrollToNext();
+    fun scrollToNext(): Boolean
 
     /**
      * Scrolls to reveal more content above current content
      *
      * @return true if successful, false if unable to scroll
      */
-    boolean scrollToPrevious();
+    fun scrollToPrevious(): Boolean
 }

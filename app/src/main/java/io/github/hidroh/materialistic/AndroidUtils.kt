@@ -13,41 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package io.github.hidroh.materialistic;
-
-import androidx.annotation.Nullable;
+package io.github.hidroh.materialistic
 
 /**
  * Straight copies of Android's static utilities
  */
-public interface AndroidUtils {
-
-    class TextUtils {
-
+interface AndroidUtils {
+    object TextUtils {
         /**
          * Returns true if a and b are equal, including if they are both null.
-         * <p><i>Note: In platform versions 1.1 and earlier, this method only worked well if
-         * both the arguments were instances of String.</i></p>
+         *
+         * *Note: In platform versions 1.1 and earlier, this method only worked well if
+         * both the arguments were instances of String.*
          *
          * @param a first CharSequence to check
          * @param b second CharSequence to check
          * @return true if a and b are equal
          */
-        public static boolean equals(CharSequence a, CharSequence b) {
-            if (a == b) return true;
-            int length;
-            if (a != null && b != null && (length = a.length()) == b.length()) {
-                if (a instanceof String && b instanceof String) {
-                    return a.equals(b);
+        @JvmStatic
+        fun equals(a: CharSequence?, b: CharSequence?): Boolean {
+            if (a === b) return true
+            var length = 0
+            return if (a != null && b != null && a.length.also { length = it } == b.length) {
+                if (a is String && b is String) {
+                    a == b
                 } else {
-                    for (int i = 0; i < length; i++) {
-                        if (a.charAt(i) != b.charAt(i)) return false;
+                    for (i in 0 until length) {
+                        if (a[i] != b[i]) return false
                     }
-                    return true;
+                    true
                 }
-            }
-            return false;
+            } else false
         }
 
         /**
@@ -56,8 +52,9 @@ public interface AndroidUtils {
          * @param str the string to be examined
          * @return true if str is null or zero length
          */
-        public static boolean isEmpty(@Nullable CharSequence str) {
-            return str == null || str.length() == 0;
+        @JvmStatic
+        fun isEmpty(str: CharSequence?): Boolean {
+            return str == null || str.isEmpty()
         }
     }
 }

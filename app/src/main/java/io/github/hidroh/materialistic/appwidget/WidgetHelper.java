@@ -155,9 +155,7 @@ class WidgetHelper {
                 new Intent(WidgetProvider.ACTION_REFRESH_WIDGET)
                         .putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
                         .setPackage(mContext.getPackageName()),
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ?
-                        PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE :
-                        PendingIntent.FLAG_UPDATE_CURRENT);
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
     }
 
     static class WidgetConfig {

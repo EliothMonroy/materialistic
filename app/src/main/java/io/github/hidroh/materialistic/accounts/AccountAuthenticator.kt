@@ -34,7 +34,7 @@ class AccountAuthenticator(private val mContext: Context) : EmptyAccountAuthenti
         authTokenType: String,
         requiredFeatures: Array<String>,
         options: Bundle
-    ): Bundle? {
+    ): Bundle {
         val intent = Intent(mContext, LoginActivity::class.java)
         intent.putExtra(LoginActivity.EXTRA_ADD_ACCOUNT, true)
         val bundle = Bundle()

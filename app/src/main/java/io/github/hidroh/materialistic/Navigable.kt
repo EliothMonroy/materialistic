@@ -13,13 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package io.github.hidroh.materialistic
 
-package io.github.hidroh.materialistic;
+interface Navigable {
+    fun onNavigate(direction: Int)
 
-import android.content.res.TypedArray;
-
-import androidx.annotation.ArrayRes;
-
-public interface ResourcesProvider {
-    TypedArray obtainTypedArray(@ArrayRes int resId);
+    companion object {
+        const val DIRECTION_UP = 0
+        const val DIRECTION_DOWN = 1
+        const val DIRECTION_LEFT = 2
+        const val DIRECTION_RIGHT = 3
+    }
 }

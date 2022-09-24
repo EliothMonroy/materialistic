@@ -22,7 +22,6 @@ import android.view.MenuItem;
 import android.view.Window;
 
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.RecyclerView;
 
 import javax.inject.Inject;

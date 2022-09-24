@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2016 Ha Duy Trung
+ * Copyright (c) 2015 Ha Duy Trung
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package io.github.hidroh.materialistic
 
-package io.github.hidroh.materialistic;
+import dagger.ObjectGraph
 
-public interface Navigable {
-    int DIRECTION_UP = 0;
-    int DIRECTION_DOWN = 1;
-    int DIRECTION_LEFT = 2;
-    int DIRECTION_RIGHT = 3;
-
-    void onNavigate(int direction);
+/**
+ * Interface for context that can be injected with dependencies
+ */
+interface Injectable {
+    /**
+     * Injects the members of given object, including injectable members
+     * inherited from its supertypes.
+     *
+     * @param object object with members to be injected
+     */
+    fun inject(`object`: Any?)
+    val applicationGraph: ObjectGraph?
 }
