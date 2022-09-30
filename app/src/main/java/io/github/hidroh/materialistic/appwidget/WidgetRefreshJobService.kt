@@ -13,18 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package io.github.hidroh.materialistic.appwidget
 
-package io.github.hidroh.materialistic.annotation;
+import android.app.job.JobParameters
+import android.app.job.JobService
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+class WidgetRefreshJobService : JobService() {
+    override fun onStartJob(jobParameters: JobParameters): Boolean {
+        WidgetHelper(this).refresh(jobParameters.jobId)
+        jobFinished(jobParameters, false) // if we're able to start job means we have network conn
+        return true
+    }
 
-/**
- * Indicates target's visibility (and its members) can be made public to allow API discoverability
- */
-@Retention(RetentionPolicy.SOURCE)
-@Target({ElementType.CONSTRUCTOR, ElementType.METHOD, ElementType.TYPE})
-public @interface PublicApi {
+    override fun onStopJob(jobParameters: JobParameters): Boolean {
+        return true
+    }
 }

@@ -13,22 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package io.github.hidroh.materialistic.annotation
 
-package io.github.hidroh.materialistic.appwidget;
-
-import android.app.job.JobParameters;
-import android.app.job.JobService;
-
-public class WidgetRefreshJobService extends JobService {
-    @Override
-    public boolean onStartJob(JobParameters jobParameters) {
-        new WidgetHelper(this).refresh(jobParameters.getJobId());
-        jobFinished(jobParameters, false); // if we're able to start job means we have network conn
-        return true;
-    }
-
-    @Override
-    public boolean onStopJob(JobParameters jobParameters) {
-        return true;
-    }
-}
+/**
+ * Indicates that target's visibility can be relaxed to avoid synthetic methods
+ */
+@Retention(AnnotationRetention.SOURCE)
+@Target(
+    AnnotationTarget.FIELD,
+    AnnotationTarget.CONSTRUCTOR,
+    AnnotationTarget.FUNCTION,
+    AnnotationTarget.PROPERTY_GETTER,
+    AnnotationTarget.PROPERTY_SETTER,
+    AnnotationTarget.ANNOTATION_CLASS,
+    AnnotationTarget.CLASS
+)
+annotation class Synthetic 
