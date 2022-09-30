@@ -52,8 +52,7 @@ import io.github.hidroh.materialistic.data.Item;
 import io.github.hidroh.materialistic.data.ItemManager;
 import io.github.hidroh.materialistic.data.ResponseListener;
 
-public abstract class ItemRecyclerViewAdapter<VH extends ItemRecyclerViewAdapter.ItemViewHolder>
-        extends RecyclerViewAdapter<VH> {
+public abstract class ItemRecyclerViewAdapter<VH extends ItemRecyclerViewAdapter.ItemViewHolder> extends RecyclerViewAdapter<VH> {
     private static final String PROPERTY_MAX_LINES = "maxLines";
     private static final int DURATION_PER_LINE_MILLIS = 20;
     LayoutInflater mLayoutInflater;
@@ -89,12 +88,7 @@ public abstract class ItemRecyclerViewAdapter<VH extends ItemRecyclerViewAdapter
             ((Injectable) mContext).inject(this);
         }
         mLayoutInflater = AppUtils.createLayoutInflater(mContext);
-        TypedArray ta = mContext.obtainStyledAttributes(new int[]{
-                android.R.attr.textColorTertiary,
-                android.R.attr.textColorSecondary,
-                R.attr.colorCardBackground,
-                R.attr.colorCardHighlight
-        });
+        TypedArray ta = mContext.obtainStyledAttributes(new int[]{android.R.attr.textColorTertiary, android.R.attr.textColorSecondary, R.attr.colorCardBackground, R.attr.colorCardHighlight});
         mTertiaryTextColorResId = ta.getInt(0, 0);
         mSecondaryTextColorResId = ta.getInt(1, 0);
         mCardBackgroundColorResId = ta.getInt(2, 0);
@@ -189,8 +183,7 @@ public abstract class ItemRecyclerViewAdapter<VH extends ItemRecyclerViewAdapter
 
     private void load(int adapterPosition, Item item) {
         item.setLocalRevision(0);
-        mItemManager.getItem(item.getId(), mCacheMode,
-                new ItemResponseListener(this, adapterPosition, item));
+        mItemManager.getItem(item.getId(), mCacheMode, new ItemResponseListener(this, adapterPosition, item));
     }
 
     protected void onItemLoaded(int position, Item item) {
@@ -200,15 +193,12 @@ public abstract class ItemRecyclerViewAdapter<VH extends ItemRecyclerViewAdapter
     }
 
     private void highlightUserItem(VH holder, Item item) {
-        boolean highlight = !TextUtils.isEmpty(mUsername) &&
-                TextUtils.equals(mUsername, item.getBy());
-        holder.mContentView.setBackgroundColor(highlight ?
-                mCardHighlightColorResId : mCardBackgroundColorResId);
+        boolean highlight = !TextUtils.isEmpty(mUsername) && TextUtils.equals(mUsername, item.getBy());
+        holder.mContentView.setBackgroundColor(highlight ? mCardHighlightColorResId : mCardBackgroundColorResId);
     }
 
     private void decorateDead(VH holder, Item item) {
-        holder.mContentTextView.setTextColor(item.isDead() ?
-                mSecondaryTextColorResId : mTertiaryTextColorResId);
+        holder.mContentTextView.setTextColor(item.isDead() ? mSecondaryTextColorResId : mTertiaryTextColorResId);
     }
 
     private void toggleCollapsibleContent(final VH holder, final Item item, int lineCount) {
@@ -223,9 +213,7 @@ public abstract class ItemRecyclerViewAdapter<VH extends ItemRecyclerViewAdapter
         holder.mReadMoreTextView.setOnClickListener(v -> {
             item.setContentExpanded(true);
             v.setVisibility(View.GONE);
-            ObjectAnimator.ofInt(holder.mContentTextView, PROPERTY_MAX_LINES, lineCount)
-                    .setDuration((long) (lineCount - mContentMaxLines) * DURATION_PER_LINE_MILLIS)
-                    .start();
+            ObjectAnimator.ofInt(holder.mContentTextView, PROPERTY_MAX_LINES, lineCount).setDuration((long) (lineCount - mContentMaxLines) * DURATION_PER_LINE_MILLIS).start();
         });
     }
 
@@ -235,31 +223,21 @@ public abstract class ItemRecyclerViewAdapter<VH extends ItemRecyclerViewAdapter
             return;
         }
         holder.mMoreButton.setVisibility(View.VISIBLE);
-        holder.mMoreButton.setOnClickListener(v ->
-                mPopupMenu.create(mContext, holder.mMoreButton, Gravity.NO_GRAVITY)
-                        .inflate(R.menu.menu_contextual_comment)
-                        .setOnMenuItemClickListener(menuItem -> {
-                            if (menuItem.getItemId() == R.id.menu_contextual_vote) {
-                                vote(item);
-                                return true;
-                            }
-                            if (menuItem.getItemId() == R.id.menu_contextual_comment) {
-                                mContext.startActivity(new Intent(mContext, ComposeActivity.class)
-                                        .putExtra(ComposeActivity.EXTRA_PARENT_ID, item.getId())
-                                        .putExtra(ComposeActivity.EXTRA_PARENT_TEXT, item.getText()));
-                                return true;
-                            }
-                            if (menuItem.getItemId() == R.id.menu_contextual_share) {
-                                AppUtils.share(mContext,
-                                        item.isStoryType() ? item.getDisplayedTitle() : null,
-                                        item.isStoryType() ? item.getUrl() :
-                                                item.getDisplayedText() == null ?
-                                                        null : item.getDisplayedText().toString());
-                                return true;
-                            }
-                            return false;
-                        })
-                        .show());
+        holder.mMoreButton.setOnClickListener(v -> mPopupMenu.create(mContext, holder.mMoreButton, Gravity.NO_GRAVITY).inflate(R.menu.menu_contextual_comment).setOnMenuItemClickListener(menuItem -> {
+            if (menuItem.getItemId() == R.id.menu_contextual_vote) {
+                vote(item);
+                return true;
+            }
+            if (menuItem.getItemId() == R.id.menu_contextual_comment) {
+                mContext.startActivity(new Intent(mContext, ComposeActivity.class).putExtra(ComposeActivity.EXTRA_PARENT_ID, item.getId()).putExtra(ComposeActivity.EXTRA_PARENT_TEXT, item.getText()));
+                return true;
+            }
+            if (menuItem.getItemId() == R.id.menu_contextual_share) {
+                AppUtils.share(mContext, item.isStoryType() ? item.getDisplayedTitle() : null, item.isStoryType() ? item.getUrl() : item.getDisplayedText() == null ? null : item.getDisplayedText().toString());
+                return true;
+            }
+            return false;
+        }).show());
     }
 
     private void vote(final Item item) {
@@ -277,7 +255,7 @@ public abstract class ItemRecyclerViewAdapter<VH extends ItemRecyclerViewAdapter
         }
     }
 
-    static class ItemViewHolder extends RecyclerView.ViewHolder {
+    public static class ItemViewHolder extends RecyclerView.ViewHolder {
         boolean mIsFooter;
         TextView mPostedTextView;
         TextView mContentTextView;
@@ -314,8 +292,7 @@ public abstract class ItemRecyclerViewAdapter<VH extends ItemRecyclerViewAdapter
         private final Item mPartialItem;
 
         @Synthetic
-        ItemResponseListener(ItemRecyclerViewAdapter adapter, int position,
-                             Item partialItem) {
+        ItemResponseListener(ItemRecyclerViewAdapter adapter, int position, Item partialItem) {
             mAdapter = new WeakReference<>(adapter);
             mPosition = position;
             mPartialItem = partialItem;

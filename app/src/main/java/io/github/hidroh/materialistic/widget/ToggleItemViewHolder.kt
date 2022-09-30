@@ -15,20 +15,25 @@
  */
 package io.github.hidroh.materialistic.widget
 
-import android.content.Context
-import android.util.AttributeSet
-import kotlin.jvm.JvmOverloads
-import androidx.appcompat.widget.AppCompatTextView
-import io.github.hidroh.materialistic.Application
+import android.view.View
+import android.widget.TextView
+import io.github.hidroh.materialistic.R
 
-class TextView @JvmOverloads constructor(
-    context: Context?, attrs: AttributeSet?, defStyleAttr: Int = 0
-) : AppCompatTextView(
-    context!!, attrs, defStyleAttr
-) {
-    init {
-        if (!isInEditMode) {
-            typeface = Application.TYPE_FACE
-        }
+class ToggleItemViewHolder : ItemRecyclerViewAdapter.ItemViewHolder {
+    @JvmField
+    var mToggleButton: View? = null
+
+    @JvmField
+    var mToggle: TextView? = null
+
+    @JvmField
+    var mLevel: View? = null
+
+    internal constructor(itemView: View) : super(itemView) {
+        mToggleButton = itemView.findViewById(R.id.button_toggle)
+        mToggle = itemView.findViewById(R.id.toggle)
+        mLevel = itemView.findViewById(R.id.level)
     }
+
+    internal constructor(itemView: View?, payload: Any?) : super(itemView, payload) {}
 }

@@ -13,20 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package io.github.hidroh.materialistic.widget
 
-package io.github.hidroh.materialistic.widget;
+import android.view.View
+import android.widget.TextView
+import io.github.hidroh.materialistic.R
 
-import android.view.View;
-import android.widget.TextView;
+internal class SubmissionViewHolder(itemView: View) :
+    ItemRecyclerViewAdapter.ItemViewHolder(itemView) {
+    @JvmField
+    val mTitleTextView: TextView
 
-import io.github.hidroh.materialistic.R;
-
-class SubmissionViewHolder extends ItemRecyclerViewAdapter.ItemViewHolder {
-    final TextView mTitleTextView;
-
-    SubmissionViewHolder(View itemView) {
-        super(itemView);
-        mTitleTextView = itemView.findViewById(R.id.title);
-        mCommentButton.setText(R.string.view_story);
+    init {
+        mTitleTextView = itemView.findViewById(R.id.title)
+        mCommentButton.setText(R.string.view_story)
     }
 }
