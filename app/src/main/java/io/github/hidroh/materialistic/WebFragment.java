@@ -76,8 +76,7 @@ import okhttp3.Call;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-public class WebFragment extends LazyLoadFragment
-        implements Scrollable, KeyDelegate.BackInterceptor {
+public class WebFragment extends LazyLoadFragment implements Scrollable, KeyDelegate.BackInterceptor {
     public static final String EXTRA_ITEM = WebFragment.class.getName() + ".EXTRA_ITEM";
     private static final String STATE_EMPTY = "state:empty";
     private static final String STATE_READABILITY = "state:readability";
@@ -131,12 +130,8 @@ public class WebFragment extends LazyLoadFragment
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        mPreferenceObservable.subscribe(context, this::onPreferenceChanged,
-                R.string.pref_readability_font,
-                R.string.pref_readability_line_height,
-                R.string.pref_readability_text_size);
-        LocalBroadcastManager.getInstance(context).registerReceiver(mReceiver,
-                new IntentFilter(ACTION_FULLSCREEN));
+        mPreferenceObservable.subscribe(context, this::onPreferenceChanged, R.string.pref_readability_font, R.string.pref_readability_line_height, R.string.pref_readability_text_size);
+        LocalBroadcastManager.getInstance(context).registerReceiver(mReceiver, new IntentFilter(ACTION_FULLSCREEN));
     }
 
     @Override
@@ -149,8 +144,7 @@ public class WebFragment extends LazyLoadFragment
             mReadability = savedInstanceState.getBoolean(STATE_READABILITY, false);
             mItem = savedInstanceState.getParcelable(EXTRA_ITEM);
         } else {
-            mReadability = Preferences.getDefaultStoryView(getActivity()) ==
-                    Preferences.StoryViewMode.Readability;
+            mReadability = Preferences.getDefaultStoryView(getActivity()) == Preferences.StoryViewMode.Readability;
             if (getArguments() != null) {
                 mItem = getArguments().getParcelable(EXTRA_ITEM);
             }
@@ -201,8 +195,7 @@ public class WebFragment extends LazyLoadFragment
     protected void prepareOptionsMenu(Menu menu) {
         MenuItem menuReadability = menu.findItem(R.id.menu_readability);
         menuReadability.setVisible(modeToggleEnabled());
-        mMenuTintDelegate.setIcon(menuReadability, mReadability ?
-                R.drawable.ic_web_black_24dp : R.drawable.ic_chrome_reader_mode_black_24dp);
+        mMenuTintDelegate.setIcon(menuReadability, mReadability ? R.drawable.ic_web_black_24dp : R.drawable.ic_chrome_reader_mode_black_24dp);
         menuReadability.setTitle(mReadability ? R.string.article : R.string.readability);
         menu.findItem(R.id.menu_font_options).setVisible(fontEnabled());
     }
@@ -405,31 +398,23 @@ public class WebFragment extends LazyLoadFragment
                 mWebView.reload();
             }
         });
-        view.findViewById(R.id.button_exit).setOnClickListener(v ->
-                LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(
-                        new Intent(WebFragment.ACTION_FULLSCREEN)
-                                .putExtra(EXTRA_FULLSCREEN, false)));
+        view.findViewById(R.id.button_exit).setOnClickListener(v -> LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(WebFragment.ACTION_FULLSCREEN).putExtra(EXTRA_FULLSCREEN, false)));
         mButtonNext.setOnClickListener(v -> mWebView.findNext(true));
-        mButtonMore.setOnClickListener(v ->
-                mPopupMenu.create(getActivity(), mButtonMore, Gravity.NO_GRAVITY)
-                        .inflate(R.menu.menu_web)
-                        .setOnMenuItemClickListener(item -> {
-                            if (item.getItemId() == R.id.menu_font_options) {
-                                showPreferences();
-                                return true;
-                            }
-                            if (item.getItemId() == R.id.menu_zoom_in) {
-                                mWebView.zoomIn();
-                                return true;
-                            }
-                            if (item.getItemId() == R.id.menu_zoom_out) {
-                                mWebView.zoomOut();
-                                return true;
-                            }
-                            return false;
-                        })
-                        .setMenuItemVisible(R.id.menu_font_options, fontEnabled())
-                        .show());
+        mButtonMore.setOnClickListener(v -> mPopupMenu.create(getActivity(), mButtonMore, Gravity.NO_GRAVITY).inflate(R.menu.menu_web).setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == R.id.menu_font_options) {
+                showPreferences();
+                return true;
+            }
+            if (item.getItemId() == R.id.menu_zoom_in) {
+                mWebView.zoomIn();
+                return true;
+            }
+            if (item.getItemId() == R.id.menu_zoom_out) {
+                mWebView.zoomOut();
+                return true;
+            }
+            return false;
+        }).setMenuItemVisible(R.id.menu_font_options, fontEnabled()).show());
         mEditText.setOnEditorActionListener((v, actionId, event) -> {
             findInPage();
             return true;
@@ -494,8 +479,7 @@ public class WebFragment extends LazyLoadFragment
     private void setProgress(int progress) {
         mProgressBar.setProgress(progress);
         mProgressBar.setVisibility(progress == 100 ? GONE : VISIBLE);
-        mButtonRefresh.setImageResource(progress == 100 ?
-                R.drawable.ic_refresh_white_24dp : R.drawable.ic_clear_white_24dp);
+        mButtonRefresh.setImageResource(progress == 100 ? R.drawable.ic_refresh_white_24dp : R.drawable.ic_clear_white_24dp);
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -542,11 +526,8 @@ public class WebFragment extends LazyLoadFragment
     private void showPreferences() {
         Bundle args = new Bundle();
         args.putInt(PopupSettingsFragment.EXTRA_TITLE, R.string.font_options);
-        args.putIntArray(PopupSettingsFragment.EXTRA_XML_PREFERENCES,
-                new int[]{R.xml.preferences_readability});
-        ((DialogFragment) Fragment.instantiate(getActivity(),
-                PopupSettingsFragment.class.getName(), args))
-                .show(getFragmentManager(), PopupSettingsFragment.class.getName());
+        args.putIntArray(PopupSettingsFragment.EXTRA_XML_PREFERENCES, new int[]{R.xml.preferences_readability});
+        ((DialogFragment) Fragment.instantiate(getActivity(), PopupSettingsFragment.class.getName(), args)).show(getFragmentManager(), PopupSettingsFragment.class.getName());
     }
 
     private void onPreferenceChanged(int key, boolean contextChanged) {
@@ -585,8 +566,7 @@ public class WebFragment extends LazyLoadFragment
     }
 
     private void toggleSoftKeyboard(boolean visible) {
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(
-                Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         if (visible) {
             imm.showSoftInput(mEditText, InputMethodManager.SHOW_IMPLICIT);
         } else {

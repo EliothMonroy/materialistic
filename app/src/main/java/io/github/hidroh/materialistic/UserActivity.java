@@ -140,8 +140,7 @@ public class UserActivity extends InjectableActivity implements Scrollable {
         mRecyclerView = findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new SnappyLinearLayoutManager(this, true));
         mRecyclerView.addItemDecoration(new CommentItemDecoration(this));
-        mScrollableHelper = new KeyDelegate.RecyclerViewHelper(mRecyclerView,
-                KeyDelegate.RecyclerViewHelper.SCROLL_ITEM);
+        mScrollableHelper = new KeyDelegate.RecyclerViewHelper(mRecyclerView, KeyDelegate.RecyclerViewHelper.SCROLL_ITEM);
         if (savedInstanceState != null) {
             mUser = savedInstanceState.getParcelable(STATE_USER);
         }
@@ -151,9 +150,7 @@ public class UserActivity extends InjectableActivity implements Scrollable {
             bind();
         }
         if (!AppUtils.hasConnection(this)) {
-            Snackbar.make(findViewById(R.id.content_frame),
-                            R.string.offline_notice, Snackbar.LENGTH_LONG)
-                    .show();
+            Snackbar.make(findViewById(R.id.content_frame), R.string.offline_notice, Snackbar.LENGTH_LONG).show();
         }
     }
 
@@ -178,20 +175,17 @@ public class UserActivity extends InjectableActivity implements Scrollable {
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         mKeyDelegate.setScrollable(this, null);
-        return mKeyDelegate.onKeyDown(keyCode, event) ||
-                super.onKeyDown(keyCode, event);
+        return mKeyDelegate.onKeyDown(keyCode, event) || super.onKeyDown(keyCode, event);
     }
 
     @Override
     public boolean onKeyUp(int keyCode, KeyEvent event) {
-        return mKeyDelegate.onKeyUp(keyCode, event) ||
-                super.onKeyUp(keyCode, event);
+        return mKeyDelegate.onKeyUp(keyCode, event) || super.onKeyUp(keyCode, event);
     }
 
     @Override
     public boolean onKeyLongPress(int keyCode, KeyEvent event) {
-        return mKeyDelegate.onKeyLongPress(keyCode, event) ||
-                super.onKeyLongPress(keyCode, event);
+        return mKeyDelegate.onKeyLongPress(keyCode, event) || super.onKeyLongPress(keyCode, event);
     }
 
     @Override
@@ -232,13 +226,11 @@ public class UserActivity extends InjectableActivity implements Scrollable {
         mInfo.setVisibility(View.GONE);
         mAbout.setVisibility(View.GONE);
         mEmpty.setVisibility(View.VISIBLE);
-        mTabLayout.addTab(mTabLayout.newTab()
-                .setText(getResources().getQuantityString(R.plurals.submissions_count, 0, "").trim()));
+        mTabLayout.addTab(mTabLayout.newTab().setText(getResources().getQuantityString(R.plurals.submissions_count, 0, "").trim()));
     }
 
     private void bind() {
-        SpannableString karma = new SpannableString(String.format(Locale.US, KARMA,
-                NumberFormat.getInstance(Locale.getDefault()).format(mUser.getKarma())));
+        SpannableString karma = new SpannableString(String.format(Locale.US, KARMA, NumberFormat.getInstance(Locale.getDefault()).format(mUser.getKarma())));
         karma.setSpan(new RelativeSizeSpan(0.8f), 0, karma.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
         mTitle.append(karma);
         mInfo.setText(getString(R.string.user_info, mUser.getCreated(this)));
@@ -248,11 +240,9 @@ public class UserActivity extends InjectableActivity implements Scrollable {
             AppUtils.setTextWithLinks(mAbout, AppUtils.fromHtml(mUser.getAbout(), true));
         }
         int count = mUser.getItems().length;
-        mTabLayout.addTab(mTabLayout.newTab()
-                .setText(getResources().getQuantityString(R.plurals.submissions_count, count, count)));
+        mTabLayout.addTab(mTabLayout.newTab().setText(getResources().getQuantityString(R.plurals.submissions_count, count, count)));
         mRecyclerView.setAdapter(new SubmissionRecyclerViewAdapter(mItemManger, mUser.getItems()));
-        mRecyclerView.setLayoutFrozen(mBottomSheetBehavior.getState() !=
-                BottomSheetBehavior.STATE_EXPANDED);
+        mRecyclerView.setLayoutFrozen(mBottomSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED);
     }
 
     static class UserResponseListener implements ResponseListener<UserManager.User> {
