@@ -32,6 +32,8 @@ import io.github.hidroh.materialistic.widget.StoryRecyclerViewAdapter;
 import io.github.hidroh.materialistic.widget.SubmissionRecyclerViewAdapter;
 import io.github.hidroh.materialistic.widget.ThreadPreviewRecyclerViewAdapter;
 
+// TODO it has issues when migrated to kotlin
+
 @Module(
         injects = {
                 AboutActivity.class,

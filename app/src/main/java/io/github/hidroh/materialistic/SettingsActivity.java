@@ -29,6 +29,8 @@ import javax.inject.Inject;
 
 import io.github.hidroh.materialistic.data.SearchRecentSuggestionsProvider;
 
+// TODO it has issues when migrated to kotlin
+
 public class SettingsActivity extends DrawerActivity {
     @Inject
     AlertDialogBuilder mAlertDialogBuilder;

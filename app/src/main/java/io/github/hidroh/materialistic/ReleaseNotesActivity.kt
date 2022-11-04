@@ -59,5 +59,5 @@ class ReleaseNotesActivity : InjectableActivity() {
         overridePendingTransition(0, R.anim.slide_out_down)
     }
 
-    override fun isDialogTheme() = true
+    override val isDialogTheme = true
 }
