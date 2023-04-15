@@ -1,6 +1,8 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.kapt'
+}
 
 android {
     compileSdkVersion 33
@@ -19,7 +21,7 @@ android {
                 'proguard-square.pro',
                 'proguard-support.pro',
                 'proguard-rx.pro'
-        resConfigs 'en', 'zh-rCN', 'es'
+        resourceConfigurations += ['en', 'zh-rCN', 'es']
     }
 
     buildTypes {
@@ -34,8 +36,8 @@ android {
 
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_9
-        targetCompatibility JavaVersion.VERSION_1_9
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     lint {
         abortOnError true
@@ -56,8 +58,8 @@ ext {
     daggerVersion = '1.2.5'
     leakCanaryVersion = '1.6.3'
     retrofitVersion = '2.9.0'
-    roomVersion = '2.5.0'
-    lifecycleVersion = '2.6.0'
+    roomVersion = '2.5.1'
+    lifecycleVersion = '2.6.1'
 }
 
 dependencies {
@@ -92,4 +94,3 @@ dependencies {
 }
 
 apply from: "${rootProject.getRootDir()}/robolectric.gradle"
-apply from: "${rootProject.getRootDir()}/jacoco.gradle"

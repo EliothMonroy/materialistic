@@ -78,16 +78,16 @@ public class HackerNewsClient implements ItemManager, UserManager {
         }
         Observable<HackerNewsItem> itemObservable;
         switch (cacheMode) {
-            case MODE_DEFAULT:
-            default:
-                itemObservable = mRestService.itemRx(itemId);
-                break;
             case MODE_NETWORK:
                 itemObservable = mRestService.networkItemRx(itemId);
                 break;
             case MODE_CACHE:
                 itemObservable = mRestService.cachedItemRx(itemId)
                         .onErrorResumeNext(mRestService.itemRx(itemId));
+                break;
+            default:
+                // todo I need to migrate to rx 2 probably
+                itemObservable = mRestService.itemRx(itemId);
                 break;
         }
         Observable.defer(() -> Observable.zip(
@@ -122,13 +122,11 @@ public class HackerNewsClient implements ItemManager, UserManager {
     public Item getItem(String itemId, @CacheMode int cacheMode) {
         Call<HackerNewsItem> call;
         switch (cacheMode) {
-            case MODE_DEFAULT:
-            case MODE_CACHE:
-            default:
-                call = mRestService.item(itemId);
-                break;
             case MODE_NETWORK:
                 call = mRestService.networkItem(itemId);
+                break;
+            default:
+                call = mRestService.item(itemId);
                 break;
         }
         try {
