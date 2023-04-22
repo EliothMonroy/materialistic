@@ -22,7 +22,6 @@ import android.content.Intent
 import android.database.CursorWrapper
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.os.Build
 import androidx.annotation.AnyThread
 import androidx.annotation.WorkerThread
 import androidx.core.app.NotificationCompat
@@ -34,11 +33,10 @@ import io.github.hidroh.materialistic.ktx.closeQuietly
 import io.github.hidroh.materialistic.ktx.getUri
 import io.github.hidroh.materialistic.ktx.setChannel
 import io.github.hidroh.materialistic.ktx.toSendIntentChooser
+import io.reactivex.Observable
+import io.reactivex.Scheduler
 import okio.buffer
 import okio.sink
-import rx.Observable
-import rx.Scheduler
-import rx.android.schedulers.AndroidSchedulers
 import java.io.File
 import java.io.IOException
 import javax.inject.Inject

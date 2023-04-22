@@ -7,9 +7,9 @@ import androidx.lifecycle.ViewModel
 import io.github.hidroh.materialistic.data.Item
 import io.github.hidroh.materialistic.data.ItemManager
 import io.github.hidroh.materialistic.data.ItemManager.CacheMode
-import rx.Observable
-import rx.Scheduler
-import rx.android.schedulers.AndroidSchedulers
+import io.reactivex.Observable
+import io.reactivex.Scheduler
+import io.reactivex.android.schedulers.AndroidSchedulers
 
 class StoryListViewModel : ViewModel() {
     private var mItemManager: ItemManager? = null

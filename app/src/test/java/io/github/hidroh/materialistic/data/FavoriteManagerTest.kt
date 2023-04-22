@@ -16,21 +16,17 @@
 
 package io.github.hidroh.materialistic.data
 
-import android.accounts.Account
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
-import android.net.ConnectivityManager
-import android.net.NetworkInfo
 import android.net.Uri
-import android.preference.PreferenceManager
 import androidx.lifecycle.Observer
 import io.github.hidroh.materialistic.BuildConfig
-import io.github.hidroh.materialistic.R
 import io.github.hidroh.materialistic.data.android.Cache
 import io.github.hidroh.materialistic.test.InMemoryDatabase
 import io.github.hidroh.materialistic.test.TestRunner
 import io.github.hidroh.materialistic.test.TestWebItem
+import io.reactivex.schedulers.Schedulers
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.After
 import org.junit.Before
@@ -41,11 +37,7 @@ import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
 import org.robolectric.RuntimeEnvironment
 import org.robolectric.Shadows.shadowOf
-import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import org.robolectric.shadows.ShadowContentResolver
-import org.robolectric.shadows.ShadowNetworkInfo
-import rx.schedulers.Schedulers
 
 @LooperMode(LooperMode.Mode.LEGACY)
 @RunWith(TestRunner::class)
@@ -72,7 +64,7 @@ class FavoriteManagerTest {
       override fun getId() = "2"
     }))
     val cache = Cache(database, savedStoriesDao, readStoriesDao, readableDao, Schedulers.immediate())
-    manager = FavoriteManager(cache, Schedulers.immediate(), savedStoriesDao)
+    manager = FavoriteManager(cache, Schedulers.trampoline(), savedStoriesDao)
     MaterialisticDatabase.getInstance(context).liveData.observeForever(observer)
   }
 

@@ -25,7 +25,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class SyncContentProvider extends ContentProvider {
-    public static final String PROVIDER_AUTHORITY = "io.github.hidroh.materialistic.elioth.syncprovider";
+    public static final String PROVIDER_AUTHORITY = "io.github.hidroh.materialistic.syncprovider";
 
     @Override
     public boolean onCreate() {

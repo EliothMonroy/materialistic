@@ -21,10 +21,10 @@ import okio.source
 import okio.buffer
 import android.webkit.WebResourceResponse
 import androidx.annotation.WorkerThread
+import io.reactivex.Observable
+import io.reactivex.Scheduler
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import kotlin.Throws
-import rx.Observable
-import rx.Scheduler
 import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.util.HashSet

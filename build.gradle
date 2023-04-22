@@ -8,6 +8,6 @@ plugins {
 }
 
 ext {
-    kotlin_version = '1.8.0'
+    kotlin_version = '1.8.20'
     ci = project.hasProperty("ci")
 }

@@ -29,12 +29,12 @@
     <uses-permission android:name="android.permission.WRITE_SYNC_SETTINGS" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
-    <permission android:name="io.github.hidroh.materialistic.elioth.permission.SYNC_ITEM"
+    <permission android:name="io.github.hidroh.materialistic.permission.SYNC_ITEM"
         android:protectionLevel="signature" />
-    <permission android:name="io.github.hidroh.materialistic.elioth.permission.AUTHENTICATE_ACCOUNTS"
+    <permission android:name="io.github.hidroh.materialistic.permission.AUTHENTICATE_ACCOUNTS"
         android:protectionLevel="signature" />
-    <uses-permission android:name="io.github.hidroh.materialistic.elioth.permission.SYNC_ITEM" />
-    <uses-permission android:name="io.github.hidroh.materialistic.elioth.permission.AUTHENTICATE_ACCOUNTS" />
+    <uses-permission android:name="io.github.hidroh.materialistic.permission.SYNC_ITEM" />
+    <uses-permission android:name="io.github.hidroh.materialistic.permission.AUTHENTICATE_ACCOUNTS" />
 
     <uses-sdk tools:overrideLibrary="androidx.browser" />
 
@@ -249,7 +249,7 @@
             </intent-filter>
         </activity>
         <service android:name=".accounts.AuthenticatorService"
-            android:permission="io.github.hidroh.materialistic.elioth.permission.AUTHENTICATE_ACCOUNTS"
+            android:permission="io.github.hidroh.materialistic.permission.AUTHENTICATE_ACCOUNTS"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
@@ -260,7 +260,7 @@
         </service>
         <service android:name=".data.ItemSyncService"
             android:process=":sync"
-            android:permission="io.github.hidroh.materialistic.elioth.permission.SYNC_ITEM"
+            android:permission="io.github.hidroh.materialistic.permission.SYNC_ITEM"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.content.SyncAdapter" />
@@ -283,15 +283,15 @@
             android:name=".data.WebCacheService"
             android:exported="false" />
         <provider
-            android:authorities="io.github.hidroh.materialistic.elioth.syncprovider"
+            android:authorities="io.github.hidroh.materialistic.syncprovider"
             android:name=".data.SyncContentProvider"
             android:exported="false" />
         <provider
-            android:authorities="io.github.hidroh.materialistic.elioth.recentprovider"
+            android:authorities="io.github.hidroh.materialistic.recentprovider"
             android:name=".data.SearchRecentSuggestionsProvider"
             android:exported="false" />
         <provider
-            android:authorities="io.github.hidroh.materialistic.elioth.fileprovider"
+            android:authorities="io.github.hidroh.materialistic.fileprovider"
             android:name="androidx.core.content.FileProvider"
             android:exported="false"
             android:grantUriPermissions="true">
@@ -312,7 +312,7 @@
             tools:ignore="ExportedReceiver"
             android:exported="true">
             <intent-filter>
-                <action android:name="io.github.hidroh.materialistic.elioth.ACTION_REFRESH_WIDGET" />
+                <action android:name="io.github.hidroh.materialistic.ACTION_REFRESH_WIDGET" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

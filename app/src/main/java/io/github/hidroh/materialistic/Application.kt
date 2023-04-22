@@ -25,8 +25,8 @@ import com.squareup.leakcanary.LeakCanary
 import android.os.StrictMode
 import android.os.StrictMode.ThreadPolicy
 import android.os.StrictMode.VmPolicy
-import rx.schedulers.Schedulers
 import android.graphics.Typeface
+import io.reactivex.schedulers.Schedulers
 
 open class Application : android.app.Application(), Injectable {
     private var mRefWatcher: RefWatcher? = null
