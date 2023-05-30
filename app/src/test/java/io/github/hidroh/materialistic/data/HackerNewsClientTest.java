@@ -19,9 +19,9 @@ import dagger.Module;
 import dagger.ObjectGraph;
 import dagger.Provides;
 import io.github.hidroh.materialistic.DataModule;
-import rx.Observable;
-import rx.Scheduler;
-import rx.schedulers.Schedulers;
+import io.reactivex.Observable;
+import io.reactivex.Scheduler;
+import io.reactivex.schedulers.Schedulers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -276,12 +276,12 @@ public class HackerNewsClientTest {
 
         @Provides @Singleton @Named(DataModule.IO_THREAD)
         public Scheduler provideIoScheduler() {
-            return Schedulers.immediate();
+            return Schedulers.trampoline();
         }
 
         @Provides @Singleton @Named(DataModule.MAIN_THREAD)
         public Scheduler provideMainThreadScheduler() {
-            return Schedulers.immediate();
+            return Schedulers.trampoline();
         }
     }
 }

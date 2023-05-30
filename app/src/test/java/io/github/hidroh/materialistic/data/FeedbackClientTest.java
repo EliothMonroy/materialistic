@@ -13,8 +13,8 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.ObjectGraph;
 import dagger.Provides;
-import rx.Observable;
-import rx.schedulers.Schedulers;
+import io.reactivex.Observable;
+import io.reactivex.schedulers.Schedulers;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -33,7 +33,7 @@ public class FeedbackClientTest {
     public void setUp() {
         ObjectGraph.create(new TestModule()).inject(this);
         reset(TestRestServiceFactory.feedbackService);
-        client = new FeedbackClient.Impl(factory, Schedulers.immediate());
+        client = new FeedbackClient.Impl(factory, Schedulers.trampoline());
         callback = mock(FeedbackClient.Callback.class);
     }
 

@@ -22,9 +22,9 @@ import dagger.ObjectGraph;
 import dagger.Provides;
 import io.github.hidroh.materialistic.ActivityModule;
 import io.github.hidroh.materialistic.DataModule;
-import rx.Observable;
-import rx.Scheduler;
-import rx.schedulers.Schedulers;
+import io.reactivex.Observable;
+import io.reactivex.Scheduler;
+import io.reactivex.schedulers.Schedulers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
@@ -124,7 +124,7 @@ public class AlgoliaClientTest {
 
         @Provides @Singleton @Named(DataModule.MAIN_THREAD)
         public Scheduler provideMainThreadScheduler() {
-            return Schedulers.immediate();
+            return Schedulers.trampoline();
         }
 
         @Provides @Singleton

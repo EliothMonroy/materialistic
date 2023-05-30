@@ -27,12 +27,12 @@ import io.github.hidroh.materialistic.AndroidUtils;
 import io.github.hidroh.materialistic.BuildConfig;
 import io.github.hidroh.materialistic.DataModule;
 import io.github.hidroh.materialistic.annotation.Synthetic;
+import io.reactivex.Observable;
+import io.reactivex.Scheduler;
+import io.reactivex.schedulers.Schedulers;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.Query;
-import rx.Observable;
-import rx.Scheduler;
-import rx.schedulers.Schedulers;
 
 public interface ReadabilityClient {
     String HOST = "mercury.postlight.com";
@@ -96,10 +96,10 @@ public interface ReadabilityClient {
         @Override
         public void parse(String itemId, String url) {
             Observable.defer(() -> fromCache(itemId))
-                    .subscribeOn(Schedulers.immediate())
+                    .subscribeOn(Schedulers.trampoline())
                     .switchIfEmpty(fromNetwork(itemId, url))
                     .map(content -> AndroidUtils.TextUtils.equals(EMPTY_CONTENT, content) ? null : content)
-                    .observeOn(Schedulers.immediate())
+                    .observeOn(Schedulers.trampoline())
                     .subscribe();
         }
 

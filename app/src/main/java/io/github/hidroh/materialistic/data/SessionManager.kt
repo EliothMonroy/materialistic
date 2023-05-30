@@ -18,8 +18,8 @@ package io.github.hidroh.materialistic.data
 
 import androidx.annotation.WorkerThread
 import io.github.hidroh.materialistic.DataModule
-import rx.Observable
-import rx.Scheduler
+import io.reactivex.Observable
+import io.reactivex.Scheduler
 import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Singleton

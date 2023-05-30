@@ -24,12 +24,12 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import io.github.hidroh.materialistic.DataModule;
+import io.reactivex.Observable;
+import io.reactivex.Scheduler;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.Path;
-import rx.Observable;
-import rx.Scheduler;
 
 /**
  * Client to retrieve Hacker News content asynchronously

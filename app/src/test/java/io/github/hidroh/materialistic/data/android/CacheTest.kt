@@ -18,6 +18,7 @@ package io.github.hidroh.materialistic.data.android
 
 import android.net.Uri
 import io.github.hidroh.materialistic.data.MaterialisticDatabase
+import io.reactivex.schedulers.Schedulers
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
@@ -28,7 +29,6 @@ import org.mockito.ArgumentMatchers.eq
 import org.mockito.Mock
 import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
-import rx.schedulers.Schedulers
 
 @RunWith(JUnit4::class)
 class CacheTest {
@@ -41,7 +41,7 @@ class CacheTest {
   @Before
   fun setUp() {
     MockitoAnnotations.initMocks(this)
-    cache = Cache(database, savedStoriesDao, readStoriesDao, readableDao, Schedulers.immediate())
+    cache = Cache(database, savedStoriesDao, readStoriesDao, readableDao, Schedulers.trampoline())
   }
 
   @Test
@@ -99,6 +99,6 @@ class CacheTest {
   fun testIsFavoriteWithItem() {
     val savedStory = mock(MaterialisticDatabase.SavedStory::class.java)
     `when`(savedStoriesDao.selectByItemId(anyString())).thenReturn(savedStory)
-    assertThat(cache.isFavorite("1")).isTrue()
+    assertThat(cache.isFavorite("1")).isTrue
   }
 }

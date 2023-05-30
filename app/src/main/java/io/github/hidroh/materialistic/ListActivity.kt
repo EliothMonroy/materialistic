@@ -13,24 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package io.github.hidroh.materialistic
 
-package io.github.hidroh.materialistic;
+import io.github.hidroh.materialistic.data.ItemManager
 
-import androidx.annotation.NonNull;
-
-import io.github.hidroh.materialistic.data.ItemManager;
-
-public class ListActivity extends BaseStoriesActivity {
-
-    @Override
-    protected String getDefaultTitle() {
-        return getString(R.string.title_activity_list);
+open class ListActivity : BaseStoriesActivity() {
+    override fun getDefaultTitle(): String {
+        return getString(R.string.title_activity_list)
     }
 
-    @NonNull
-    @Override
-    protected String getFetchMode() {
-        return ItemManager.TOP_FETCH_MODE;
-    }
-
+    override val fetchMode: String
+        get() = ItemManager.TOP_FETCH_MODE
 }

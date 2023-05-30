@@ -19,9 +19,9 @@ import dagger.ObjectGraph;
 import dagger.Provides;
 import io.github.hidroh.materialistic.DataModule;
 import io.github.hidroh.materialistic.test.InMemoryCache;
-import rx.Observable;
-import rx.Scheduler;
-import rx.schedulers.Schedulers;
+import io.reactivex.Observable;
+import io.reactivex.Scheduler;
+import io.reactivex.schedulers.Schedulers;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -113,12 +113,12 @@ public class ReadabilityClientTest {
 
         @Provides @Singleton @Named(DataModule.MAIN_THREAD)
         public Scheduler provideMainThreadScheduler() {
-            return Schedulers.immediate();
+            return Schedulers.trampoline();
         }
 
         @Provides @Singleton @Named(DataModule.IO_THREAD)
         public Scheduler provideIoThreadScheduler() {
-            return Schedulers.immediate();
+            return Schedulers.trampoline();
         }
 
         @Provides @Singleton

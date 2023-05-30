@@ -27,11 +27,11 @@ import androidx.annotation.NonNull;
 import io.github.hidroh.materialistic.ActivityModule;
 import io.github.hidroh.materialistic.DataModule;
 import io.github.hidroh.materialistic.annotation.Synthetic;
+import io.reactivex.Observable;
+import io.reactivex.Scheduler;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
-import rx.Observable;
-import rx.Scheduler;
 
 public class AlgoliaClient implements ItemManager {
 

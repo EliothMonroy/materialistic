@@ -17,12 +17,12 @@
 package io.github.hidroh.materialistic.data
 
 import io.github.hidroh.materialistic.test.InMemoryCache
+import io.reactivex.schedulers.Schedulers
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import rx.schedulers.Schedulers
 
 @RunWith(JUnit4::class)
 class SessionManagerTest {
@@ -33,7 +33,7 @@ class SessionManagerTest {
     val cache = InMemoryCache()
     cache.setViewed("1")
     cache.setViewed("2")
-    manager = SessionManager(Schedulers.immediate(), cache)
+    manager = SessionManager(Schedulers.trampoline(), cache)
   }
 
   @Test

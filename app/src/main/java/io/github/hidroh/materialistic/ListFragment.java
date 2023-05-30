@@ -44,7 +44,7 @@ import io.github.hidroh.materialistic.data.Item;
 import io.github.hidroh.materialistic.data.ItemManager;
 import io.github.hidroh.materialistic.data.MaterialisticDatabase;
 import io.github.hidroh.materialistic.widget.StoryRecyclerViewAdapter;
-import rx.Scheduler;
+import io.reactivex.Scheduler;
 
 public class ListFragment extends BaseListFragment {
 

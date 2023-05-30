@@ -19,14 +19,15 @@ package io.github.hidroh.materialistic
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.AssetManager
-import okio.Okio
+import io.reactivex.schedulers.Schedulers
+import okio.buffer
+import okio.source
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.*
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
-import rx.schedulers.Schedulers
 import java.io.FileInputStream
 import java.io.IOException
 
@@ -40,7 +41,7 @@ class AdBlockerTest {
             .thenReturn(FileInputStream(javaClass.classLoader.getResource("pgl.yoyo.org.txt").file))
         val context = mock(Context::class.java)
         `when`(context.assets).thenReturn(assetManager)
-        AdBlocker.init(context, Schedulers.immediate())
+        AdBlocker.init(context, Schedulers.trampoline())
         assertThat(AdBlocker.isAd("")).isFalse()
         assertThat(AdBlocker.isAd("http://localhost")).isFalse()
         assertThat(AdBlocker.isAd("http://google.com")).isFalse()
@@ -52,6 +53,6 @@ class AdBlockerTest {
     @Throws(IOException::class)
     fun testCreateEmptyResource() {
         val resource = AdBlocker.createEmptyResource()
-        assertThat(Okio.buffer(Okio.source(resource.data)).readUtf8()).isEmpty()
+        assertThat(resource.data.source().buffer().readUtf8()).isEmpty()
     }
 }

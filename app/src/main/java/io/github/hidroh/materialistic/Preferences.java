@@ -81,8 +81,7 @@ public class Preferences {
 
     private static void sync(PreferenceManager preferenceManager, String key) {
         Preference pref = preferenceManager.findPreference(key);
-        if (pref instanceof ListPreference) {
-            ListPreference listPref = (ListPreference) pref;
+        if (pref instanceof ListPreference listPref) {
             pref.setSummary(listPref.getEntry());
         }
     }
@@ -443,19 +442,13 @@ public class Preferences {
 
         public static @StyleRes
         int resolveTextSize(String choice) {
-            switch (Integer.parseInt(choice)) {
-                case -1:
-                    return R.style.AppTextSize_XSmall;
-                case 0:
-                default:
-                    return R.style.AppTextSize;
-                case 1:
-                    return R.style.AppTextSize_Medium;
-                case 2:
-                    return R.style.AppTextSize_Large;
-                case 3:
-                    return R.style.AppTextSize_XLarge;
-            }
+            return switch (Integer.parseInt(choice)) {
+                case -1 -> R.style.AppTextSize_XSmall;
+                case 1 -> R.style.AppTextSize_Medium;
+                case 2 -> R.style.AppTextSize_Large;
+                case 3 -> R.style.AppTextSize_XLarge;
+                default -> R.style.AppTextSize;
+            };
         }
 
         public static @StyleRes

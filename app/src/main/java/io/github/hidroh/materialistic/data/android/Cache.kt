@@ -19,8 +19,8 @@ package io.github.hidroh.materialistic.data.android
 import io.github.hidroh.materialistic.DataModule
 import io.github.hidroh.materialistic.data.LocalCache
 import io.github.hidroh.materialistic.data.MaterialisticDatabase
-import rx.Observable
-import rx.Scheduler
+import io.reactivex.Observable
+import io.reactivex.Scheduler
 import javax.inject.Inject
 import javax.inject.Named
 

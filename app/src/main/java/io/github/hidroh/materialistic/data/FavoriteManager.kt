@@ -35,6 +35,7 @@ import io.github.hidroh.materialistic.ktx.setChannel
 import io.github.hidroh.materialistic.ktx.toSendIntentChooser
 import io.reactivex.Observable
 import io.reactivex.Scheduler
+import io.reactivex.android.schedulers.AndroidSchedulers
 import okio.buffer
 import okio.sink
 import java.io.File

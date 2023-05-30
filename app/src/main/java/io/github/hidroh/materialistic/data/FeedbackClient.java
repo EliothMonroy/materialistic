@@ -26,11 +26,11 @@ import javax.inject.Named;
 import io.github.hidroh.materialistic.BuildConfig;
 import io.github.hidroh.materialistic.DataModule;
 import io.github.hidroh.materialistic.annotation.Synthetic;
+import io.reactivex.Observable;
+import io.reactivex.Scheduler;
 import retrofit2.http.Body;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
-import rx.Observable;
-import rx.Scheduler;
 
 public interface FeedbackClient {
     interface Callback {

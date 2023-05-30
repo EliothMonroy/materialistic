@@ -18,6 +18,7 @@ import java.net.HttpURLConnection;
 import io.github.hidroh.materialistic.BuildConfig;
 import io.github.hidroh.materialistic.Preferences;
 import io.github.hidroh.materialistic.test.TestRunner;
+import io.reactivex.schedulers.Schedulers;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.MediaType;
@@ -25,7 +26,6 @@ import okhttp3.Protocol;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-import rx.schedulers.Schedulers;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
@@ -55,7 +55,7 @@ public class UserServicesClientTest {
         call = mock(Call.class);
         Call.Factory callFactory = mock(Call.Factory.class);
         when(callFactory.newCall(any(Request.class))).thenReturn(call);
-        userServices = new UserServicesClient(callFactory, Schedulers.immediate());
+        userServices = new UserServicesClient(callFactory, Schedulers.trampoline());
         Preferences.setUsername(RuntimeEnvironment.application, "username");
         account = new Account("username", BuildConfig.APPLICATION_ID);
         AccountManager.get(RuntimeEnvironment.application)
